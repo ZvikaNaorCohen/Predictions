@@ -32,4 +32,6 @@ public class EntityDefinitionImpl implements EntityDefinition {
         return properties;
     }
 
+    public void addPropertyDefinition(PropertyDefinition pd){properties.add(pd);}
+
 }

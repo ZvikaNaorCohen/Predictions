@@ -16,7 +16,6 @@ import java.util.Scanner;
 import static java.lang.System.in;
 
 public class UIUtils {
-    private final static String JAXB_XML_GAME_PACKAGE_NAME = "generated";
 
     public static void PrintMenu() {
         System.out.println("Please choose an option. Just press the digit of the command you want to use. ");
@@ -76,22 +75,7 @@ public class UIUtils {
 //        return myWorld;
 //    }
 
-    public static PRDWorld getWorldFromScheme() throws JAXBException {
-        try {
-            InputStream inputStream = new FileInputStream(new File("Engine/src/Resources/world.xml"));
-            PRDWorld world = deserializeFrom(inputStream);
-            return world;
-        } catch (JAXBException | FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    public static PRDWorld deserializeFrom(InputStream in) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
-        Unmarshaller u = jc.createUnmarshaller();
-        return (PRDWorld) u.unmarshal(in);
-    }
 
 //    private static void extractPRDEnv(PRDWorld prdWorld, World myWorld) {
 //        PRDEvironment tempEnv = prdWorld.getPRDEvironment();

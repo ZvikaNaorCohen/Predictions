@@ -12,17 +12,26 @@ public enum PropertyType {
     }, BOOLEAN {
 
         public Boolean convert(Object value) {
-            return null;
+            if (!(value instanceof Boolean)) {
+                throw new IllegalArgumentException("value " + value + " is not of a BOOLEAN type (expected Boolean class)");
+            }
+            return (Boolean) value;
         }
     }, FLOAT {
 
-        public Double convert(Object value) {
-            return null;
+        public Float convert(Object value) {
+            if (!(value instanceof Double)) {
+                throw new IllegalArgumentException("value " + value + " is not of a FLOAT type (expected Float class)");
+            }
+            return (Float) value;
         }
     }, STRING {
 
         public String convert(Object value) {
-            return null;
+            if (!(value instanceof String)) {
+                throw new IllegalArgumentException("value " + value + " is not of a STRING type (expected String class)");
+            }
+            return (String) value;
         }
     };
 

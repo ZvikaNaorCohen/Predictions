@@ -35,4 +35,18 @@ public class RuleImpl implements Rule {
     public void addAction(Action action) {
         actions.add(action);
     }
+
+    public void setListOfActions(List<Action> inputActions){
+        for(Action action : inputActions){
+            actions.add(action);
+        }
+    }
+
+    public void setActivation(Activation temp){
+        activation = temp;
+    }
+
+    public boolean toRunRule(int tick){
+        return activation.isActive(tick);
+    }
 }

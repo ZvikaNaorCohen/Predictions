@@ -1,18 +1,21 @@
 package UI;
 
 import UI.MenuItem.api.MenuItem;
+import file.generator.PRDtoWorld;
 import generated.PRDWorld;
+import rule.Termination;
 
 import javax.xml.bind.JAXBException;
-import java.util.List;
 
 import static UI.UIUtils.*;
+import static file.read.XMLRead.getWorldFromScheme;
 
 public class UserInterface {
     // private Engine myEngine = new Engine();
 
     public void run() throws JAXBException {
-        PRDWorld prdWorld = UIUtils.getWorldFromScheme();
+        PRDWorld prdWorld = getWorldFromScheme("");
+        Termination test = PRDtoWorld.getTerminationRules(prdWorld.getPRDTermination());
         // World myWorld = UIUtils.fromGeneratedToWorld(prdWorld);
 
         Boolean run = true;
