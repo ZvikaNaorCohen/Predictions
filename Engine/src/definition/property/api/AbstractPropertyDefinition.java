@@ -1,5 +1,6 @@
 package definition.property.api;
 
+import definition.property.impl.IntegerPropertyDefinition;
 import definition.value.generator.api.ValueGenerator;
 
 public abstract class AbstractPropertyDefinition<T> implements PropertyDefinition {

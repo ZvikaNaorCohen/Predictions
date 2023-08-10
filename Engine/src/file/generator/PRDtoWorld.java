@@ -6,6 +6,15 @@ import definition.entity.EntityDefinitionImpl;
 import definition.property.api.AbstractPropertyDefinition;
 import definition.property.api.PropertyDefinition;
 import definition.property.api.PropertyType;
+import definition.property.impl.BooleanPropertyDefinition;
+import definition.property.impl.FloatPropertyDefinition;
+import definition.property.impl.IntegerPropertyDefinition;
+import definition.property.impl.StringPropertyDefinition;
+import definition.value.generator.fixed.FixedValueGenerator;
+import definition.value.generator.random.impl.bool.RandomBooleanValueGenerator;
+import definition.value.generator.random.impl.numeric.RandomFloatGenerator;
+import definition.value.generator.random.impl.numeric.RandomIntegerGenerator;
+import definition.value.generator.random.impl.string.RandomStringGenerator;
 import execution.instance.property.PropertyInstance;
 import execution.instance.property.PropertyInstanceImpl;
 import generated.*;
@@ -51,12 +60,60 @@ public class PRDtoWorld {
         return generatedRules;
     }
 
-    public static Map<String, EntityDefinition> getAllEntityDefinitions(PRDEntities entities){
+    private static PropertyDefinition fromPRDToPropDef(PRDProperty prop) {
+        PropertyDefinition newProp = null;
+        switch (prop.getType()) {
+            case "decimal": {
+                if (prop.getPRDValue().isRandomInitialize()) {
+                    int from = (int) prop.getPRDRange().getFrom();
+                    int to = (int) prop.getPRDRange().getTo();
+                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to));
+                } else {
+                    int fixedValue = Integer.parseInt(prop.getPRDValue().getInit());
+                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                }
+                break;
+            }
+            case "float": {
+                if (prop.getPRDValue().isRandomInitialize()) {
+                    float from = (float) prop.getPRDRange().getFrom();
+                    float to = (float) prop.getPRDRange().getTo();
+                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to));
+                } else {
+                    float fixedValue = Float.parseFloat(prop.getPRDValue().getInit());
+                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                }
+                break;
+            }
+            case "string": {
+                if (prop.getPRDValue().isRandomInitialize()) {
+                    newProp = new StringPropertyDefinition(prop.getPRDName(), new RandomStringGenerator());
+                } else {
+                    String fixedValue = (prop.getPRDValue().getInit());
+                    newProp = new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                }
+                break;
+            }
+            case "boolean": {
+                if (prop.getPRDValue().isRandomInitialize()) {
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator());
+                } else {
+                    boolean fixedValue = Boolean.parseBoolean(prop.getPRDValue().getInit());
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                }
+                break;
+            }
+        }
+        return newProp;
+    }
+
+    public static Map<String, EntityDefinition> getAllEntityDefinitions(PRDEntities entities) {
         Map<String, EntityDefinition> myList = new HashMap<>();
-        for(PRDEntity entity : entities.getPRDEntity()){
+        for (PRDEntity entity : entities.getPRDEntity()) {
             EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), entity.getPRDPopulation());
-            for(PRDProperty prop : entity.getPRDProperties().getPRDProperty()){
-                // WHAT DO I DO HERE? I want all properties
+            for (PRDProperty prop : entity.getPRDProperties().getPRDProperty()) {
+                PropertyDefinition newProp = fromPRDToPropDef(prop);
+                entityImpl.addPropertyDefinition(newProp);
             }
             myList.put(entityImpl.getName(), entityImpl);
         }

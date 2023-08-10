@@ -2,9 +2,17 @@ package UI.MenuItem.impl;
 
 import UI.MenuItem.api.MenuItem;
 import UI.UIUtils;
+import engine.AllData;
+import file.generator.PRDtoWorld;
+import generated.PRDWorld;
+import rule.Termination;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.Scanner;
+
+import static file.generator.PRDtoWorld.*;
+import static file.read.XMLRead.getWorldFromScheme;
 
 public class ReadFile implements MenuItem {
     public String getPathFromUser(){
@@ -23,9 +31,17 @@ public class ReadFile implements MenuItem {
             }
         }
     }
-    public void invoke(){
+    public void invoke() throws JAXBException {
         String path = getPathFromUser();
-        File file = new File(path);
+        // For testing:
+        path = "Engine/src/Resources/world.xml";
+        // File file = new File(path);
+        PRDWorld inputWorld = getWorldFromScheme(path);
+        AllData newWorld = new AllData(inputWorld);
+
+
+
+
 
     }
 
