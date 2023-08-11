@@ -9,7 +9,7 @@ import execution.context.Context;
 public class MultiplyAction extends AbstractCalculationAction {
     String argument1, argument2;
     public MultiplyAction(EntityDefinition entityDefinition, String arg1, String arg2) {
-        super(ActionType.DIVIDE, entityDefinition, "");
+        super(ActionType.MULTIPLY, entityDefinition, "");
         argument1 = arg1;
         argument2 = arg2;
     }

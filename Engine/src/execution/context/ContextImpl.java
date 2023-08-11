@@ -1,5 +1,6 @@
 package execution.context;
 
+import engine.AllData;
 import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
@@ -14,11 +15,11 @@ public class ContextImpl implements Context {
 
     private Termination terminationRules;
 
-    public ContextImpl(Termination term, EntityInstance primaryEntityInstance, EntityInstanceManager entityInstanceManager, ActiveEnvironment activeEnvironment) {
-        this.primaryEntityInstance = primaryEntityInstance;
-        this.entityInstanceManager = entityInstanceManager;
-        this.activeEnvironment = activeEnvironment;
-        this.terminationRules = term;
+    public ContextImpl(AllData definitions) {
+        terminationRules = definitions.fromAllDataToAllInstances().getEngineTermination();
+        primaryEntityInstance = definitions.fromAllDataToAllInstances().getAllEntities().getInstances().get(0);
+        entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
+        activeEnvironment = definitions.fromAllDataToAllInstances().getActiveEnvironment();
     }
 
     @Override

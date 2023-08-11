@@ -19,24 +19,28 @@ public class IncreaseAction extends AbstractAction {
     }
 
     @Override
-    public void invoke(Context context) {
-        PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property);
+    public void invoke(Context context) { // <PRD-action entity="Smoker" type="increase" property="age" by="1"/>
+        PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property); // Property AGE
         if (!verifyNumericPropertyTYpe(propertyInstance)) {
             throw new IllegalArgumentException("increase action can't operate on a none number property [" + property);
         }
 
-        Integer v = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Integer oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        // Here I need to extract the value from byExpression
+        Integer newValue = oldValue + (Integer)PropertyType.DECIMAL.convert(byExpression);
+
+
 
         // something that evaluates expression to a number, say the result is 5...
         // now you can also access the environment variables through the active environment...
         // PropertyInstance blaPropertyInstance = activeEnvironment.getProperty("bla");
-        int x = 5;
+        // int x = 5;
 
         // actual calculation
-        int result = x + v;
+        // int result = x + v;
 
         // updating result on the property
-        propertyInstance.updateValue(result);
+        propertyInstance.updateValue(newValue);
     }
 
     private boolean verifyNumericPropertyTYpe(PropertyInstance propertyValue) {
