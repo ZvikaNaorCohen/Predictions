@@ -4,6 +4,7 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
+import rule.Termination;
 
 public class ContextImpl implements Context {
 
@@ -11,10 +12,18 @@ public class ContextImpl implements Context {
     private EntityInstanceManager entityInstanceManager;
     private ActiveEnvironment activeEnvironment;
 
-    public ContextImpl(EntityInstance primaryEntityInstance, EntityInstanceManager entityInstanceManager, ActiveEnvironment activeEnvironment) {
+    private Termination terminationRules;
+
+    public ContextImpl(Termination term, EntityInstance primaryEntityInstance, EntityInstanceManager entityInstanceManager, ActiveEnvironment activeEnvironment) {
         this.primaryEntityInstance = primaryEntityInstance;
         this.entityInstanceManager = entityInstanceManager;
         this.activeEnvironment = activeEnvironment;
+        this.terminationRules = term;
+    }
+
+    @Override
+    public Termination getTerminationRules() {
+        return terminationRules;
     }
 
     @Override

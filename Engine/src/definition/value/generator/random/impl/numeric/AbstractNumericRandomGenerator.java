@@ -8,8 +8,7 @@ public abstract class AbstractNumericRandomGenerator<T> extends AbstractRandomVa
     protected final T to;
 
     protected AbstractNumericRandomGenerator(T from, T to) {
-        this.from = from;
-        this.to = to;
+            this.from = from;
+            this.to = to;
     }
-
 }

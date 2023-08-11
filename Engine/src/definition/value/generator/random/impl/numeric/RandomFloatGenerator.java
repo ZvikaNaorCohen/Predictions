@@ -7,6 +7,8 @@ public class RandomFloatGenerator extends AbstractNumericRandomGenerator<Float>{
 
     @Override
     public Float generateValue() {
-        return from + random.nextFloat() * (to - from);
+
+        int range = (int) (to - from + 1);
+        return random.nextInt(range) + from;
     }
 }

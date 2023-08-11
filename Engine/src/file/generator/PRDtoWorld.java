@@ -3,6 +3,8 @@ package file.generator;
 import action.api.Action;
 import definition.entity.EntityDefinition;
 import definition.entity.EntityDefinitionImpl;
+import definition.environment.api.EnvVariablesManager;
+import definition.environment.impl.EnvVariableManagerImpl;
 import definition.property.api.AbstractPropertyDefinition;
 import definition.property.api.PropertyDefinition;
 import definition.property.api.PropertyType;
@@ -37,6 +39,7 @@ public class PRDtoWorld {
         return new Termination(ticks, seconds);
     }
     public static List<Action> getAllRuleActions(PRDRule rule){
+
         return null;
     }
 
@@ -107,6 +110,33 @@ public class PRDtoWorld {
         return newProp;
     }
 
+    private static PropertyDefinition fromPRDToPropEnvDef(PRDEnvProperty prop) {
+        PropertyDefinition newProp = null;
+        switch (prop.getType()) {
+            case "decimal": {
+                int from = (int) prop.getPRDRange().getFrom();
+                int to = (int) prop.getPRDRange().getTo();
+                newProp = new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to));
+            }
+            break;
+            case "float": {
+                float from = (float) prop.getPRDRange().getFrom();
+                float to = (float) prop.getPRDRange().getTo();
+                newProp = new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to));
+            }
+                break;
+            case "string": {
+                newProp = new StringPropertyDefinition(prop.getPRDName(), new RandomStringGenerator());
+                break;
+            }
+            case "boolean": {
+                newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator());
+            }
+                break;
+            }
+        return newProp;
+    }
+
     public static Map<String, EntityDefinition> getAllEntityDefinitions(PRDEntities entities) {
         Map<String, EntityDefinition> myList = new HashMap<>();
         for (PRDEntity entity : entities.getPRDEntity()) {
@@ -118,5 +148,15 @@ public class PRDtoWorld {
             myList.put(entityImpl.getName(), entityImpl);
         }
         return myList;
+    }
+
+    public static EnvVariablesManager getAllEnvProperties(PRDEvironment environment){
+        EnvVariablesManager varManager = new EnvVariableManagerImpl();
+        for(PRDEnvProperty prop : environment.getPRDEnvProperty()){
+            PropertyDefinition newProp = fromPRDToPropEnvDef(prop);
+            varManager.addEnvironmentVariable(newProp);
+        }
+
+        return varManager;
     }
 }

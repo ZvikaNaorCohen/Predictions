@@ -3,6 +3,7 @@ package UI.MenuItem.impl;
 import UI.MenuItem.api.MenuItem;
 import UI.UIUtils;
 import engine.AllData;
+import engine.AllInstances;
 import file.generator.PRDtoWorld;
 import generated.PRDWorld;
 import rule.Termination;
@@ -37,11 +38,8 @@ public class ReadFile implements MenuItem {
         path = "Engine/src/Resources/world.xml";
         // File file = new File(path);
         PRDWorld inputWorld = getWorldFromScheme(path);
-        AllData newWorld = new AllData(inputWorld);
-
-
-
-
+        AllData myDefinitions = new AllData(inputWorld);
+        AllInstances myInstances = myDefinitions.fromAllDataToAllInstances();
 
     }
 
