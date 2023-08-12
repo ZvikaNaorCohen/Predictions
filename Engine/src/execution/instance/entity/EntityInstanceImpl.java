@@ -36,4 +36,8 @@ public class EntityInstanceImpl implements EntityInstance {
     public void addPropertyInstance(PropertyInstance propertyInstance) {
         properties.put(propertyInstance.getPropertyDefinition().getName(), propertyInstance);
     }
+
+    public boolean hasPropertyByName(String name){
+        return properties.containsKey(name);
+    }
 }

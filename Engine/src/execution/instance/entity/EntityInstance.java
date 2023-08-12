@@ -6,4 +6,6 @@ public interface EntityInstance {
     int getId();
     PropertyInstance getPropertyByName(String name);
     void addPropertyInstance(PropertyInstance propertyInstance);
+
+    boolean hasPropertyByName(String name);
 }

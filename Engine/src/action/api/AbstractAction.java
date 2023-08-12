@@ -4,8 +4,8 @@ import definition.entity.EntityDefinition;
 
 public abstract class AbstractAction implements Action {
 
-    private final ActionType actionType;
-    private final EntityDefinition entityDefinition;
+    protected final ActionType actionType;
+    protected final EntityDefinition entityDefinition;
 
     protected AbstractAction(ActionType actionType, EntityDefinition entityDefinition) {
         this.actionType = actionType;
