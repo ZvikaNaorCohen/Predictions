@@ -3,7 +3,16 @@ package action.impl;
 import action.api.AbstractAction;
 import action.api.ActionType;
 import definition.entity.EntityDefinition;
+import definition.property.api.PropertyType;
 import execution.context.Context;
+import execution.instance.entity.EntityInstance;
+import execution.instance.property.PropertyInstance;
+import function.api.Function;
+import function.impl.EnvironmentFunction;
+import function.impl.RandomFunction;
+
+import static definition.value.generator.transformer.Transformer.StringToFloat;
+import static definition.value.generator.transformer.Transformer.StringToInteger;
 
 public class SetAction extends AbstractAction {
     String property, newPropertyValue;
@@ -17,6 +26,42 @@ public class SetAction extends AbstractAction {
 
     @Override
     public void invoke(Context context) {
-        // Perform Set
+        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
+            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
+                PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
+                if(newPropertyValue.startsWith("environment"))
+                {
+                    Function envFunction = new EnvironmentFunction(newPropertyValue);
+                    instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
+                }
+                else if(newPropertyValue.startsWith("random")){
+                    Function randomFunction = new RandomFunction(newPropertyValue);
+                    instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
+                }
+                else if(instance.hasPropertyByName(newPropertyValue)){
+                    propertyInstance.updateValue(instance.getPropertyByName(newPropertyValue));
+                }
+                else { // ערך חופשי
+                    updatePropertyInstanceValueByFreeValue(propertyInstance);
+                }
+            }
+        }
+    }
+
+    private void updatePropertyInstanceValueByFreeValue(PropertyInstance propertyInstance) {
+        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+            Integer newValue = StringToInteger(newPropertyValue);
+            propertyInstance.updateValue(newValue);
+        }
+        else if(propertyInstance.getValue().getClass().getName().equals("Float")) {
+            Float newValue = StringToFloat(newPropertyValue);
+            propertyInstance.updateValue(newValue);
+        } else if(propertyInstance.getValue().getClass().getName().equals("Boolean")) {
+            Boolean newValue = newPropertyValue.equals("true");
+            propertyInstance.updateValue(newValue);
+        }
+        else {
+            propertyInstance.updateValue(newPropertyValue);
+        }
     }
 }

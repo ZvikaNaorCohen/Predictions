@@ -40,4 +40,9 @@ public class EntityInstanceImpl implements EntityInstance {
     public boolean hasPropertyByName(String name){
         return properties.containsKey(name);
     }
+
+    @Override
+    public String getEntityDefinitionName() {
+        return entityDefinition.getName();
+    }
 }

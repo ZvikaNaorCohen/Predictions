@@ -8,4 +8,6 @@ public interface EntityInstance {
     void addPropertyInstance(PropertyInstance propertyInstance);
 
     boolean hasPropertyByName(String name);
+
+    String getEntityDefinitionName();
 }
