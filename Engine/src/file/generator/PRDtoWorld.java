@@ -1,5 +1,6 @@
 package file.generator;
 
+import action.api.AbstractConditionAction;
 import action.api.Action;
 import action.api.ActionType;
 import action.impl.*;
@@ -7,9 +8,7 @@ import definition.entity.EntityDefinition;
 import definition.entity.EntityDefinitionImpl;
 import definition.environment.api.EnvVariablesManager;
 import definition.environment.impl.EnvVariableManagerImpl;
-import definition.property.api.AbstractPropertyDefinition;
 import definition.property.api.PropertyDefinition;
-import definition.property.api.PropertyType;
 import definition.property.impl.BooleanPropertyDefinition;
 import definition.property.impl.FloatPropertyDefinition;
 import definition.property.impl.IntegerPropertyDefinition;
@@ -19,12 +18,11 @@ import definition.value.generator.random.impl.bool.RandomBooleanValueGenerator;
 import definition.value.generator.random.impl.numeric.RandomFloatGenerator;
 import definition.value.generator.random.impl.numeric.RandomIntegerGenerator;
 import definition.value.generator.random.impl.string.RandomStringGenerator;
-import execution.instance.property.PropertyInstance;
-import execution.instance.property.PropertyInstanceImpl;
 import generated.*;
 import rule.*;
 
 import java.util.*;
+import java.util.concurrent.locks.Condition;
 
 public class PRDtoWorld {
 
@@ -40,7 +38,8 @@ public class PRDtoWorld {
 
         return new Termination(ticks, seconds);
     }
-    private static Action getActionFromPRDAction(EntityDefinition entityDef, PRDAction action){
+    private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
+        EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
         switch(action.getType()){
             case "increase":{
                 return new IncreaseAction(entityDef, action.getProperty(), action.getBy());
@@ -64,12 +63,30 @@ public class PRDtoWorld {
             }
 
             case "condition":{
-                if(action.getPRDCondition().getSingularity().equals("single")){
-                    return new SingleCondition(ActionType.SINGLECONDITION, entityDef);
+                PRDCondition condition = action.getPRDCondition();
+                AbstractConditionAction tempAction;
+                if(condition.getSingularity().equals("single")){
+                    String prop = condition.getProperty();
+                    String oper = condition.getOperator();
+                    String val = condition.getValue();
+                    tempAction = new ConditionAction(ActionType.SINGLECONDITION, entityDef, prop, oper, val);
                 }
                 else {
-                    return new MultipleConditions(ActionType.MULTIPLECONDITION, entityDef);
+                    tempAction = getMultipleConditionAction(entityDef, condition);
                 }
+
+                if(action.getPRDThen() != null){
+                    for(PRDAction thenAction : action.getPRDThen().getPRDAction()){
+                        tempAction.addToListOfThen(getActionFromPRDAction(allEntityDefinitions, thenAction));
+                    }
+                }
+                if(action.getPRDElse() != null){
+                    for(PRDAction elseAction : action.getPRDElse().getPRDAction()){
+                        tempAction.addToListOfElse(getActionFromPRDAction(allEntityDefinitions, elseAction));
+                    }
+                }
+
+                return tempAction;
             }
 
             case "set":{
@@ -82,24 +99,58 @@ public class PRDtoWorld {
         }
         return null;
     }
-    public static List<Action> getAllRuleActions(EntityDefinition entityDef, PRDRule rule){
+
+    private static AbstractConditionAction getMultipleConditionAction(EntityDefinition entityDef, PRDCondition condition){
+        if(condition.getSingularity().equals("single")){
+            return new ConditionAction(ActionType.SINGLECONDITION, entityDef, condition.getProperty(), condition.getOperator(), condition.getValue());
+        }
+        else {
+            List<AbstractConditionAction> innerConditionActions = new ArrayList<>();
+            for(PRDCondition inner : condition.getPRDCondition()){
+                if(inner.getSingularity().equals("single")){
+                    String prop = inner.getProperty();
+                    String oper = inner.getOperator();
+                    String val = inner.getValue();
+                    innerConditionActions.add(new ConditionAction(ActionType.SINGLECONDITION, entityDef, prop, oper, val));
+                }
+                else {
+                    innerConditionActions.add(getMultipleConditionAction(entityDef, inner));
+                }
+            }
+            return new MultipleConditions(ActionType.MULTIPLECONDITION, entityDef, condition.getLogical(), innerConditionActions);
+        }
+    }
+
+    public static List<Action> getAllRuleActions(Map<String, EntityDefinition> allEntityDefinitions, PRDRule rule){
         List<Action> listOfActions = new ArrayList<>();
         for(PRDAction action : rule.getPRDActions().getPRDAction()){
-            Action newAction = getActionFromPRDAction(entityDef, action);
+            Action newAction = getActionFromPRDAction(allEntityDefinitions, action);
             listOfActions.add(newAction);
         }
         return listOfActions;
     }
 
     public static Activation getActivationRule(PRDActivation aRule){
-        return new ActivationImpl(aRule.getTicks());
+        if(aRule == null){
+            return new ActivationImpl();
+        }
+        else{
+            if(aRule.getTicks() == null){
+                return new ActivationImpl(aRule.getProbability());
+            } else if (aRule.getProbability() == null){
+                return new ActivationImpl(aRule.getTicks());
+            }
+            else {
+                return new ActivationImpl(aRule.getTicks(), aRule.getProbability());
+            }
+        }
     }
-    public static Set<Rule> getAllRules(EntityDefinition entityDef, PRDRules schemaRules){
+    public static Set<Rule> getAllRules(Map<String, EntityDefinition> allEntityDefinitions, PRDRules schemaRules){
         Set<Rule> generatedRules = new HashSet<Rule>();
 
         for(PRDRule rule : schemaRules.getPRDRule()){
             String ruleName = rule.getName();
-            List<Action> ruleActions = getAllRuleActions(entityDef, rule);
+            List<Action> ruleActions = getAllRuleActions(allEntityDefinitions, rule);
             Activation activationRule = getActivationRule(rule.getPRDActivation());
 
             RuleImpl newRule = new RuleImpl(ruleName);

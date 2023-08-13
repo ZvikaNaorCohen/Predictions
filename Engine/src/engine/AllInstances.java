@@ -6,12 +6,17 @@ import execution.instance.entity.manager.EntityInstanceManagerImpl;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.environment.impl.ActiveEnvironmentImpl;
 import generated.PRDWorld;
+import rule.Rule;
 import rule.Termination;
+
+import java.util.Set;
 
 public class AllInstances {
     private Termination terminationRules;
     private EntityInstanceManager allEntities;
     private ActiveEnvironment allEnvironmentProps;
+
+    private Set<Rule> allRules;
 
     public AllInstances(){
         terminationRules = new Termination(-1, -1);
@@ -19,10 +24,11 @@ public class AllInstances {
         allEnvironmentProps = new ActiveEnvironmentImpl();
     }
 
-    public AllInstances(Termination t, EntityInstanceManager e, ActiveEnvironment a){
+    public AllInstances(Termination t, EntityInstanceManager e, ActiveEnvironment a, Set<Rule> ar){
         terminationRules = t;
         allEntities = e;
         allEnvironmentProps = a;
+        allRules = ar;
     }
 
     public Termination getEngineTermination(){
@@ -36,4 +42,6 @@ public class AllInstances {
     public ActiveEnvironment getActiveEnvironment(){
         return allEnvironmentProps;
     }
+
+    public Set<Rule> getAllRules(){return allRules;}
 }

@@ -4,11 +4,7 @@ import UI.MenuItem.api.MenuItem;
 import engine.AllData;
 import execution.context.Context;
 import execution.context.ContextImpl;
-import execution.instance.entity.EntityInstance;
-import execution.instance.entity.manager.EntityInstanceManager;
-import execution.instance.environment.api.ActiveEnvironment;
 import generated.PRDWorld;
-import rule.Termination;
 
 import javax.xml.bind.JAXBException;
 

@@ -7,7 +7,7 @@ public abstract class AbstractPropertyDefinition<T> implements PropertyDefinitio
 
     private final String name;
     private final PropertyType propertyType;
-    private final ValueGenerator<T> valueGenerator;
+    protected final ValueGenerator<T> valueGenerator;
 
     public AbstractPropertyDefinition(String name, PropertyType propertyType, ValueGenerator<T> valueGenerator) {
         this.name = name;

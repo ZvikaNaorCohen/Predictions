@@ -28,7 +28,7 @@ public class DivideAction extends AbstractCalculationAction {
                     Integer val2 = (Integer) argument2Value;
                     instance.getPropertyByName(resultProp).updateValue(val1 / val2);
                 }
-                if (context.getPrimaryEntityInstance().getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
+                if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
                     Float val1 = (Float) argument1Value;
                     Float val2 = (Float) argument2Value;
                     instance.getPropertyByName(resultProp).updateValue(val1 / val2);

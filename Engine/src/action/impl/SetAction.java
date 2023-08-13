@@ -3,7 +3,6 @@ package action.impl;
 import action.api.AbstractAction;
 import action.api.ActionType;
 import definition.entity.EntityDefinition;
-import definition.property.api.PropertyType;
 import execution.context.Context;
 import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;

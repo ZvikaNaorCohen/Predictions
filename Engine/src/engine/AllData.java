@@ -29,7 +29,7 @@ public class AllData {
     public AllData(PRDWorld oldWorld){
         terminationRules = getTerminationRules(oldWorld.getPRDTermination());
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
-        // allRules = getAllRules(oldWorld.getPRDRules());
+        allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
         envVariablesManager = getAllEnvProperties(oldWorld.getPRDEvironment());
     }
 
@@ -50,7 +50,7 @@ public class AllData {
         }
 
 
-        return new AllInstances(terminationRules, allEntities, allEnvironmentProps);
+        return new AllInstances(terminationRules, allEntities, allEnvironmentProps, allRules);
     }
 
 }

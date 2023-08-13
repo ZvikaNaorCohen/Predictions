@@ -34,4 +34,13 @@ public class EntityDefinitionImpl implements EntityDefinition {
 
     public void addPropertyDefinition(PropertyDefinition pd){properties.add(pd);}
 
+    public PropertyDefinition getPropDefByName(String name){
+        for(PropertyDefinition p : properties){
+            if(p.getName().equals(name)){
+                return p;
+            }
+        }
+        return null;
+    }
+
 }

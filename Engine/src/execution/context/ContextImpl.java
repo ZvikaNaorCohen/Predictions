@@ -5,13 +5,17 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
+import rule.Rule;
 import rule.Termination;
+
+import java.util.Set;
 
 public class ContextImpl implements Context {
 
     private EntityInstance primaryEntityInstance;
     private EntityInstanceManager entityInstanceManager;
     private ActiveEnvironment activeEnvironment;
+    private Set<Rule> allRules;
 
     private Termination terminationRules;
 
@@ -20,6 +24,7 @@ public class ContextImpl implements Context {
         primaryEntityInstance = definitions.fromAllDataToAllInstances().getAllEntities().getInstances().get(0);
         entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
         activeEnvironment = definitions.fromAllDataToAllInstances().getActiveEnvironment();
+        allRules = definitions.fromAllDataToAllInstances().getAllRules();
     }
 
     @Override
@@ -48,4 +53,6 @@ public class ContextImpl implements Context {
     }
 
     public EntityInstanceManager getEntityInstanceManager(){return entityInstanceManager;}
+
+    public Set<Rule> getALlRules(){return allRules;}
 }

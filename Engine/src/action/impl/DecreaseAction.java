@@ -53,7 +53,8 @@ public class DecreaseAction extends AbstractAction {
     private void updatePropertyInstanceValueByProperty(Context context, PropertyInstance propertyInstance) {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getName().equals("Integer")){
-            propertyInstance.updateValue((Integer) oldValue - (Integer)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue());
+            Integer newValue = (Integer) oldValue - (Integer)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
+            propertyInstance.updateValue(newValue);
         }
         else{
             propertyInstance.updateValue((Float) oldValue - (Float)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue());

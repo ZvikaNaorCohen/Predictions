@@ -21,12 +21,12 @@ public class MultiplyAction extends AbstractCalculationAction {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
                 Object argument1Value = getArgumentValue(context, argument1);
                 Object argument2Value = getArgumentValue(context, argument2);
-                if (context.getPrimaryEntityInstance().getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.DECIMAL) {
+                if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.DECIMAL) {
                     Integer val1 = (Integer) argument1Value;
                     Integer val2 = (Integer) argument2Value;
                     instance.getPropertyByName(resultProp).updateValue(val1 * val2);
                 }
-                if (context.getPrimaryEntityInstance().getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
+                if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
                     Float val1 = (Float) argument1Value;
                     Float val2 = (Float) argument2Value;
                     instance.getPropertyByName(resultProp).updateValue(val1 * val2);
