@@ -10,4 +10,14 @@ public class StringPropertyDefinition extends AbstractPropertyDefinition<String>
         super(name, PropertyType.STRING, valueGenerator);
     }
 
+
+    @Override
+    public boolean newValueInCorrectBounds(Integer value) {
+        return true;
+    }
+
+    @Override
+    public boolean newValueInCorrectBounds(Float value) {
+        return true;
+    }
 }

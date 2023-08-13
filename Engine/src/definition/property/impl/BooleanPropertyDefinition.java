@@ -8,4 +8,15 @@ public class BooleanPropertyDefinition extends AbstractPropertyDefinition<Boolea
     public BooleanPropertyDefinition(String name, ValueGenerator<Boolean> valueGenerator) {
         super(name, PropertyType.BOOLEAN, valueGenerator);
     }
+
+
+    @Override
+    public boolean newValueInCorrectBounds(Integer value) {
+        return true;
+    }
+
+    @Override
+    public boolean newValueInCorrectBounds(Float value) {
+        return true;
+    }
 }

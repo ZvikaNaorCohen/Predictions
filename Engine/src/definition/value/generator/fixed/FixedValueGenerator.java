@@ -14,4 +14,5 @@ public class FixedValueGenerator<T> implements ValueGenerator<T> { // Give this 
     public T generateValue() {
         return fixedValue;
     }
+
 }

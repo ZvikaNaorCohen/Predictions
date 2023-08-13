@@ -24,12 +24,17 @@ public class MultiplyAction extends AbstractCalculationAction {
                 if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.DECIMAL) {
                     Integer val1 = (Integer) argument1Value;
                     Integer val2 = (Integer) argument2Value;
-                    instance.getPropertyByName(resultProp).updateValue(val1 * val2);
+                    if(instance.getPropertyByName(resultProp).getPropertyDefinition().newValueInCorrectBounds(val1*val2)){
+                        instance.getPropertyByName(resultProp).updateValue(val1 * val2);
+                    }
                 }
                 if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
                     Float val1 = (Float) argument1Value;
                     Float val2 = (Float) argument2Value;
-                    instance.getPropertyByName(resultProp).updateValue(val1 * val2);
+                    if(instance.getPropertyByName(resultProp).getPropertyDefinition().newValueInCorrectBounds(val1*val2))
+                    {
+                        instance.getPropertyByName(resultProp).updateValue(val1 * val2);
+                    }
                 }
             }
         }

@@ -31,11 +31,23 @@ public class SetAction extends AbstractAction {
                 if(newPropertyValue.startsWith("environment"))
                 {
                     Function envFunction = new EnvironmentFunction(newPropertyValue);
-                    instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
+                    String className = envFunction.getPropertyInstanceValueFromEnvironment(context).getClass().getName();
+                    if(className.equals("Integer") &&
+                            propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer)envFunction.getPropertyInstanceValueFromEnvironment(context))){
+                        instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
+                    }
+                    if(className.equals("Float") &&
+                            propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Float)envFunction.getPropertyInstanceValueFromEnvironment(context))){
+                        instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
+                    }
+
                 }
                 else if(newPropertyValue.startsWith("random")){
                     Function randomFunction = new RandomFunction(newPropertyValue);
-                    instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
+                    String className = randomFunction.getPropertyInstanceValueFromEnvironment(context).getClass().getName();
+                    if(className.equals("Integer") && propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer)randomFunction.getRandomValue())){
+                        instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
+                    }
                 }
                 else if(instance.hasPropertyByName(newPropertyValue)){
                     propertyInstance.updateValue(instance.getPropertyByName(newPropertyValue));
@@ -50,11 +62,16 @@ public class SetAction extends AbstractAction {
     private void updatePropertyInstanceValueByFreeValue(PropertyInstance propertyInstance) {
         if(propertyInstance.getValue().getClass().getName().equals("Integer")){
             Integer newValue = StringToInteger(newPropertyValue);
-            propertyInstance.updateValue(newValue);
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+                propertyInstance.updateValue(newValue);
+            }
         }
         else if(propertyInstance.getValue().getClass().getName().equals("Float")) {
             Float newValue = StringToFloat(newPropertyValue);
-            propertyInstance.updateValue(newValue);
+            if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue))
+            {
+                propertyInstance.updateValue(newValue);
+            }
         } else if(propertyInstance.getValue().getClass().getName().equals("Boolean")) {
             Boolean newValue = newPropertyValue.equals("true");
             propertyInstance.updateValue(newValue);

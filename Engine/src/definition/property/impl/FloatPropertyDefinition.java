@@ -9,5 +9,13 @@ public class FloatPropertyDefinition extends AbstractPropertyDefinition<Float> {
         super(name, PropertyType.FLOAT, valueGenerator);
     }
 
+    @Override
+    public boolean newValueInCorrectBounds(Integer value) {
+        return value <= to && value >= from;
+    }
 
+    @Override
+    public boolean newValueInCorrectBounds(Float value) {
+        return value <= to && value >= from;
+    }
 }

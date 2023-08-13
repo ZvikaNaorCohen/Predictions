@@ -52,12 +52,18 @@ public class DecreaseAction extends AbstractAction {
 
     private void updatePropertyInstanceValueByProperty(Context context, PropertyInstance propertyInstance) {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
-            Integer newValue = (Integer) oldValue - (Integer)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
-            propertyInstance.updateValue(newValue);
+        if(propertyInstance.getValue().getClass().getName().equals("Integer")) {
+            Integer newValue = (Integer) oldValue - (Integer) context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
+            if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
+                propertyInstance.updateValue(newValue);
+            }
         }
+
         else{
-            propertyInstance.updateValue((Float) oldValue - (Float)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue());
+            Float newValue = (Float) oldValue - (Float)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
+                propertyInstance.updateValue(newValue);
+            }
         }
 
     }
@@ -65,21 +71,34 @@ public class DecreaseAction extends AbstractAction {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getName().equals("Integer")){
             Integer newValue = StringToInteger(byExpression);
-            propertyInstance.updateValue(newValue - (Integer)oldValue);
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue - (Integer)oldValue)) {
+                propertyInstance.updateValue(newValue - (Integer) oldValue);
+            }
         }
         else {
             Float newValue = StringToFloat(byExpression);
-            propertyInstance.updateValue(newValue - (Float)oldValue);
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue - (Float)oldValue)){
+                propertyInstance.updateValue(newValue - (Float)oldValue);
+            }
         }
     }
     private void updatePropertyInstanceValueByRandom(PropertyInstance propertyInstance) {
         Function envFunction = new RandomFunction(byExpression);
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getName().equals("Integer")){
-            propertyInstance.updateValue(envFunction.getRandomValue() - (Integer)oldValue);
+            {
+                if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(envFunction.getRandomValue() - (Integer) oldValue))
+                {
+                    propertyInstance.updateValue(envFunction.getRandomValue() - (Integer) oldValue);
+                }
+            }
+
         }
         else {
-            propertyInstance.updateValue(envFunction.getRandomValue() - (Float)oldValue);
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(envFunction.getRandomValue() - (Float) oldValue))
+            {
+                propertyInstance.updateValue(envFunction.getRandomValue() - (Float) oldValue);
+            }
         }
 
     }
@@ -89,11 +108,17 @@ public class DecreaseAction extends AbstractAction {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getName().equals("Integer")){
             Integer newValue = (Integer) oldValue - (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
-            propertyInstance.updateValue(newValue);
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+                propertyInstance.updateValue(newValue);
+            }
         }
         else {
             Float newValue = (Float)oldValue - (Float)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
-            propertyInstance.updateValue(newValue);
+            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue))
+            {
+                propertyInstance.updateValue(newValue);
+            }
+
         }
     }
 }
