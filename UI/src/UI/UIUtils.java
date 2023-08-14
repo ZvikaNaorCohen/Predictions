@@ -35,7 +35,7 @@ public class UIUtils {
         System.out.println("Your input was incorrect. Reason: " + reason);
     }
 
-    public static MenuItem getInputFromUser() {
+    public static String getInputFromUser() {
         Scanner scanner = new Scanner(in);
         do {
             PrintMenu();
@@ -44,23 +44,7 @@ public class UIUtils {
                 UIUtils.printBadInput("Invalid option received. Please enter a digit from 1 to 5.");
             } else {
                 System.out.println("Running option: " + choice);
-                switch (choice) {
-                    case "1": {
-                        return new ReadFile();
-                    }
-                    case "2": {
-                        return new SimulationDetail();
-                    }
-                    case "3": {
-                        return new RunSimulation();
-                    }
-                    case "4": {
-                        return new PastDetail();
-                    }
-                    case "5": {
-                        return new ExitProgram();
-                    }
-                }
+                return choice;
             }
         } while (true);
     }

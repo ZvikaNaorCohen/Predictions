@@ -1,21 +1,19 @@
 package UI.MenuItem.impl;
 
-import UI.MenuItem.api.MenuItem;
+import UI.MenuItem.api.ReadFile;
 import UI.UIUtils;
 import engine.AllData;
-import engine.AllInstances;
-import file.generator.PRDtoWorld;
+import execution.context.Context;
+import execution.context.ContextImpl;
 import generated.PRDWorld;
-import rule.Termination;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.Scanner;
 
-import static file.generator.PRDtoWorld.*;
 import static file.read.XMLRead.getWorldFromScheme;
 
-public class ReadFile implements MenuItem {
+public class ReadFileConsole implements ReadFile {
     public String getPathFromUser(){
         Scanner scanner = new Scanner(System.in);
         String path = "";
@@ -32,15 +30,15 @@ public class ReadFile implements MenuItem {
             }
         }
     }
-    public void invoke() throws JAXBException {
+    @Override
+    public Context invoke() throws JAXBException {
         String path = getPathFromUser();
         // For testing:
-        path = "Engine/src/Resources/world.xml";
+        // path = "Engine/src/Resources/world.xml";
         // File file = new File(path);
-        PRDWorld inputWorld = getWorldFromScheme(path);
-        AllData myDefinitions = new AllData(inputWorld);
-        AllInstances myInstances = myDefinitions.fromAllDataToAllInstances();
 
+        PRDWorld inputWorld = getWorldFromScheme(path);
+        return new ContextImpl(new AllData(inputWorld));
     }
 
     public void printInvalidChoice(String reason){

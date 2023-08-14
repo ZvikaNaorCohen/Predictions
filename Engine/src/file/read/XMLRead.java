@@ -14,7 +14,7 @@ public class XMLRead {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "generated";
     public static PRDWorld getWorldFromScheme(String path) throws JAXBException {
         try {
-            path = "Engine/src/Resources/world.xml"; // Just for debug
+            // path = "Engine/src/Resources/world.xml"; // Just for debug
             InputStream inputStream = new FileInputStream(new File(path));
             PRDWorld world = deserializeFrom(inputStream);
             return world;
