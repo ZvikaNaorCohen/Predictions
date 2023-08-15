@@ -5,6 +5,7 @@ import UI.UIUtils;
 import engine.AllData;
 import execution.context.Context;
 import execution.context.ContextImpl;
+import file.validate.impl.PRDWorldValid;
 import generated.PRDWorld;
 
 import javax.xml.bind.JAXBException;
@@ -38,10 +39,12 @@ public class ReadFileConsole implements ReadFile {
         // File file = new File(path);
 
         PRDWorld inputWorld = getWorldFromScheme(path);
-        return new ContextImpl(new AllData(inputWorld));
-    }
+        PRDWorldValid worldValidator = new PRDWorldValid();
+        if(!worldValidator.isWorldValid(inputWorld)){
+            UIUtils.printBadInput(worldValidator.getErrorMessage());
+            return null;
+        }
 
-    public void printInvalidChoice(String reason){
-        System.out.println(reason);
+        return new ContextImpl(new AllData(inputWorld));
     }
 }

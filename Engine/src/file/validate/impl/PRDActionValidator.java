@@ -14,7 +14,7 @@ public class PRDActionValidator {
 
     public String getErrorMessage(){return errorMessage;}
 
-    private boolean allActionsAreValid(PRDActions actions, PRDWorld oldWorld){
+    public boolean allActionsAreValid(PRDActions actions, PRDWorld oldWorld){
         errorMessage = "";
         for (PRDAction action : actions.getPRDAction()) {
             if(action.getType() != null){
@@ -235,12 +235,12 @@ public class PRDActionValidator {
             errorMessage = "Entity " + action.getEntity() + "doesnt exist. Action was: " + action.getType() + "\n";
             return false;
         }
-        else if(doesPropertyExistInEntity(myEntity, action.getProperty())){
-            errorMessage = "Property " + action.getEntity() + "doesnt exist in entity " + myEntity.getName() +
+        else if(!doesPropertyExistInEntity(myEntity, action.getProperty())){
+            errorMessage = "Property " + action.getProperty() + "doesnt exist in entity " + myEntity.getName() +
                     ". Action was: " + action.getType() + "\n";
             return false;
         }
-        else if (validValueInSetAction(myWorld, action)){
+        else if (!validValueInSetAction(myWorld, action)){
             errorMessage = "Value: " + action.getValue() + "is not valid in entity:  " + myEntity.getName() +
                     ". Action was: " + action.getType() + "\n";
             return false;
@@ -255,8 +255,8 @@ public class PRDActionValidator {
             errorMessage = "Entity " + action.getEntity() + "doesnt exist. Action was: " + action.getType() + "\n";
             return false;
         }
-        else if(doesPropertyExistInEntity(myEntity, action.getResultProp())){
-            errorMessage = "Property " + action.getEntity() + "doesnt exist in entity " + myEntity.getName() +
+        else if(!doesPropertyExistInEntity(myEntity, action.getResultProp())){
+            errorMessage = "Property " + action.getProperty() + "doesnt exist in entity " + myEntity.getName() +
                     ". Action was: " + action.getType() + "\n";
             return false;
         }
@@ -268,8 +268,8 @@ public class PRDActionValidator {
             errorMessage = "Entity " + action.getEntity() + "doesnt exist. Action was: " + action.getType() + "\n";
             return false;
         }
-        else if(doesPropertyExistInEntity(myEntity, action.getProperty())){
-            errorMessage = "Property " + action.getEntity() + "doesnt exist in entity " + myEntity.getName() +
+        else if(!doesPropertyExistInEntity(myEntity, action.getProperty())){
+            errorMessage = "Property " + action.getProperty() + "doesnt exist in entity " + myEntity.getName() +
                     ". Action was: " + action.getType() + "\n";
             return false;
         }

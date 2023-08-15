@@ -3,13 +3,20 @@ package file.validate.impl;
 import generated.PRDEntities;
 import generated.PRDEntity;
 import generated.PRDProperty;
+import generated.PRDWorld;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class PRDEntitiesValidator {
-    boolean entityWithUniquePropNames = true;
-    boolean entitiesWithUniqueNames = true;
+    private boolean entityWithUniquePropNames = true;
+    private boolean entitiesWithUniqueNames = true;
+
+    public boolean isEntityValidatorValid(PRDWorld world){
+        areEntitiesValid(world.getPRDEntities());
+        return entitiesWithUniqueNames && entityWithUniquePropNames;
+    }
+
     public void areEntitiesValid(PRDEntities entities){
         entitiesWithUniqueNames = true;
         entityWithUniquePropNames = true;
