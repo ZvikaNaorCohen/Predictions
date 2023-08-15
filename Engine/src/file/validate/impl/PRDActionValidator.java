@@ -10,7 +10,9 @@ import java.util.Set;
 import static java.lang.Character.isDigit;
 
 public class PRDActionValidator {
-    String errorMessage = "";
+    protected String errorMessage = "";
+
+    public String getErrorMessage(){return errorMessage;}
 
     private boolean allActionsAreValid(PRDActions actions, PRDWorld oldWorld){
         errorMessage = "";
@@ -22,13 +24,13 @@ public class PRDActionValidator {
                         // check entity exists
                         // check property exists
                         // check "by" is correct
-                        if(!checkIncreaseDecreaseActions(myEntity, action, oldWorld)){
+                        if(!checkIncreaseDecreaseActions(action.getBy(), myEntity, action, oldWorld)){
                             return false;
                         }
                         break;
                     }
                     case "decrease":{ // Same as increase
-                        if(!checkIncreaseDecreaseActions(myEntity, action, oldWorld)){
+                        if(!checkIncreaseDecreaseActions(action.getBy(), myEntity, action, oldWorld)){
                             return false;
                         }
                         break;
@@ -91,12 +93,12 @@ public class PRDActionValidator {
                     }
                 }
                 else if (action.getPRDMultiply() != null){
-                    if(!checkValidPRDMultiplyDivide(action.getPRDMultiply().getArg1(), action.getPRDMultiply().getArg2(), "multiply")){
+                    if(!checkValidPRDMultiplyDivide(oldWorld, action.getPRDMultiply().getArg1(), action.getPRDMultiply().getArg2(), "multiply")){
                         return false;
                     }
                 }
                 else if (action.getPRDDivide() != null) {
-                    if(!checkValidPRDMultiplyDivide(action.getPRDDivide().getArg1(), action.getPRDMultiply().getArg2(), "divide")){
+                    if(!checkValidPRDMultiplyDivide(oldWorld, action.getPRDDivide().getArg1(), action.getPRDMultiply().getArg2(), "divide")){
                         return false;
                     }
                 }
@@ -108,18 +110,53 @@ public class PRDActionValidator {
 
         return true;
     }
+    private boolean validExpressionForMultiplyOrDivide(PRDWorld oldWorld, String arg){
+        if(arg.startsWith("environment")){
+            String valueInsideEnvironment = extractValueFromExpression(arg);
+            PRDEnvProperty prop = getEnvPropFromWorldByName(valueInsideEnvironment, oldWorld);
+            if(prop == null){
+                errorMessage = "Couldn't find property: " + valueInsideEnvironment + " as environment property. \n";
+                return false;
+            }
+            if(!prop.getType().equals("decimal") && !prop.getType().equals("float")){
+                errorMessage = "In increase/decrease/multiply/divide function, environment property " + valueInsideEnvironment + " is not numeric. \n";
+                return false;
+            }
+        }
+        else if(arg.startsWith("random")){
+            String valueInsideRandom = extractValueFromExpression(arg);
+            if(!stringPotentiallyFloat(valueInsideRandom)){
+                errorMessage = "Value inside random in increase/decrease/multiply/divide function is not a number. \n";
+                return false;
+            }
+        }
+        else if(allCharactersAreDigits(arg)){
+            return true;
+        }
+        else if(stringPotentiallyFloat(arg)){
+            return true;
+        }
+        else {
+            errorMessage = "In multiply/divide function there is an unknown argument: " + arg + ". \n";
+            return false;
+        }
 
-    private boolean checkValidPRDMultiplyDivide(String arg1, String arg2, String multiOrDivide){
-        if(!validExpression(arg1)){
+        return true;
+    }
+
+    private boolean checkValidPRDMultiplyDivide(PRDWorld oldWorld, String arg1, String arg2, String multiOrDivide){
+        if(!validExpressionForMultiplyOrDivide(oldWorld, arg1)){
             errorMessage = "Expression arg1 in " + multiOrDivide + " is invalid. Received: " + arg1 + "\n";
             return false;
         }
-        else if(!validExpression(arg2)){
+        else if(!validExpressionForMultiplyOrDivide(oldWorld, arg2)){
             errorMessage = "Expression arg2 in " + multiOrDivide + " is invalid. Received: " + arg2 + "\n";
             return false;
         }
         return true;
     }
+
+
 
     private boolean checkSingleConditionAction(PRDWorld oldWorld, PRDCondition condition){
         String entityName = condition.getEntity();
@@ -139,10 +176,34 @@ public class PRDActionValidator {
             errorMessage = "Unknown operator in single condition. Received operator: " + condition.getOperator() + "\n";
             return false;
         }
-        else if(!validExpression(condition.getValue())){
+        else if(!singleConditionValidExpression(oldWorld, condition.getValue())){
             errorMessage = "Invalid expression in single condition. Received: " + condition.getValue() + "\n";
             return false;
         }
+        return true;
+    }
+
+    private boolean singleConditionValidExpression(PRDWorld oldWorld, String arg){
+        if(arg.startsWith("environment")){
+            String valueInsideEnvironment = extractValueFromExpression(arg);
+            PRDEnvProperty prop = getEnvPropFromWorldByName(valueInsideEnvironment, oldWorld);
+            if(prop == null){
+                errorMessage = "Couldn't find property: " + valueInsideEnvironment + " as environment property. \n";
+                return false;
+            }
+        }
+        else if(arg.startsWith("random")){
+            String valueInsideRandom = extractValueFromExpression(arg);
+            if(!stringPotentiallyFloat(valueInsideRandom)){
+                errorMessage = "Value inside random in single condition function is not a number. \n";
+                return false;
+            }
+        }
+        else {
+            errorMessage = "In single condition function there is an unknown argument: " + arg + ". \n";
+            return false;
+        }
+
         return true;
     }
 
@@ -202,7 +263,7 @@ public class PRDActionValidator {
         return true;
     }
 
-    private boolean checkIncreaseDecreaseActions(PRDEntity myEntity, PRDAction action, PRDWorld oldWorld){
+    private boolean checkIncreaseDecreaseActions(String expression, PRDEntity myEntity, PRDAction action, PRDWorld oldWorld){
         if(myEntity == null){
             errorMessage = "Entity " + action.getEntity() + "doesnt exist. Action was: " + action.getType() + "\n";
             return false;
@@ -212,7 +273,7 @@ public class PRDActionValidator {
                     ". Action was: " + action.getType() + "\n";
             return false;
         }
-        else if (!validExpressionForMathFunctions(by)){
+        else if (!validExpressionForMultiplyOrDivide(oldWorld, expression)){
             errorMessage = "The BY Expression in action " + action.getType() + "for entity " + myEntity.getName() + "is not valid" + "\n";
             return false;
         }
@@ -291,8 +352,17 @@ public class PRDActionValidator {
             String actionPropertyName = action.getProperty();
             String actionEntityName = action.getEntity();
             PRDProperty propFromAction = getPropertyByEntityNameAndPropName(actionPropertyName, actionEntityName, oldWorld);
-            if(!propFromAction.getType().equals("string") && !allCharactersAreDigits(propFromAction.getType())){
-                errorMessage = "Trying to put string to a numeric property. Entity: " + actionEntityName + ". Property: " + actionPropertyName  +
+            if(propFromAction.getType().equals("string")) {
+                return true;
+            }
+            if(propFromAction.getType().equals("decimal")  && !allCharactersAreDigits(action.getValue())){
+                errorMessage = "Trying to put string to an integer property. Entity: " + actionEntityName + ". Property: " + actionPropertyName +
+                            ". Type: " + propFromAction.getType() + ". \n";
+                return false;
+            }
+            if(propFromAction.getType().equals("float") && !stringPotentiallyFloat(action.getValue()))
+            {
+                errorMessage = "Trying to put string to a float property. Entity: " + actionEntityName + ". Property: " + actionPropertyName +
                         ". Type: " + propFromAction.getType() + ". \n";
                 return false;
             }
@@ -300,17 +370,26 @@ public class PRDActionValidator {
         return true;
     }
 
+    private boolean stringPotentiallyFloat(String input){
+        try {
+            float floatValue = Float.parseFloat(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     private boolean validValueInSetAction(PRDWorld myWorld, PRDAction action){
         if(action.getValue().startsWith("environment")){
-            return handleEnvironmentExpressionValue(myWorld, action) && setPropertyValidValue(action);
+            return handleEnvironmentExpressionValue(myWorld, action) && setPropertyValidValue(myWorld, action);
         } else if (action.getValue().startsWith("random")) {
-            return handleRandomExpressionValue(action) && setPropertyValidValue(action);
+            return handleRandomExpressionValue(action) && setPropertyValidValue(myWorld, action);
         }
-        else if((action.getValue().equals("true") || action.getValue().equals("false")) && setPropertyValidValue(action)){
+        else if((action.getValue().equals("true") || action.getValue().equals("false")) && setPropertyValidValue(myWorld, action)){
             return true;
         }
         else {
-            return handleFreeValueExpression(myWorld, action);
+            return setPropertyValidValue(myWorld, action);
         }
 
             // if yes:
@@ -344,17 +423,12 @@ public class PRDActionValidator {
     }
 
     private boolean handleRandomExpressionValue(PRDAction action){
-        boolean valid = true;
         String extractedValue = extractValueFromExpression(action.getValue());
-        for(int i=0; i<extractedValue.length(); i++) {
-            if(!isDigit(extractedValue.charAt(i))){
+        if(!allCharactersAreDigits(extractedValue)){
                 errorMessage = "Received expression: " + action.getValue() + ". Value inside random has to be only digits. \n";
-                valid = false;
-                break;
+                return false;
             }
-        }
-
-        return valid;
+        return true;
     }
 
     private boolean allCharactersAreDigits(String input){
@@ -363,10 +437,6 @@ public class PRDActionValidator {
                 return false;
             }
         }
-        return true;
-    }
-
-    private boolean handleBooleanExpressionValue(PRDWorld myWorld, PRDAction action){
         return true;
     }
 }
