@@ -23,7 +23,6 @@ public class ContextImpl implements Context {
         terminationRules = definitions.fromAllDataToAllInstances().getEngineTermination();
         primaryEntityInstance = definitions.fromAllDataToAllInstances().getAllEntities().getInstances().get(0);
         entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
-        activeEnvironment = definitions.fromAllDataToAllInstances().getActiveEnvironment();
         allRules = definitions.fromAllDataToAllInstances().getAllRules();
     }
 
@@ -45,6 +44,11 @@ public class ContextImpl implements Context {
     @Override
     public PropertyInstance getEnvironmentVariable(String name) {
         return activeEnvironment.getProperty(name);
+    }
+
+    @Override
+    public void setActiveEnvironment(ActiveEnvironment e){
+        activeEnvironment = e;
     }
 
     @Override

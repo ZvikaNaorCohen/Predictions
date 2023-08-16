@@ -2,6 +2,7 @@ package execution.context;
 
 import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
+import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
 import rule.Termination;
 
@@ -15,5 +16,7 @@ public interface Context {
     PropertyInstance getEnvironmentVariable(String name);
 
     void SetPrimaryEntityInstance(EntityInstance instance);
-    public EntityInstanceManager getEntityInstanceManager();
+    EntityInstanceManager getEntityInstanceManager();
+
+    void setActiveEnvironment(ActiveEnvironment e);
 }

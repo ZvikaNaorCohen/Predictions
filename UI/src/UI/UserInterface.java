@@ -18,6 +18,7 @@ import static UI.UIUtils.*;
 public class UserInterface {
     private Context myRunningWorld;
     private ContextDTO runningWorldDTO;
+    private PRDWorld oldWorld;
 
     private AllData allData;
     // Path to valid file: Engine/src/Resources/world.xml
@@ -32,6 +33,7 @@ public class UserInterface {
                     ReadFile readFile = new ReadFileConsole();
                     PRDWorld validWorld = readFile.invoke();
                     if(validWorld != null){
+                        oldWorld = validWorld;
                         allData = new AllData(validWorld);
                         runningWorldDTO = new ContextDTO(allData);
                         myRunningWorld = new ContextImpl(allData);
@@ -45,7 +47,7 @@ public class UserInterface {
                 }
                 case "3": {
                     RunSimulation runSimulation = new RunSimulationConsole();
-                    // runSimulation.invoke();
+                    runSimulation.invoke(allData, myRunningWorld, oldWorld.getPRDEvironment());
                     break;
                 }
                 case "4": {

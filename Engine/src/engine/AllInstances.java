@@ -14,20 +14,20 @@ import java.util.Set;
 public class AllInstances {
     private Termination terminationRules;
     private EntityInstanceManager allEntities;
-    private ActiveEnvironment allEnvironmentProps;
+//    private ActiveEnvironment allEnvironmentProps;
 
     private Set<Rule> allRules;
 
     public AllInstances(){
         terminationRules = new Termination(-1, -1);
         allEntities = new EntityInstanceManagerImpl();
-        allEnvironmentProps = new ActiveEnvironmentImpl();
+        // allEnvironmentProps = new ActiveEnvironmentImpl();
     }
 
-    public AllInstances(Termination t, EntityInstanceManager e, ActiveEnvironment a, Set<Rule> ar){
+    public AllInstances(Termination t, EntityInstanceManager e, Set<Rule> ar){
         terminationRules = t;
         allEntities = e;
-        allEnvironmentProps = a;
+        // allEnvironmentProps = a;
         allRules = ar;
     }
 
@@ -39,9 +39,9 @@ public class AllInstances {
         return allEntities;
     }
 
-    public ActiveEnvironment getActiveEnvironment(){
-        return allEnvironmentProps;
-    }
+//    public ActiveEnvironment getActiveEnvironment(){
+//        return allEnvironmentProps;
+//    }
 
     public Set<Rule> getAllRules(){return allRules;}
 }

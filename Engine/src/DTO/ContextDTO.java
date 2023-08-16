@@ -7,10 +7,7 @@ import DTO.rule.TerminationDTO;
 import action.api.Action;
 import definition.entity.EntityDefinition;
 import engine.AllData;
-import execution.context.Context;
-import file.generator.PRDtoWorld;
 import rule.Rule;
-import rule.Termination;
 
 import java.util.*;
 
