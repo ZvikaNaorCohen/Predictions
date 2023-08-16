@@ -32,10 +32,10 @@ public class ReadFileConsole implements ReadFile {
         }
     }
     @Override
-    public Context invoke() throws JAXBException {
-        String path = getPathFromUser();
+    public PRDWorld invoke() throws JAXBException {
+        // String path = getPathFromUser();
         // For testing:
-        // path = "Engine/src/Resources/world.xml";
+        String path = "Engine/src/resources/world.xml";
         // File file = new File(path);
 
         PRDWorld inputWorld = getWorldFromScheme(path);
@@ -45,6 +45,7 @@ public class ReadFileConsole implements ReadFile {
             return null;
         }
 
-        return new ContextImpl(new AllData(inputWorld));
+        // return new ContextImpl(new AllData(inputWorld));
+        return inputWorld;
     }
 }

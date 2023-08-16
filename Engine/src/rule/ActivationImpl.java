@@ -24,4 +24,14 @@ public class ActivationImpl implements Activation{
     public boolean isActive(int tickNumber) {
         return tickNumber % ticks == 0;
     }
+
+    @Override
+    public int getTicks() {
+        return ticks;
+    }
+
+    @Override
+    public double getProb() {
+        return probability;
+    }
 }

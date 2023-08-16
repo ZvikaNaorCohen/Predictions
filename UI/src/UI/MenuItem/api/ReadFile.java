@@ -1,10 +1,11 @@
 package UI.MenuItem.api;
 
 import execution.context.Context;
+import generated.PRDWorld;
 
 import javax.xml.bind.JAXBException;
 
 public interface ReadFile {
 
-    Context invoke() throws JAXBException;
+    PRDWorld invoke() throws JAXBException;
 }

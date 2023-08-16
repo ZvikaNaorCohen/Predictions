@@ -1,16 +1,5 @@
 package UI;
 
-import UI.MenuItem.api.MenuItem;
-import UI.MenuItem.impl.*;
-import generated.*;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.Scanner;
 
 import static java.lang.System.in;

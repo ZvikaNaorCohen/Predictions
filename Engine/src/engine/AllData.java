@@ -33,6 +33,10 @@ public class AllData {
         envVariablesManager = getAllEnvProperties(oldWorld.getPRDEvironment());
     }
 
+    public Map<String, EntityDefinition> getMapAllEntities(){return allEntityDefinitions;}
+    public Set<Rule> getAllRulesFromAllData(){return allRules;}
+    public Termination getTerminationFromAllData(){return  terminationRules;}
+
     public AllInstances fromAllDataToAllInstances(){
         EntityInstanceManager allEntities = new EntityInstanceManagerImpl();
         ActiveEnvironment allEnvironmentProps = new ActiveEnvironmentImpl();
