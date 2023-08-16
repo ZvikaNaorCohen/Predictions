@@ -1,12 +1,6 @@
 package file.validate.impl;
 
-import action.api.Action;
-import engine.AllData;
 import generated.*;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import static java.lang.Character.isDigit;
 
 public class PRDActionValidator {
@@ -19,6 +13,10 @@ public class PRDActionValidator {
         for (PRDAction action : actions.getPRDAction()) {
             if(action.getType() != null){
                 PRDEntity myEntity = findEntityInWorldByName(action.getEntity(), oldWorld);
+                if(myEntity == null){
+                    errorMessage = "Action: " + action.getType() + "has entity that is not found. Entity tried: " + action.getEntity() + ". \n";
+                    return false;
+                }
                 switch(action.getType()){
                     case "increase":{
                         // check entity exists
@@ -44,10 +42,7 @@ public class PRDActionValidator {
                         break;
                     }
                     case "condition":{
-                        // check entity exists
-                        if(!checkConditionAction(myEntity)){
-                            return false;
-                        }
+                        // check entity exists. Checked already before loop.
                         break;
                     }
                     case "set":{
@@ -176,14 +171,14 @@ public class PRDActionValidator {
             errorMessage = "Unknown operator in single condition. Received operator: " + condition.getOperator() + "\n";
             return false;
         }
-        else if(!singleConditionValidExpression(oldWorld, condition.getValue())){
+        else if(!singleConditionValidExpression(oldWorld, condition.getValue(), entityName, condition.getProperty())){
             errorMessage = "Invalid expression in single condition. Received: " + condition.getValue() + "\n";
             return false;
         }
         return true;
     }
 
-    private boolean singleConditionValidExpression(PRDWorld oldWorld, String arg){
+    private boolean singleConditionValidExpression(PRDWorld oldWorld, String arg, String entity, String property){
         if(arg.startsWith("environment")){
             String valueInsideEnvironment = extractValueFromExpression(arg);
             PRDEnvProperty prop = getEnvPropFromWorldByName(valueInsideEnvironment, oldWorld);
@@ -199,10 +194,23 @@ public class PRDActionValidator {
                 return false;
             }
         }
-        else {
-            errorMessage = "In single condition function there is an unknown argument: " + arg + ". \n";
-            return false;
-        }
+        else if(stringPotentiallyFloat(arg))
+            {
+                PRDProperty propForCondition = getPropertyByEntityNameAndPropName(property, entity, oldWorld);
+                if(propForCondition == null){
+                    errorMessage = "In single condition, entity: " + entity + "has no property: " + property + ". \n";
+                    return false;
+                }
+                if(!allCharactersAreDigits(arg) && propForCondition.getType() != null && propForCondition.getType().equals("decimal")){
+                    errorMessage = "Trying to cast float value to decimal property. In single condition, entity: " + entity + ". \n";
+                    return false;
+                }
+
+            }else
+            {
+                errorMessage = "In single condition function there is an unknown argument: " + arg + ". \n";
+                return false;
+            }
 
         return true;
     }
@@ -247,9 +255,7 @@ public class PRDActionValidator {
         }
         return true;
     }
-    private boolean checkConditionAction(PRDEntity entity){
-        return entity != null;
-    }
+
     private boolean checkCalculationAction(PRDEntity myEntity, PRDAction action){
         if(myEntity == null){
             errorMessage = "Entity " + action.getEntity() + "doesnt exist. Action was: " + action.getType() + "\n";
