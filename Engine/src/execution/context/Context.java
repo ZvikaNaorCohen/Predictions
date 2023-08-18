@@ -11,11 +11,18 @@ public interface Context {
 
     EntityInstance getPrimaryEntityInstance();
 
+    ActiveEnvironment getActiveEnvironment();
+    boolean shouldSimulationTerminate(int ticks, int seconds);
+
+    void singleSimulationRun(int ticks);
+
+    void runSimulation();
+
     void removeEntity(EntityInstance entityInstance);
 
     PropertyInstance getEnvironmentVariable(String name);
 
-    void SetPrimaryEntityInstance(EntityInstance instance);
+    void setPrimaryEntityInstance(EntityInstance instance);
     EntityInstanceManager getEntityInstanceManager();
 
     void setActiveEnvironment(ActiveEnvironment e);

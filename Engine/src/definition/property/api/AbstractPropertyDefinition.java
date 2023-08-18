@@ -12,10 +12,12 @@ public abstract class AbstractPropertyDefinition<T> implements PropertyDefinitio
     protected double from;
     protected double to;
 
-    public AbstractPropertyDefinition(String name, PropertyType propertyType, ValueGenerator<T> valueGenerator) {
+    public AbstractPropertyDefinition(String name, PropertyType propertyType, ValueGenerator<T> valueGenerator, double f, double t) {
         this.name = name;
         this.propertyType = propertyType;
         this.valueGenerator = valueGenerator;
+        this.from = f;
+        this.to = t;
     }
 
     @Override

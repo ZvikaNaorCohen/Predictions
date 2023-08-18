@@ -8,6 +8,7 @@ import execution.instance.property.PropertyInstance;
 import rule.Rule;
 import rule.Termination;
 
+import java.util.Random;
 import java.util.Set;
 
 public class ContextImpl implements Context {
@@ -26,6 +27,13 @@ public class ContextImpl implements Context {
         allRules = definitions.fromAllDataToAllInstances().getAllRules();
     }
 
+    public ActiveEnvironment getActiveEnvironment(){
+        return activeEnvironment;
+    }
+
+    public boolean shouldSimulationTerminate(int ticks, int seconds){
+        return ticks >= terminationRules.getEndByTicks() || seconds >= terminationRules.getEndBySeconds();
+    }
     @Override
     public Termination getTerminationRules() {
         return terminationRules;
@@ -47,12 +55,34 @@ public class ContextImpl implements Context {
     }
 
     @Override
+    public void runSimulation(){
+        int ticks = 0;
+        int seconds = 1;
+        Random random = new Random();
+        while(!shouldSimulationTerminate(ticks, seconds)){
+            for(Rule rule : allRules){
+                Long randomValue = random.nextLong();
+                if (rule.getActivation().isActive(ticks) || randomValue < rule.getActivation().getProb()) {
+                    rule.getActionsToPerform().forEach(action -> action.invoke(this));
+                }
+            }
+            ticks++;
+        }
+    }
+
+    @Override
+    public void singleSimulationRun(int ticks){
+
+    }
+
+
+    @Override
     public void setActiveEnvironment(ActiveEnvironment e){
         activeEnvironment = e;
     }
 
     @Override
-    public void SetPrimaryEntityInstance(EntityInstance instance){
+    public void setPrimaryEntityInstance(EntityInstance instance){
         primaryEntityInstance = instance;
     }
 

@@ -25,7 +25,8 @@ public class EnvironmentFunction extends AbstractFunction{
     public Object getPropertyInstanceValueFromEnvironment(Context context){
         String envVarName = "";
         envVarName = getVarNameFromExpression();
-        return context.getPrimaryEntityInstance().getPropertyByName(envVarName).getValue(); // Assuming property name exists
+        return context.getActiveEnvironment().getProperty(envVarName).getValue();
+        // return context.getPrimaryEntityInstance().getPropertyByName(envVarName).getValue(); // Assuming property name exists
     }
 
     @Override

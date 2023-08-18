@@ -6,8 +6,8 @@ import definition.value.generator.api.ValueGenerator;
 
 public class IntegerPropertyDefinition extends AbstractPropertyDefinition<Integer> {
 
-    public IntegerPropertyDefinition(String name, ValueGenerator<Integer> valueGenerator) {
-        super(name, PropertyType.DECIMAL, valueGenerator);
+    public IntegerPropertyDefinition(String name, ValueGenerator<Integer> valueGenerator, double from, double to) {
+        super(name, PropertyType.DECIMAL, valueGenerator, from, to);
     }
 
 

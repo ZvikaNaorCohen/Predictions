@@ -22,7 +22,7 @@ public class EntityDefinitionDTO {
         String answer = "Entity name: " + entityDefinition.getName() + ". Population: " + entityDefinition.getPopulation() + ". \n";
         int counter = 1;
         for(PropertyDefinitionDTO propDTO : listOfPropertyDTOs){
-            answer += "\t Action property #" + counter + ": " + propDTO.getPropertyDefinitionData();
+            answer += "\t Entity property #" + counter + ": " + propDTO.getPropertyDefinitionData();
             counter++;
         }
 

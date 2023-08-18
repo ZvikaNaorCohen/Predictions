@@ -8,14 +8,13 @@ import engine.AllData;
 import execution.context.Context;
 
 public class SimulationDetailConsole implements SimulationDetail {
-    public void invoke(AllData allData, Context myWorld){
+    public void invoke(ContextDTO myWorld){
         if(myWorld == null) {
             UIUtils.printBadInput("Engine is not initialized. Please make sure you successfully " +
                     "read XML file before using this option. ");
         }
         else {
-            ContextDTO worldToPrint = new ContextDTO(allData);
-            System.out.println(worldToPrint.getWorldData());
+            System.out.println(myWorld.getWorldData());
         }
     }
 }

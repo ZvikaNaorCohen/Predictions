@@ -35,14 +35,14 @@ public class UserInterface {
                     if(validWorld != null){
                         oldWorld = validWorld;
                         allData = new AllData(validWorld);
-                        runningWorldDTO = new ContextDTO(allData);
                         myRunningWorld = new ContextImpl(allData);
+                        runningWorldDTO = new ContextDTO(allData);
                     }
                     break;
                 }
                 case "2": {
                     SimulationDetail simulationDetail = new SimulationDetailConsole();
-                    simulationDetail.invoke(allData, myRunningWorld);
+                    simulationDetail.invoke(runningWorldDTO);
                     break;
                 }
                 case "3": {

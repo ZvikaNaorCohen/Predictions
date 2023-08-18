@@ -10,7 +10,7 @@ public class PropertyDefinitionDTO {
     }
 
     public String getPropertyDefinitionData(){
-        String answer = "Property name: " + property.getName() + ". Property type: " + property.getType().name() + ". \n";
+        String answer = "Property name: " + property.getName() + ".\t Property type: " + property.getType().name() + ". \n";
 
         return answer;
     }

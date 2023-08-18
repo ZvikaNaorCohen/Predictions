@@ -40,8 +40,14 @@ public class AllData {
         terminationRules = getTerminationRules(oldWorld.getPRDTermination());
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
-        // envVariablesManager = getAllEnvProperties(oldWorld.getPRDEvironment());
+        envVariablesManager = new EnvVariableManagerImpl();
     }
+
+    public void setEnvVariablesManager(EnvVariablesManager e){
+        envVariablesManager = e;
+    }
+
+    public EnvVariablesManager getEnvVariablesManager() {return envVariablesManager;}
 
     public Map<String, EntityDefinition> getMapAllEntities(){return allEntityDefinitions;}
     public Set<Rule> getAllRulesFromAllData(){return allRules;}
@@ -69,12 +75,11 @@ public class AllData {
             case "decimal": {
                 int from = (int) prop.getPRDRange().getFrom();
                 int to = (int) prop.getPRDRange().getTo();
-
                 if(toRandom){
-                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to));
+                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to), from, to);
                 }
                 else{
-                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Integer)value));
+                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Integer)value), from, to);
                 }
             }
             break;
@@ -82,27 +87,27 @@ public class AllData {
                 float from = (float) prop.getPRDRange().getFrom();
                 float to = (float) prop.getPRDRange().getTo();
                 if (toRandom) {
-                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to));
+                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to), from, to);
                 } else {
-                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Float) value));
+                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Float) value), from, to);
                 }
                 break;
             }
             case "string": {
                 if(toRandom){
-                    newProp = new StringPropertyDefinition(prop.getPRDName(), new RandomStringGenerator());
+                    newProp = new StringPropertyDefinition(prop.getPRDName(), new RandomStringGenerator(),0 ,0);
                 }
                 else {
-                    newProp = new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((String)value));
+                    newProp = new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((String)value),0 ,0);
                 }
                 break;
             }
             case "boolean": {
                 if(toRandom){
-                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator());
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator(),0 ,0);
                 }
                 else {
-                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Boolean)value));
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Boolean)value),0,0);
                 }
             }
             break;

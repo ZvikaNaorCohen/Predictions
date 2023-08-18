@@ -61,7 +61,13 @@ public class ConditionAction extends AbstractConditionAction {
         } else if (instance.hasPropertyByName(expression)) {
             return propertyInstance.getValue() == instance.getPropertyByName(expression).getValue();
         } else { // ערך חופשי
-            return Float.parseFloat(expression) == (Float)propertyInstance.getValue();
+            if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+                return Float.parseFloat(expression) == (Integer)propertyInstance.getValue();
+            }
+            else if(propertyInstance.getValue().getClass().getSimpleName().equals("Float")){
+                return Float.parseFloat(expression) == (Float)propertyInstance.getValue();
+            }
+            else return false;
         }
     }
 
@@ -72,11 +78,11 @@ public class ConditionAction extends AbstractConditionAction {
 
     private boolean comparePropertyInstanceValueByEnvironment(Context context, String expression, PropertyInstance propertyInstance){
         Function envFunction = new EnvironmentFunction(expression);
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
-            return (Integer)propertyInstance.getValue() == (Integer) PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+            return (Integer)propertyInstance.getValue() == PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
         }
         else {
-            return (Float)propertyInstance.getValue() == (Float) PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+            return (Float)propertyInstance.getValue() == PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
         }
     }
 }

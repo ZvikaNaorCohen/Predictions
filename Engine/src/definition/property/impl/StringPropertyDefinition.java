@@ -6,8 +6,8 @@ import definition.value.generator.api.ValueGenerator;
 
 public class StringPropertyDefinition extends AbstractPropertyDefinition<String> {
 
-    public StringPropertyDefinition(String name, ValueGenerator<String> valueGenerator) {
-        super(name, PropertyType.STRING, valueGenerator);
+    public StringPropertyDefinition(String name, ValueGenerator<String> valueGenerator, double from, double to) {
+        super(name, PropertyType.STRING, valueGenerator, from, to);
     }
 
 

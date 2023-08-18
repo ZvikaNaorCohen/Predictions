@@ -31,8 +31,10 @@ public class IncreaseAction extends AbstractAction {
         // <PRD-action type="decrease" entity="ent-1" property="p2" by="environment(e3)"/>
 
         // Handle expression:
+
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
+                context.setPrimaryEntityInstance(instance);
                 PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property); // Property AGE
                 if (byExpression.startsWith("environment")) {
                     updatePropertyInstanceValueByEnvironment(context, propertyInstance);
@@ -48,7 +50,7 @@ public class IncreaseAction extends AbstractAction {
     }
     private void updatePropertyInstanceValueByProperty(Context context, PropertyInstance propertyInstance) {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = (Integer) oldValue + (Integer)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
                 propertyInstance.updateValue(newValue);
@@ -64,7 +66,7 @@ public class IncreaseAction extends AbstractAction {
     }
     private void updatePropertyInstanceValueByFreeValue(PropertyInstance propertyInstance) {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = StringToInteger(byExpression);
             newValue += (Integer)oldValue;
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
@@ -83,7 +85,7 @@ public class IncreaseAction extends AbstractAction {
     private void updatePropertyInstanceValueByRandom(PropertyInstance propertyInstance) {
         Function envFunction = new RandomFunction(byExpression);
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = envFunction.getRandomValue() + (Integer)oldValue;
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
                 propertyInstance.updateValue(newValue);
@@ -100,7 +102,7 @@ public class IncreaseAction extends AbstractAction {
     private void updatePropertyInstanceValueByEnvironment(Context context, PropertyInstance propertyInstance){
         Function envFunction = new EnvironmentFunction(byExpression);
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = (Integer) oldValue + (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
                 propertyInstance.updateValue(newValue);

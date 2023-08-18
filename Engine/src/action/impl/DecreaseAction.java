@@ -32,6 +32,7 @@ public class DecreaseAction extends AbstractAction {
         for(EntityInstance instance : context.getEntityInstanceManager().getInstances()){
             if(instance.getEntityDefinitionName().equals(entityDefinition.getName()))
             {
+                context.setPrimaryEntityInstance(instance);
                 PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
                 if(byExpression.startsWith("environment"))
                 {
@@ -52,7 +53,7 @@ public class DecreaseAction extends AbstractAction {
 
     private void updatePropertyInstanceValueByProperty(Context context, PropertyInstance propertyInstance) {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")) {
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")) {
             Integer newValue = (Integer) oldValue - (Integer) context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
             if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
                 propertyInstance.updateValue(newValue);
@@ -69,7 +70,7 @@ public class DecreaseAction extends AbstractAction {
     }
     private void updatePropertyInstanceValueByFreeValue(PropertyInstance propertyInstance) {
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = StringToInteger(byExpression);
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue - (Integer)oldValue)) {
                 propertyInstance.updateValue(newValue - (Integer) oldValue);
@@ -85,7 +86,7 @@ public class DecreaseAction extends AbstractAction {
     private void updatePropertyInstanceValueByRandom(PropertyInstance propertyInstance) {
         Function envFunction = new RandomFunction(byExpression);
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             {
                 if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(envFunction.getRandomValue() - (Integer) oldValue))
                 {
@@ -106,7 +107,7 @@ public class DecreaseAction extends AbstractAction {
     private void updatePropertyInstanceValueByEnvironment(Context context, PropertyInstance propertyInstance){
         Function envFunction = new EnvironmentFunction(byExpression);
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getName().equals("Integer")){
+        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = (Integer) oldValue - (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
                 propertyInstance.updateValue(newValue);

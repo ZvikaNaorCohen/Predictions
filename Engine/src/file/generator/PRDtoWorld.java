@@ -36,7 +36,7 @@ public class PRDtoWorld {
             seconds = ((PRDBySecond)inputTermination.getPRDByTicksOrPRDBySecond().get(1)).getCount();
         }
 
-        return new Termination(ticks, seconds);
+        return new Termination(seconds, ticks);
     }
     private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
         EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
@@ -166,42 +166,42 @@ public class PRDtoWorld {
         PropertyDefinition newProp = null;
         switch (prop.getType()) {
             case "decimal": {
+                int from = (int) prop.getPRDRange().getFrom();
+                int to = (int) prop.getPRDRange().getTo();
                 if (prop.getPRDValue().isRandomInitialize()) {
-                    int from = (int) prop.getPRDRange().getFrom();
-                    int to = (int) prop.getPRDRange().getTo();
-                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to));
+                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to), from, to);
                 } else {
                     int fixedValue = Integer.parseInt(prop.getPRDValue().getInit());
-                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                    newProp = new IntegerPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue), from, to);
                 }
                 break;
             }
             case "float": {
+                float from = (float) prop.getPRDRange().getFrom();
+                float to = (float) prop.getPRDRange().getTo();
                 if (prop.getPRDValue().isRandomInitialize()) {
-                    float from = (float) prop.getPRDRange().getFrom();
-                    float to = (float) prop.getPRDRange().getTo();
-                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to));
+                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to), from, to);
                 } else {
                     float fixedValue = Float.parseFloat(prop.getPRDValue().getInit());
-                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                    newProp = new FloatPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue), from, to);
                 }
                 break;
             }
             case "string": {
                 if (prop.getPRDValue().isRandomInitialize()) {
-                    newProp = new StringPropertyDefinition(prop.getPRDName(), new RandomStringGenerator());
+                    newProp = new StringPropertyDefinition(prop.getPRDName(), new RandomStringGenerator(), 0, 0);
                 } else {
                     String fixedValue = (prop.getPRDValue().getInit());
-                    newProp = new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                    newProp = new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue),0 ,0);
                 }
                 break;
             }
             case "boolean": {
                 if (prop.getPRDValue().isRandomInitialize()) {
-                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator());
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator(), 0,0);
                 } else {
                     boolean fixedValue = Boolean.parseBoolean(prop.getPRDValue().getInit());
-                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue));
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(fixedValue),0 ,0);
                 }
                 break;
             }

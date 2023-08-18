@@ -20,6 +20,7 @@ public class DivideAction extends AbstractCalculationAction {
     public void invoke(Context context) {
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
+                context.setPrimaryEntityInstance(instance);
                 Object argument1Value = getArgumentValue(context, argument1);
                 Object argument2Value = getArgumentValue(context, argument2);
 
