@@ -198,64 +198,7 @@ public class RunSimulationConsole implements RunSimulation {
                 activeEnvironment.addPropertyInstance(new PropertyInstanceImpl(envPropertyDef, envPropertyDef.generateValue()));
             }
         }
-//        for (PRDEnvProperty prop : environment.getPRDEnvProperty()) {
-//            while (true) {
-//                System.out.println("Now we want to take care of environment property: " + prop.getPRDName() + ". ");
-//                System.out.println("The type of the environment property is: " + prop.getType());
-//                if (prop.getPRDRange() != null){
-//                    System.out.println("The property has range. FROM: " + prop.getPRDRange().getFrom() + ". TO: " +
-//                            prop.getPRDRange().getTo() + ". ");
-//                }
-//                String userInput = scanner.nextLine();
-//                if (!userInput.isEmpty()) { // Check if user input is not empty
-//                    if (prop.getPRDRange() != null) {
-//                        if(prop.getType().equals("decimal")){
-//                            try {
-//                                Integer valueFromInput = Integer.parseInt(userInput);
-//                                if (valueFromInput < prop.getPRDRange().getFrom() || valueFromInput > prop.getPRDRange().getTo()) {
-//                                    System.out.println("The property: " + prop.getPRDName() + " has range FROM: " + prop.getPRDRange().getFrom() +
-//                                            " and TO: " + prop.getPRDRange().getTo() + ".\n The value you entered is invalid. ");
-//                                } else {
-//                                    PropertyDefinition envPropertyDef = fromPRDToPropEnvDef(prop, valueFromInput, false);
-//                                    envVariablesManager.addEnvironmentVariable(envPropertyDef);
-//                                    activeEnvironment.addPropertyInstance(new PropertyInstanceImpl(envPropertyDef, envPropertyDef.generateValue()));
-//                                    break;
-//                                }
-//                            } catch (Exception e) {
-//                                System.out.println("The property: " + prop.getPRDName() + "is numeric. Please enter a number. ");
-//                            }
-//                        }
-//                        else if (prop.getType().equals("float")) {
-//                            try {
-//                                Float valueFromInput = Float.parseFloat(userInput);
-//                                if (valueFromInput < prop.getPRDRange().getFrom() || valueFromInput > prop.getPRDRange().getTo()) {
-//                                    System.out.println("The property: " + prop.getPRDName() + " has range FROM: " + prop.getPRDRange().getFrom() +
-//                                            " and TO: " + prop.getPRDRange().getTo() + ".\n The value you entered is invalid. ");
-//                                } else {
-//                                    PropertyDefinition envPropertyDef = fromPRDToPropEnvDef(prop, valueFromInput, false);
-//                                    envVariablesManager.addEnvironmentVariable(envPropertyDef);
-//                                    activeEnvironment.addPropertyInstance(new PropertyInstanceImpl(envPropertyDef, envPropertyDef.generateValue()));
-//                                    break;
-//                                }
-//                            } catch (Exception e) {
-//                                System.out.println("The property: " + prop.getPRDName() + "is numeric. Please enter a number. ");
-//                            }
-//                        }
-//                    } else { // Boolean / String NOT RANDOM
-//                        PropertyDefinition envPropertyDef = fromPRDToPropEnvDef(prop, userInput, false);
-//                        envVariablesManager.addEnvironmentVariable(envPropertyDef);
-//                        activeEnvironment.addPropertyInstance(new PropertyInstanceImpl(envPropertyDef, envPropertyDef.generateValue()));
-//                        break;
-//                    }
-//                } else {  // ToRandom
-//                    PropertyDefinition envPropertyDef = fromPRDToPropEnvDef(prop, userInput, true);
-//                    envVariablesManager.addEnvironmentVariable(envPropertyDef);
-//                    activeEnvironment.addPropertyInstance(new PropertyInstanceImpl(envPropertyDef, envPropertyDef.generateValue()));
-//                    break;
-//                }
-//            }
-//        }
-        // scanner.close();
+
         return activeEnvironment;
     }
 
