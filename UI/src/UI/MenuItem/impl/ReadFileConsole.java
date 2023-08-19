@@ -33,10 +33,10 @@ public class ReadFileConsole implements ReadFile {
     }
     @Override
     public PRDWorld invoke() throws JAXBException {
-        // String path = getPathFromUser();
+        String path = getPathFromUser();
         // For testing:
-        String path = "Engine/src/resources/world.xml";
-        // File file = new File(path);
+        // String path = "Engine/src/resources/world.xml";
+        File file = new File(path);
 
         PRDWorld inputWorld = getWorldFromScheme(path);
         PRDWorldValid worldValidator = new PRDWorldValid();

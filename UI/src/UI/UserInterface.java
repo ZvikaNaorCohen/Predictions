@@ -54,6 +54,10 @@ public class UserInterface {
                     break;
                 }
                 case "3": {
+                    if(allData == null){
+                        System.out.println("Engine is not initialized yet.");
+                        continue;
+                    }
                     myRunningWorld = new ContextImpl(allData);
                     RunSimulation runSimulation = new RunSimulationConsole();
                     LocalDateTime now = LocalDateTime.now();

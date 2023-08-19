@@ -8,7 +8,6 @@ import definition.environment.impl.EnvVariableManagerImpl;
 import definition.property.api.PropertyDefinition;
 import engine.AllData;
 import execution.context.Context;
-import execution.instance.entity.EntityInstance;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
 import execution.instance.property.PropertyInstanceImpl;
@@ -17,7 +16,6 @@ import generated.PRDEvironment;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 import static engine.AllData.fromPRDToPropEnvDef;
 import static java.lang.System.in;
@@ -42,43 +40,11 @@ public class RunSimulationConsole implements RunSimulation {
             ContextDTO worldToPrint = new ContextDTO(allData);
             worldToPrint.updatePropertyInstanceDTO(allData, myWorld);
 
-
-
             printDataBeforeSimulation(worldToPrint);
-
-//            System.out.println("Starting values for entity in position 3 in list: ");
-//            EntityInstance e = myWorld.getEntityInstanceManager().getInstances().get(3);
-//            System.out.println("Property: lung-cancer-progress: " + e.getPropertyByName("lung-cancer-progress").getValue());
-//            System.out.println("Property: cigarets-per-month: " + e.getPropertyByName("cigarets-per-month").getValue());
-//            System.out.println("Property: age: " + e.getPropertyByName("age").getValue());
-
-//            System.out.println("Starting values for entity in position 3 in list: ");
-//            EntityInstance e = myWorld.getEntityInstanceManager().getInstances().get(3);
-//            System.out.println("Property p1 Starting value: " + e.getPropertyByName("p1").getValue() + ". ");
-//            System.out.println("Property p2 Starting value: " + e.getPropertyByName("p2").getValue() + ". ");
-//            System.out.println("Property p3 Starting value: " + e.getPropertyByName("p3").getValue() + ". ");
-//            System.out.println("Property p4 Starting value: " + e.getPropertyByName("p4").getValue() + ". ");
-//            System.out.println("Number of entities before run: " + myWorld.getEntityInstanceManager().getInstances().size());
-            System.out.println("Value of p1 in ent-1 before run: " + myWorld.getEntityInstanceManager().getInstances().get(0).getPropertyByName("p1").getValue());
 
             String endReason = myWorld.runSimulation();
             System.out.println("End reason: " + endReason);
             System.out.println("Simulation ID: " + myWorld.getID());
-
-
-            // System.out.println("Number of entities after run: " + myWorld.getEntityInstanceManager().getInstances().size());
-//            System.out.println("Value of p1 in ent-1 after run: " + myWorld.getEntityInstanceManager().getInstances().get(30).getPropertyByName("p1").getValue());
-//            System.out.println("Ending values for entity in position 3 in list: ");
-//            e = myWorld.getEntityInstanceManager().getInstances().get(3);
-//            System.out.println("Property p1 ending value: " + e.getPropertyByName("p1").getValue() + ". ");
-//            System.out.println("Property p2 ending value: " + e.getPropertyByName("p2").getValue() + ". ");
-//            System.out.println("Property p3 ending value: " + e.getPropertyByName("p3").getValue() + ". ");
-//            System.out.println("Property p4 ending value: " + e.getPropertyByName("p4").getValue() + ". ");
-
-//            System.out.println("Ending values for entity in position 3 in list: ");
-//            System.out.println("Property: lung-cancer-progress: " + e.getPropertyByName("lung-cancer-progress").getValue());
-//            System.out.println("Property: cigarets-per-month: " + e.getPropertyByName("cigarets-per-month").getValue());
-//            System.out.println("Property: age: " + e.getPropertyByName("age").getValue());
         }
     }
 

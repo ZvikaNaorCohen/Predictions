@@ -4,6 +4,7 @@ import definition.entity.EntityDefinition;
 import execution.instance.property.PropertyInstance;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EntityInstanceImpl implements EntityInstance {
@@ -30,6 +31,11 @@ public class EntityInstanceImpl implements EntityInstance {
         }
 
         return properties.get(name);
+    }
+
+    @Override
+    public Map<String, PropertyInstance> getAllPropertyInstances(){
+        return properties;
     }
 
     public EntityDefinition getEntityDef(){

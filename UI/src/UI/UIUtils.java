@@ -32,7 +32,6 @@ public class UIUtils {
             if (!validOptionFromMainMenu(choice)) {
                 UIUtils.printBadInput("Invalid option received. Please enter a digit from 1 to 5.");
             } else {
-                System.out.println("Running option: " + choice);
                 return choice;
             }
         } while (true);
