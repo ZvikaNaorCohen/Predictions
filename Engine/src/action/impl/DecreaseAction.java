@@ -33,7 +33,7 @@ public class DecreaseAction extends AbstractAction {
             if(instance.getEntityDefinitionName().equals(entityDefinition.getName()))
             {
                 context.setPrimaryEntityInstance(instance);
-                PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
+                PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property); // Property AGE
                 if(byExpression.startsWith("environment"))
                 {
                     updatePropertyInstanceValueByEnvironment(context, propertyInstance);
@@ -93,7 +93,6 @@ public class DecreaseAction extends AbstractAction {
                     propertyInstance.updateValue(envFunction.getRandomValue() - (Integer) oldValue);
                 }
             }
-
         }
         else {
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(envFunction.getRandomValue() - (Float) oldValue))
@@ -106,15 +105,16 @@ public class DecreaseAction extends AbstractAction {
 
     private void updatePropertyInstanceValueByEnvironment(Context context, PropertyInstance propertyInstance){
         Function envFunction = new EnvironmentFunction(byExpression);
-        Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+            Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
             Integer newValue = (Integer) oldValue - (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
                 propertyInstance.updateValue(newValue);
             }
         }
         else {
-            Float newValue = (Float)oldValue - (Float)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+            Object oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+            Float newValue = (Float)oldValue - (Float)PropertyType.FLOAT.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue))
             {
                 propertyInstance.updateValue(newValue);

@@ -26,7 +26,7 @@ public class MultipleConditions extends AbstractConditionAction {
             conditionAction.invoke(context);
         }
 
-        updateRunThenOrNot();
+        updateRunThenOrNot(context);
         if(runThen){
             for(Action action : listOfThenActions){
                 action.invoke(context);
@@ -41,11 +41,12 @@ public class MultipleConditions extends AbstractConditionAction {
         runThen = false;
     }
 
-    public void updateRunThenOrNot(){
+    public void updateRunThenOrNot(Context context){
         Boolean val;
         if(logical.equals("and")){
             val = true;
             for(AbstractConditionAction action : innerConditionActions){
+                action.invoke(context);
                 val = val && action.getConditionReturnValue();
             }
 
@@ -54,6 +55,7 @@ public class MultipleConditions extends AbstractConditionAction {
         else {
             val = false;
             for(AbstractConditionAction action : innerConditionActions){
+                action.invoke(context);
                 val = val || action.getConditionReturnValue();
             }
 

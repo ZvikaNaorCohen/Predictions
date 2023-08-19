@@ -10,8 +10,12 @@ import engine.AllData;
 import execution.context.Context;
 import execution.context.ContextImpl;
 import generated.PRDWorld;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.bind.JAXBException;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static UI.UIUtils.*;
 
@@ -21,11 +25,14 @@ public class UserInterface {
     private PRDWorld oldWorld;
 
     private AllData allData;
+
+    private Map<String, Context> pastRuns;
     // Path to valid file: Engine/src/Resources/world.xml
     // Path to invalid file: Engine/src/Resources/ex1-error-4.xml
 
     public void run() throws JAXBException {
         Boolean run = true;
+        pastRuns = new HashMap<>();
         while(run){
             String choice = getInputFromUser();
             switch(choice){
@@ -46,13 +53,18 @@ public class UserInterface {
                     break;
                 }
                 case "3": {
+                    myRunningWorld = new ContextImpl(allData);
                     RunSimulation runSimulation = new RunSimulationConsole();
-                    runSimulation.invoke(allData, myRunningWorld, oldWorld.getPRDEvironment());
+                    LocalDateTime now = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy | HH.mm.ss");
+                    String formattedDateTime = now.format(formatter);
+                    runSimulation.invoke(allData, myRunningWorld, oldWorld.getPRDEvironment(), pastRuns.size()+1);
+                    pastRuns.put(formattedDateTime, myRunningWorld);
                     break;
                 }
                 case "4": {
                     PastDetail pastDetail = new PastDetailConsole();
-                    // pastDetail.invoke();
+                    pastDetail.invoke(pastRuns);
                     break;
                 }
                 case "5": {

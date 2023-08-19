@@ -107,7 +107,11 @@ public class AllData {
                     newProp = new BooleanPropertyDefinition(prop.getPRDName(), new RandomBooleanValueGenerator(),0 ,0);
                 }
                 else {
-                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>((Boolean)value),0,0);
+                    Boolean realValue = true;
+                    if(value.toString().equals("false")){
+                        realValue = false;
+                    }
+                    newProp = new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(realValue),0,0);
                 }
             }
             break;

@@ -19,6 +19,17 @@ public class RandomFunction extends AbstractFunction {
     @Override
     public Integer getRandomValue() {
         Random random = new Random();
-        return random.nextInt(Integer.parseInt(expression));
+        int startIndex = expression.indexOf("(");
+        int endIndex = expression.indexOf(")");
+
+        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+            // Extract the substring between the parentheses
+            String numberString = expression.substring(startIndex + 1, endIndex);
+
+            // Convert the number to an integer if needed
+            int number = Integer.parseInt(numberString);
+            return random.nextInt(number);
+        }
+        return 1;
     }
 }

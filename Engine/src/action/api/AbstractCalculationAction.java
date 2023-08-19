@@ -15,7 +15,9 @@ public abstract class AbstractCalculationAction extends AbstractAction{
 
     protected AbstractCalculationAction(ActionType type, EntityDefinition entityDefinition, String result) {
         super(type, entityDefinition);
-        resultProp = result;
+        if(!result.equals("")){
+            resultProp = result;
+        }
     }
 
     @Override

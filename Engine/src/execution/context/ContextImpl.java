@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class ContextImpl implements Context {
 
+    int contextID;
     private EntityInstance primaryEntityInstance;
     private EntityInstanceManager entityInstanceManager;
     private ActiveEnvironment activeEnvironment;
@@ -26,6 +27,12 @@ public class ContextImpl implements Context {
         entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
         allRules = definitions.fromAllDataToAllInstances().getAllRules();
     }
+
+    public void setContextID(int id){
+        contextID = id;
+    }
+
+    public int getID(){return contextID;}
 
     public ActiveEnvironment getActiveEnvironment(){
         return activeEnvironment;
@@ -46,7 +53,7 @@ public class ContextImpl implements Context {
 
     @Override
     public void removeEntity(EntityInstance entityInstance) {
-        entityInstanceManager.killEntity(entityInstance.getId());
+        entityInstanceManager.killEntity(entityInstance.getEntityDefinitionName());
     }
 
     @Override
@@ -61,7 +68,7 @@ public class ContextImpl implements Context {
         Random random = new Random();
         while(!shouldSimulationTerminate(ticks, seconds)){
             for(Rule rule : allRules){
-                Long randomValue = random.nextLong();
+                double randomValue = random.nextDouble();
                 if (rule.getActivation().isActive(ticks) || randomValue < rule.getActivation().getProb()) {
                     rule.getActionsToPerform().forEach(action -> action.invoke(this));
                 }

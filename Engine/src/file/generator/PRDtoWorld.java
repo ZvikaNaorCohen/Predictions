@@ -36,7 +36,7 @@ public class PRDtoWorld {
             seconds = ((PRDBySecond)inputTermination.getPRDByTicksOrPRDBySecond().get(1)).getCount();
         }
 
-        return new Termination(seconds, ticks);
+        return new Termination(ticks, seconds);
     }
     private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
         EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
@@ -53,12 +53,12 @@ public class PRDtoWorld {
                 if(action.getPRDMultiply() != null){
                     String arg1 = action.getPRDMultiply().getArg1();
                     String arg2 = action.getPRDMultiply().getArg2();
-                    return new MultiplyAction(entityDef, arg1, arg2);
+                    return new MultiplyAction(entityDef, arg1, arg2, action.getResultProp());
                 }
                 else {
                     String arg1 = action.getPRDDivide().getArg1();
                     String arg2 = action.getPRDDivide().getArg2();
-                    return new DivideAction(entityDef, arg1, arg2);
+                    return new DivideAction(entityDef, arg1, arg2, action.getResultProp());
                 }
             }
 

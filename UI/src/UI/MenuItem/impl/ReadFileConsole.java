@@ -35,7 +35,7 @@ public class ReadFileConsole implements ReadFile {
     public PRDWorld invoke() throws JAXBException {
         // String path = getPathFromUser();
         // For testing:
-        String path = "Engine/src/resources/cigarets1.xml";
+        String path = "Engine/src/resources/world.xml";
         // File file = new File(path);
 
         PRDWorld inputWorld = getWorldFromScheme(path);

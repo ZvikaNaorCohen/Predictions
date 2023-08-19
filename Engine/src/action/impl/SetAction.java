@@ -28,33 +28,31 @@ public class SetAction extends AbstractAction {
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
                 context.setPrimaryEntityInstance(instance);
-                break;
-            }
-        }
-        EntityInstance instance = context.getPrimaryEntityInstance();
-        PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
-        if (newPropertyValue.startsWith("environment")) {
-            Function envFunction = new EnvironmentFunction(newPropertyValue);
-            String className = envFunction.getPropertyInstanceValueFromEnvironment(context).getClass().getSimpleName();
-            if (className.equals("Integer") &&
-                    propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer) envFunction.getPropertyInstanceValueFromEnvironment(context))) {
-                instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
-            }
-            if (className.equals("Float") &&
-                    propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Float) envFunction.getPropertyInstanceValueFromEnvironment(context))) {
-                instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
-            }
+                PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
+                if (newPropertyValue.startsWith("environment")) {
+                    Function envFunction = new EnvironmentFunction(newPropertyValue);
+                    String className = envFunction.getPropertyInstanceValueFromEnvironment(context).getClass().getSimpleName();
+                    if (className.equals("Integer") &&
+                            propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer) envFunction.getPropertyInstanceValueFromEnvironment(context))) {
+                        instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
+                    }
+                    if (className.equals("Float") &&
+                            propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Float) envFunction.getPropertyInstanceValueFromEnvironment(context))) {
+                        instance.getPropertyByName(property).updateValue(envFunction.getPropertyInstanceValueFromEnvironment(context));
+                    }
 
-        } else if (newPropertyValue.startsWith("random")) {
-            Function randomFunction = new RandomFunction(newPropertyValue);
-            String className = randomFunction.getPropertyInstanceValueFromEnvironment(context).getClass().getSimpleName();
-            if (className.equals("Integer") && propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer) randomFunction.getRandomValue())) {
-                instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
+                } else if (newPropertyValue.startsWith("random")) {
+                    Function randomFunction = new RandomFunction(newPropertyValue);
+                    String className = propertyInstance.getValue().getClass().getSimpleName();
+                    if (className.equals("Integer") && propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer) randomFunction.getRandomValue())) {
+                        instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
+                    }
+                } else if (instance.hasPropertyByName(newPropertyValue)) {
+                    propertyInstance.updateValue(instance.getPropertyByName(newPropertyValue));
+                } else { // ערך חופשי
+                    updatePropertyInstanceValueByFreeValue(propertyInstance);
+                }
             }
-        } else if (instance.hasPropertyByName(newPropertyValue)) {
-            propertyInstance.updateValue(instance.getPropertyByName(newPropertyValue));
-        } else { // ערך חופשי
-            updatePropertyInstanceValueByFreeValue(propertyInstance);
         }
     }
 

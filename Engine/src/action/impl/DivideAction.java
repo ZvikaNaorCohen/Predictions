@@ -10,8 +10,8 @@ import execution.instance.entity.EntityInstance;
 public class DivideAction extends AbstractCalculationAction {
     String argument1, argument2;
 
-    public DivideAction(EntityDefinition entityDefinition, String arg1, String arg2) {
-        super(ActionType.DIVIDE, entityDefinition, "");
+    public DivideAction(EntityDefinition entityDefinition, String arg1, String arg2, String resultProp) {
+        super(ActionType.DIVIDE, entityDefinition, resultProp);
         argument1 = arg1;
         argument2 = arg2;
     }

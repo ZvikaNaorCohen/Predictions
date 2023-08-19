@@ -20,7 +20,7 @@ public enum PropertyType {
     }, FLOAT {
 
         public Float convert(Object value) {
-            if (!(value instanceof Double)) {
+            if (!(value instanceof Float)) {
                 throw new IllegalArgumentException("value " + value + " is not of a FLOAT type (expected Float class)");
             }
             return (Float) value;

@@ -42,7 +42,12 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
     }
 
     @Override
-    public void killEntity(int id) {
-        // some implementation...
+    public void killEntity(String entityName) {
+        for (EntityInstance instance : instances) {
+            if (instance.getEntityDefinitionName().equals(entityName)) {
+                instances.remove(instance);
+                return;
+            }
+        }
     }
 }
