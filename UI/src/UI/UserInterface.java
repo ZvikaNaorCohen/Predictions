@@ -40,6 +40,7 @@ public class UserInterface {
                     ReadFile readFile = new ReadFileConsole();
                     PRDWorld validWorld = readFile.invoke();
                     if(validWorld != null){
+                        pastRuns.clear();
                         oldWorld = validWorld;
                         allData = new AllData(validWorld);
                         myRunningWorld = new ContextImpl(allData);

@@ -62,9 +62,10 @@ public class ContextImpl implements Context {
     }
 
     @Override
-    public void runSimulation(){
+    public String runSimulation(){
         int ticks = 0;
-        int seconds = 1;
+        int seconds = 0;
+        long startTime = System.currentTimeMillis();
         Random random = new Random();
         while(!shouldSimulationTerminate(ticks, seconds)){
             for(Rule rule : allRules){
@@ -73,7 +74,15 @@ public class ContextImpl implements Context {
                     rule.getActionsToPerform().forEach(action -> action.invoke(this));
                 }
             }
+            long currentTime = System.currentTimeMillis();
+            seconds = (int) ((currentTime - startTime) / 1000);
             ticks++;
+        }
+        if(ticks >= terminationRules.getEndByTicks()){
+            return "ticks";
+        }
+        else{
+            return "seconds";
         }
     }
 

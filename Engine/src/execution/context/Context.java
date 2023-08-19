@@ -14,7 +14,7 @@ public interface Context {
     ActiveEnvironment getActiveEnvironment();
     boolean shouldSimulationTerminate(int ticks, int seconds);
     void singleSimulationRun(int ticks);
-    void runSimulation();
+    String runSimulation();
     void removeEntity(EntityInstance entityInstance);
     PropertyInstance getEnvironmentVariable(String name);
     void setPrimaryEntityInstance(EntityInstance instance);

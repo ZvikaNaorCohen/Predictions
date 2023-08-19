@@ -19,14 +19,14 @@ public class ContextDTO {
     Map<String, EntityDefinitionDTO> allEntitiesDTO;
     Set<RuleDTO> allRulesDTO;
     TerminationDTO terminationDTO;
-    Set<PropertyInstanceDTO> propertyInstanceDTOs;
+    List<PropertyInstanceDTO> propertyInstanceDTOs;
 
 
     public ContextDTO(AllData allDefinitions){
         terminationDTO = new TerminationDTO(allDefinitions.getTerminationFromAllData());
         allEntitiesDTO = new HashMap<>();
         allRulesDTO = new HashSet<>();
-        propertyInstanceDTOs = new HashSet<>();
+        propertyInstanceDTOs = new ArrayList<>();
 
 
         for(EntityDefinition e : allDefinitions.getMapAllEntities().values()){
@@ -66,5 +66,5 @@ public class ContextDTO {
         return answer;
     }
 
-    public Set<PropertyInstanceDTO> getPropertyInstanceDTOs(){return propertyInstanceDTOs;}
+    public List<PropertyInstanceDTO> getPropertyInstanceDTOs(){return propertyInstanceDTOs;}
 }

@@ -4,11 +4,14 @@ import UI.MenuItem.api.MenuItem;
 import UI.MenuItem.api.PastDetail;
 import definition.entity.EntityDefinition;
 import execution.context.Context;
+import execution.instance.entity.EntityInstance;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import static java.lang.System.in;
 
@@ -46,8 +49,18 @@ public class PastDetailConsole implements PastDetail {
 
     private void runCount(Context context){
         // For every entity, show the count before and after simulation
-
-
+        int counter = 1;
+        Set<String> printedNames = new HashSet<>();
+        for(EntityInstance instance : context.getEntityInstanceManager().getInstances())
+        {
+            String name = instance.getEntityDefinitionName();
+            if(!printedNames.contains(instance.getEntityDefinitionName())){
+                printedNames.add(instance.getEntityDefinitionName());
+                int alive = context.getEntityInstanceManager().getCurrentAliveEntitiesByName(name);
+                System.out.println("Entity name: " + name + ". \t Initialize count: " + instance.getEntityDef().getPopulation()
+                + ". Current count: " + alive + ". ");
+            }
+        }
         // For test:
 
     }
@@ -87,7 +100,7 @@ public class PastDetailConsole implements PastDetail {
             try {
                 int selectedOption = Integer.parseInt(choice);
                 if (selectedOption >= 1 && selectedOption <= myPastRuns.size()) {
-                    Context selectedContext = myPastRuns.get(getContextByID(selectedOption, myPastRuns));
+                    Context selectedContext = getContextByID(selectedOption, myPastRuns);
                     String countOrHistogram = chooseHistogramOrCount();
                     // Entity count
                     if(countOrHistogram.equals("1")){

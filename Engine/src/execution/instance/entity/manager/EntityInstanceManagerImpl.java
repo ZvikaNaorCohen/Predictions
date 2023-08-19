@@ -7,6 +7,7 @@ import execution.instance.entity.EntityInstanceImpl;
 import execution.instance.property.PropertyInstance;
 import execution.instance.property.PropertyInstanceImpl;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,18 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
     @Override
     public List<EntityInstance> getInstances() {
         return instances;
+    }
+
+    @Override
+    public int getCurrentAliveEntitiesByName(String name){
+        int counter = 0;
+        for(EntityInstance instance : instances){
+            if(instance.getEntityDefinitionName().equals(name)){
+                counter++;
+            }
+        }
+
+        return counter;
     }
 
     @Override

@@ -14,11 +14,6 @@ public class KillAction extends AbstractAction {
 
     @Override
     public void invoke(Context context) {
-        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
-            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
-                context.removeEntity(instance);
-                return;
-            }
-        }
+        context.removeEntity(context.getPrimaryEntityInstance());
     }
 }

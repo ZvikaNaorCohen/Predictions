@@ -50,7 +50,6 @@ public class ConditionAction extends AbstractConditionAction {
                         break;
                     }
                 }
-                break;
             }
         }
     }
