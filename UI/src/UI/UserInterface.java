@@ -63,7 +63,7 @@ public class UserInterface {
                     LocalDateTime now = LocalDateTime.now();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy | HH.mm.ss");
                     String formattedDateTime = now.format(formatter);
-                    runSimulation.invoke(allData, myRunningWorld, oldWorld.getPRDEvironment(), pastRuns.size()+1);
+                    runSimulation.invoke(allData, myRunningWorld, oldWorld.getPRDEnvironment(), pastRuns.size()+1);
                     pastRuns.put(formattedDateTime, myRunningWorld);
                     break;
                 }

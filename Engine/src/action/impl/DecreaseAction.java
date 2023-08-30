@@ -41,6 +41,15 @@ public class DecreaseAction extends AbstractAction {
                 else if(byExpression.startsWith("random")){
                     updatePropertyInstanceValueByRandom(propertyInstance);
                 }
+                else if(byExpression.startsWith("evaluate")){
+                    return;
+                }
+                else if(byExpression.startsWith("percent")){
+                    return;
+                }
+                else if(byExpression.startsWith("ticks")){
+                    return;
+                }
                 else if(instance.hasPropertyByName(byExpression)){
                     updatePropertyInstanceValueByProperty(context, propertyInstance);
                 }
@@ -83,6 +92,7 @@ public class DecreaseAction extends AbstractAction {
             }
         }
     }
+
     private void updatePropertyInstanceValueByRandom(PropertyInstance propertyInstance) {
         Function envFunction = new RandomFunction(byExpression);
         Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
@@ -100,7 +110,6 @@ public class DecreaseAction extends AbstractAction {
                 propertyInstance.updateValue(envFunction.getRandomValue() - (Float) oldValue);
             }
         }
-
     }
 
     private void updatePropertyInstanceValueByEnvironment(Context context, PropertyInstance propertyInstance){
@@ -119,7 +128,6 @@ public class DecreaseAction extends AbstractAction {
             {
                 propertyInstance.updateValue(newValue);
             }
-
         }
     }
 }

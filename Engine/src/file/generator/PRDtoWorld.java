@@ -29,15 +29,23 @@ public class PRDtoWorld {
     public static Termination getTerminationRules(PRDTermination inputTermination){
         int seconds = -1;
         int ticks = -1;
-        if(inputTermination.getPRDByTicksOrPRDBySecond().get(0) != null) {
-            ticks = ((PRDByTicks) inputTermination.getPRDByTicksOrPRDBySecond().get(0)).getCount();
+        if(inputTermination.getPRDBySecondOrPRDByTicks().get(0) != null) {
+            ticks = ((PRDByTicks) inputTermination.getPRDBySecondOrPRDByTicks().get(0)).getCount();
         }
-        if(inputTermination.getPRDByTicksOrPRDBySecond().get(1) != null){
-            seconds = ((PRDBySecond)inputTermination.getPRDByTicksOrPRDBySecond().get(1)).getCount();
+        if(inputTermination.getPRDBySecondOrPRDByTicks().get(1) != null){
+            seconds = ((PRDBySecond)inputTermination.getPRDBySecondOrPRDByTicks().get(1)).getCount();
+        }
+        if(inputTermination.getPRDBySecondOrPRDByTicks().get(1) == null &&
+            inputTermination.getPRDBySecondOrPRDByTicks().get(0) == null)
+        {
+            return new Termination(true);
         }
 
         return new Termination(ticks, seconds);
     }
+
+
+
     private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
         EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
         switch(action.getType()){
@@ -95,6 +103,18 @@ public class PRDtoWorld {
 
             case "kill":{
                 return new KillAction(entityDef);
+            }
+
+            case "replace": {
+                EntityDefinition entityToKill = allEntityDefinitions.get(action.getKill());
+                String entityToCreate = action.getCreate();
+                String mode = action.getMode();
+                return new ReplaceAction(ActionType.REPLACE, entityToKill, entityToCreate, mode);
+            }
+
+            case "proximity":{
+                // return new ProximityAction(ActionType.PROXIMITY, entityDef);
+                return null;
             }
         }
         return null;
@@ -212,7 +232,7 @@ public class PRDtoWorld {
     public static Map<String, EntityDefinition> getAllEntityDefinitions(PRDEntities entities) {
         Map<String, EntityDefinition> myList = new HashMap<>();
         for (PRDEntity entity : entities.getPRDEntity()) {
-            EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), entity.getPRDPopulation());
+            EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), 999);
             for (PRDProperty prop : entity.getPRDProperties().getPRDProperty()) {
                 PropertyDefinition newProp = fromPRDToPropDef(prop);
                 entityImpl.addPropertyDefinition(newProp);

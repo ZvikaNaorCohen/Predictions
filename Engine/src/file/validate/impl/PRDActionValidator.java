@@ -12,23 +12,24 @@ public class PRDActionValidator {
         errorMessage = "";
         for (PRDAction action : actions.getPRDAction()) {
             if(action.getType() != null){
-                PRDEntity myEntity = findEntityInWorldByName(action.getEntity(), oldWorld);
-                if(myEntity == null){
+                PRDEntity firstEntity = findEntityInWorldByName(action.getEntity(), oldWorld);
+                if(firstEntity == null && !action.getType().equals("replace") && !action.getType().equals("proximity")){
                     errorMessage = "Action: " + action.getType() + "has entity that is not found. Entity tried: " + action.getEntity() + ". \n";
                     return false;
                 }
+
                 switch(action.getType()){
                     case "increase":{
                         // check entity exists
                         // check property exists
                         // check "by" is correct
-                        if(!checkIncreaseDecreaseActions(action.getBy(), myEntity, action, oldWorld)){
+                        if(!checkIncreaseDecreaseActions(action.getBy(), firstEntity, action, oldWorld)){
                             return false;
                         }
                         break;
                     }
                     case "decrease":{ // Same as increase
-                        if(!checkIncreaseDecreaseActions(action.getBy(), myEntity, action, oldWorld)){
+                        if(!checkIncreaseDecreaseActions(action.getBy(), firstEntity, action, oldWorld)){
                             return false;
                         }
                         break;
@@ -36,7 +37,7 @@ public class PRDActionValidator {
                     case "calculation":{
                         // check entity exists
                         // check "result-prop" is correct
-                        if(!checkCalculationAction(myEntity, action)){
+                        if(!checkCalculationAction(firstEntity, action)){
                             return false;
                         }
                         break;
@@ -49,13 +50,25 @@ public class PRDActionValidator {
                         // check entity exists
                         // check property exists
                         // check "value" is correct
-                        if(!checkSetAction(myEntity, action, oldWorld)){
+                        if(!checkSetAction(firstEntity, action, oldWorld)){
                             return false;
                         }
                         break;
                     }
                     case "kill":{
-                        if(!checkKillAction(myEntity, oldWorld)){
+                        if(!checkKillAction(firstEntity, oldWorld)){
+                            return false;
+                        }
+                        break;
+                    }
+                    case "replace":{
+                        if(!checkReplaceAction(oldWorld, action)){
+                            return false;
+                        }
+                        break;
+                    }
+                    case "proximity":{
+                        if(!checkProximityAction(oldWorld, action)){
                             return false;
                         }
                         break;
@@ -105,6 +118,44 @@ public class PRDActionValidator {
 
         return true;
     }
+
+    private boolean checkReplaceAction(PRDWorld oldWorld, PRDAction action){
+        String firstEntityName = action.getKill();
+        String secondEntityName = action.getCreate();
+        PRDEntity firstEntity = findEntityInWorldByName(firstEntityName, oldWorld);
+        PRDEntity secondEntity = findEntityInWorldByName(secondEntityName, oldWorld);
+        if(firstEntity == null){
+            errorMessage = "Entity: " + firstEntityName + "was not found in Replace action. \n";
+            return false;
+        }
+        if(secondEntity == null){
+            errorMessage = "Entity: " + secondEntityName + "was not found in Replace action. \n";
+            return false;
+        }
+
+        if(!action.getMode().equals("scratch") && !action.getMode().equals("derived")){
+            errorMessage = "In replace action, mode: " + action.getMode() + " is nor scratch or derived. \n";
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkProximityAction(PRDWorld oldWorld, PRDAction action){
+        String firstEntityName = action.getPRDBetween().getSourceEntity();
+        String secondEntityName = action.getPRDBetween().getTargetEntity();
+        PRDEntity firstEntity = findEntityInWorldByName(firstEntityName, oldWorld);
+        PRDEntity secondEntity = findEntityInWorldByName(secondEntityName, oldWorld);
+        if(firstEntity == null){
+            errorMessage = "Source Entity: " + firstEntityName + "was not found in Proximity action. \n";
+            return false;
+        }
+        if(secondEntity == null){
+            errorMessage = "Target entity: " + secondEntityName + "was not found in Proximity action. \n";
+            return false;
+        }
+        return true;
+    }
+
     private boolean validExpressionForMultiplyOrDivide(PRDWorld oldWorld, String arg){
         if(arg.startsWith("environment")){
             String valueInsideEnvironment = extractValueFromExpression(arg);
@@ -296,7 +347,7 @@ public class PRDActionValidator {
     }
 
     private PRDEnvProperty getEnvPropFromWorldByName(String name, PRDWorld oldWorld){
-        for(PRDEnvProperty property : oldWorld.getPRDEvironment().getPRDEnvProperty()){
+        for(PRDEnvProperty property : oldWorld.getPRDEnvironment().getPRDEnvProperty()){
             if(property.getPRDName().equals(name)){
                 return property;
             }

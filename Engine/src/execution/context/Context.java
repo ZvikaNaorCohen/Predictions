@@ -11,9 +11,11 @@ public interface Context {
     void setContextID(int id);
     int getID();
     EntityInstance getPrimaryEntityInstance();
+    EntityInstance getSecondaryEntityInstance();
     ActiveEnvironment getActiveEnvironment();
     boolean shouldSimulationTerminate(int ticks, int seconds);
     void singleSimulationRun(int ticks);
+
     String runSimulation();
     void removeEntity(EntityInstance entityInstance);
     PropertyInstance getEnvironmentVariable(String name);

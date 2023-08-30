@@ -15,6 +15,7 @@ public class ContextImpl implements Context {
 
     int contextID;
     private EntityInstance primaryEntityInstance;
+    private EntityInstance secondaryEntityInstance;
     private EntityInstanceManager entityInstanceManager;
     private ActiveEnvironment activeEnvironment;
     private Set<Rule> allRules;
@@ -49,6 +50,11 @@ public class ContextImpl implements Context {
     @Override
     public EntityInstance getPrimaryEntityInstance() {
         return primaryEntityInstance;
+    }
+
+    @Override
+    public EntityInstance getSecondaryEntityInstance(){
+        return secondaryEntityInstance;
     }
 
     @Override

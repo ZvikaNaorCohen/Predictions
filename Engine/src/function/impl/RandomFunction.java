@@ -1,6 +1,7 @@
 package function.impl;
 
 import execution.context.Context;
+import execution.instance.entity.EntityInstance;
 import function.api.AbstractFunction;
 
 import java.util.Random;
@@ -31,5 +32,20 @@ public class RandomFunction extends AbstractFunction {
             return random.nextInt(number);
         }
         return 1;
+    }
+
+    @Override
+    public Object getValueFromEvaluate(Context context) {
+        return null;
+    }
+
+    @Override
+    public Double getPercentFromFunction(Context context) {
+        return null;
+    }
+
+    @Override
+    public Integer getTicksNotUpdated(Context context) {
+        return null;
     }
 }

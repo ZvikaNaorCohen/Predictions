@@ -12,6 +12,7 @@ import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
 import execution.instance.property.PropertyInstanceImpl;
 import generated.PRDEnvProperty;
+import generated.PRDEnvironment;
 import generated.PRDEvironment;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import static engine.AllData.fromPRDToPropEnvDef;
 import static java.lang.System.in;
 
 public class RunSimulationConsole implements RunSimulation {
-    public void invoke(AllData allData, Context myWorld, PRDEvironment environment, int id) {
+    public void invoke(AllData allData, Context myWorld, PRDEnvironment environment, int id) {
         if (myWorld == null) {
             printInvalidChoice("Engine is not initialized. Please make sure you successfully " +
                     "read XML file before using this option. ");
@@ -81,7 +82,7 @@ public class RunSimulationConsole implements RunSimulation {
         }
     }
 
-    protected void updateEnvPropertyValueFromUserInput(PRDEvironment environment, EnvVariablesManager envVariablesManager, ActiveEnvironment activeEnvironment,
+    protected void updateEnvPropertyValueFromUserInput(PRDEnvironment environment, EnvVariablesManager envVariablesManager, ActiveEnvironment activeEnvironment,
                                                        String userEnvProp) {
         PRDEnvProperty prop = environment.getPRDEnvProperty().get(Integer.parseInt(userEnvProp)-1);
         if (prop.getPRDRange() != null) {
@@ -146,7 +147,7 @@ public class RunSimulationConsole implements RunSimulation {
     }
 
 
-    protected ActiveEnvironment handleEnvironmentPropertiesUI(PRDEvironment environment, EnvVariablesManager envVariablesManager){
+    protected ActiveEnvironment handleEnvironmentPropertiesUI(PRDEnvironment environment, EnvVariablesManager envVariablesManager){
         ActiveEnvironment activeEnvironment = envVariablesManager.createActiveEnvironment();
         Scanner scanner = new Scanner(in);
         while(true){

@@ -7,6 +7,8 @@ public class PropertyInstanceImpl implements PropertyInstance {
     private PropertyDefinition propertyDefinition;
     private Object value;
 
+    private int ticksNotChanged = 0;
+
     public PropertyInstanceImpl(PropertyDefinition propertyDefinition, Object value) {
         this.propertyDefinition = propertyDefinition;
         this.value = value;
@@ -25,6 +27,16 @@ public class PropertyInstanceImpl implements PropertyInstance {
     @Override
     public void updateValue(Object val) {
         this.value = val;
+        ticksNotChanged = 0;
+    }
+
+    public void propertyInstanceValueNotChanged(){
+        ticksNotChanged++;
+    }
+
+    @Override
+    public int getTicksNotChanged(){
+        return ticksNotChanged;
     }
 
 }
