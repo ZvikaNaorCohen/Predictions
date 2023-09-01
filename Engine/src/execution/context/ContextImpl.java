@@ -33,8 +33,6 @@ public class ContextImpl implements Context {
         primaryEntityInstance = definitions.fromAllDataToAllInstances().getAllEntities().getInstances().get(0);
         entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
         allRules = definitions.fromAllDataToAllInstances().getAllRules();
-        maxRows = definitions.getMaxRows();
-        maxCols = definitions.getMaxCols();
         grid = definitions.getGrid();
     }
 

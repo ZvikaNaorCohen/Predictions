@@ -14,8 +14,6 @@ import java.net.URL;
 
 public class UIMainMenu extends Application {
 
-
-
     public static void main(String[] args) {
         Thread.currentThread().setName("main");
         launch(args);
@@ -31,16 +29,18 @@ public class UIMainMenu extends Application {
 //        HeaderController headerController = fxmlLoader.getController();
 //
 //
-//        // Body
-//        fxmlLoader = new FXMLLoader();
-//        url = getClass().getResource("/resources/body/detailsBody.fxml");
-//        fxmlLoader.setLocation(url);
-//        AnchorPane bodyComponent = fxmlLoader.load(url.openStream());
-//        DetailsBodyController bodyController = fxmlLoader.getController();
+        // Body
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource("/resources/body/detailsBody.fxml");
+        fxmlLoader.setLocation(url);
+        AnchorPane detailsBody = fxmlLoader.load();
+        DetailsBodyController detailsBodyController = fxmlLoader.getController();
 
         // Main
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("/resources/app/app.fxml");
+        // FXMLLoader
+        fxmlLoader = new FXMLLoader();
+        // URL
+        url = getClass().getResource("/resources/app/app.fxml");
         fxmlLoader.setLocation(url);
         ScrollPane root = fxmlLoader.load(url.openStream());
         AppController appController = fxmlLoader.getController();
@@ -49,7 +49,7 @@ public class UIMainMenu extends Application {
         // root.setTop(headerComponent);
         // root.setCenter(bodyComponent);
 
-        // appController.setBodyComponentController(bodyController);
+        appController.setBodyComponentController(detailsBodyController);
         // appController.setHeaderComponentController(headerController);
 
         Scene scene = new Scene(root, 1000, 600);
