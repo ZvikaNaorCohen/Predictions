@@ -20,7 +20,7 @@ public class AllInstances {
 
     public AllInstances(){
         terminationRules = new Termination(-1, -1);
-        allEntities = new EntityInstanceManagerImpl();
+        allEntities = new EntityInstanceManagerImpl(-1, -1);
         // allEnvironmentProps = new ActiveEnvironmentImpl();
     }
 

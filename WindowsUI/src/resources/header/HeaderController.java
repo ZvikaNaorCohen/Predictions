@@ -32,19 +32,32 @@ public class HeaderController {
         // fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
         // Show the file chooser dialog
-        File selectedFile = fileChooser.showOpenDialog(((Stage) loadFileButton.getScene().getWindow()));
+        File selectedFile = fileChooser.showOpenDialog((loadFileButton.getScene().getWindow()));
 
         if (selectedFile != null) {
             String filePath = selectedFile.getAbsolutePath();
 
             if (filePath.toLowerCase().endsWith(".xml")) {
+                // Translate the file to World
+
+                // Check that the xml is fine
+
+                // If yes,
                 filePathText.setText(filePath);
+                showFileLoaded();
             } else {
                 showInvalidFileAlert();
             }
         }
     }
 
+    private void showFileLoaded() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("File loaded successfully");
+        alert.setContentText("File loaded successfully");
+        alert.getButtonTypes().setAll(ButtonType.OK);
+        alert.showAndWait();
+    }
     private void showInvalidFileAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid File");

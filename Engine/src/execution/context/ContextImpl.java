@@ -20,13 +20,22 @@ public class ContextImpl implements Context {
     private ActiveEnvironment activeEnvironment;
     private Set<Rule> allRules;
 
+    private int maxRows, maxCols;
+
     private Termination terminationRules;
 
+    private EntityInstance[][] grid;
+
     public ContextImpl(AllData definitions) {
+        maxRows = definitions.getMaxRows();
+        maxCols = definitions.getMaxCols();
         terminationRules = definitions.fromAllDataToAllInstances().getEngineTermination();
         primaryEntityInstance = definitions.fromAllDataToAllInstances().getAllEntities().getInstances().get(0);
         entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
         allRules = definitions.fromAllDataToAllInstances().getAllRules();
+        maxRows = definitions.getMaxRows();
+        maxCols = definitions.getMaxCols();
+        grid = definitions.getGrid();
     }
 
     public void setContextID(int id){

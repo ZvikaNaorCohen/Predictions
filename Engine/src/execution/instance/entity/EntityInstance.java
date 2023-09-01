@@ -8,6 +8,11 @@ import java.util.Map;
 
 public interface EntityInstance {
     int getId();
+
+    int getRow();
+    int getCol();
+    void setRow(int newRow);
+    void setCol(int newCol);
     PropertyInstance getPropertyByName(String name);
     Map<String, PropertyInstance> getAllPropertyInstances();
     EntityDefinition getEntityDef();

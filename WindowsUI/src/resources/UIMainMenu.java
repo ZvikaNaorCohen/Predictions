@@ -45,6 +45,7 @@ public class UIMainMenu extends Application {
         ScrollPane root = fxmlLoader.load(url.openStream());
         AppController appController = fxmlLoader.getController();
 
+
         // root.setTop(headerComponent);
         // root.setCenter(bodyComponent);
 

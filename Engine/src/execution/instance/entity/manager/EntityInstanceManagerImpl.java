@@ -10,22 +10,37 @@ import execution.instance.property.PropertyInstanceImpl;
 import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class EntityInstanceManagerImpl implements EntityInstanceManager {
+    private int maxRows, maxCols;
 
     private int count;
     private List<EntityInstance> instances;
 
-    public EntityInstanceManagerImpl() {
+    public EntityInstanceManagerImpl(int rows, int cols) {
         count = 0;
         instances = new ArrayList<>();
+        maxRows = rows;
+        maxCols = cols;
     }
 
     @Override
-    public EntityInstance create(EntityDefinition entityDefinition) {
-
+    public EntityInstance create(EntityDefinition entityDefinition, EntityInstance[][] grid) {
+        Random random = new Random();
+        int newRow = 1;
+        int newCol = 1;
         count++;
-        EntityInstance newEntityInstance = new EntityInstanceImpl(entityDefinition, count);
+
+        do{
+            newRow = random.nextInt(maxRows);
+            newCol = random.nextInt(maxCols);
+            if(grid[newRow][newCol] == null){
+                break;
+            }
+        }while(true);
+
+        EntityInstance newEntityInstance = new EntityInstanceImpl(entityDefinition, count, newRow, newCol);
         instances.add(newEntityInstance);
 
         for (PropertyDefinition propertyDefinition : entityDefinition.getProps()) {

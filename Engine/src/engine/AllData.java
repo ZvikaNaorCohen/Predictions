@@ -13,6 +13,7 @@ import definition.value.generator.random.impl.bool.RandomBooleanValueGenerator;
 import definition.value.generator.random.impl.numeric.RandomFloatGenerator;
 import definition.value.generator.random.impl.numeric.RandomIntegerGenerator;
 import definition.value.generator.random.impl.string.RandomStringGenerator;
+import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.entity.manager.EntityInstanceManagerImpl;
 import execution.instance.environment.api.ActiveEnvironment;
@@ -35,13 +36,25 @@ public class AllData {
     private Map<String, EntityDefinition> allEntityDefinitions;
     private Set<Rule> allRules;
     private EnvVariablesManager envVariablesManager;
+    private int maxRows, maxCols;
+    private EntityInstance[][] grid;
 
     public AllData(PRDWorld oldWorld){
         terminationRules = getTerminationRules(oldWorld.getPRDTermination());
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
         envVariablesManager = new EnvVariableManagerImpl();
+        maxRows = oldWorld.getPRDGrid().getRows();
+        maxCols = oldWorld.getPRDGrid().getColumns();
+        grid = new EntityInstance[maxRows][maxCols];
     }
+
+    public EntityInstance[][] getGrid(){
+        return grid;
+    }
+
+    public int getMaxRows(){return maxRows;}
+    public int getMaxCols(){return maxCols;}
 
     public void setEnvVariablesManager(EnvVariablesManager e){
         envVariablesManager = e;
@@ -120,12 +133,12 @@ public class AllData {
     }
 
         public AllInstances fromAllDataToAllInstances(){
-        EntityInstanceManager allEntities = new EntityInstanceManagerImpl();
+        EntityInstanceManager allEntities = new EntityInstanceManagerImpl(maxRows, maxCols);
 
         for (Map.Entry<String, EntityDefinition> entry : allEntityDefinitions.entrySet()) {
             for(int i=0; i<entry.getValue().getPopulation();i++)
             {
-                allEntities.create(entry.getValue());
+                allEntities.create(entry.getValue(), grid);
             }
         }
         return new AllInstances(terminationRules, allEntities, allRules);
