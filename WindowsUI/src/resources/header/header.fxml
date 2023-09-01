@@ -22,7 +22,7 @@
                 <RowConstraints maxHeight="57.000006103515624" minHeight="10.0" prefHeight="57.000006103515624" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button alignment="BASELINE_LEFT" contentDisplay="CENTER" graphicTextGap="0.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="38.0" prefWidth="155.0" text="Load New XML">
+                  <Button id="loadFileButton" fx:id="loadFileButton" alignment="BASELINE_LEFT" contentDisplay="CENTER" graphicTextGap="0.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#fileButtonClicked" prefHeight="38.0" prefWidth="155.0" text="Load New XML">
                      <font>
                         <Font size="17.0" />
                      </font>

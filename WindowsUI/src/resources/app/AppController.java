@@ -2,7 +2,7 @@ package resources.app;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import resources.body.BodyController;
+import resources.body.DetailsBodyController;
 import resources.header.HeaderController;
 
 public class AppController {
@@ -10,7 +10,7 @@ public class AppController {
     private ScrollPane headerComponent;
     @FXML private HeaderController headerComponentController;
     @FXML private ScrollPane bodyComponent;
-    @FXML private BodyController bodyComponentController;
+    @FXML private DetailsBodyController bodyComponentController;
 
     @FXML
     public void initialize() {
@@ -25,7 +25,7 @@ public class AppController {
         headerComponentController.setMainController(this);
     }
 
-    public void setBodyComponentController(BodyController bodyComponentController) {
+    public void setBodyComponentController(DetailsBodyController bodyComponentController) {
         this.bodyComponentController = bodyComponentController;
         bodyComponentController.setMainController(this);
     }
