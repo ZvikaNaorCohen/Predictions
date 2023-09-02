@@ -11,4 +11,6 @@ public interface EntityInstanceManager {
     void killEntity(String entityName);
 
     int getCurrentAliveEntitiesByName(String name);
+
+    void createEntityInstanceByName(String name);
 }

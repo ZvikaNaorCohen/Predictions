@@ -6,7 +6,6 @@ public interface PropertyInstance {
     PropertyDefinition getPropertyDefinition();
     Object getValue();
     void updateValue(Object val);
-
-    int getTicksNotChanged();
+    float getTicksNotChanged();
 
 }

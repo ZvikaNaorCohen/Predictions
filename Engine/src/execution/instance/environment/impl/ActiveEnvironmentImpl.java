@@ -23,6 +23,11 @@ public class ActiveEnvironmentImpl implements ActiveEnvironment {
     }
 
     @Override
+    public Map<String, PropertyInstance> getEnvVariables() {
+        return envVariables;
+    }
+
+    @Override
     public void addPropertyInstance(PropertyInstance propertyInstance) {
         envVariables.put(propertyInstance.getPropertyDefinition().getName(), propertyInstance);
     }

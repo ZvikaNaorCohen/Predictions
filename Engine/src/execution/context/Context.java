@@ -4,11 +4,16 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
+import rule.Rule;
 import rule.Termination;
+
+import java.util.Set;
 
 public interface Context {
     Termination getTerminationRules();
     void setContextID(int id);
+
+    Set<Rule> getAllRules();
     int getID();
     EntityInstance getPrimaryEntityInstance();
     EntityInstance getSecondaryEntityInstance();

@@ -10,6 +10,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import resources.body.DetailsBodyController;
+import resources.body.ResultsBodyController;
 import resources.header.HeaderController;
 import execution.context.Context;
 
@@ -25,13 +26,18 @@ public class AppController {
     @FXML
     private ScrollPane headerComponent;
     @FXML private HeaderController headerComponentController;
-    @FXML private Tab detailsBodyComponent;
+    @FXML private AnchorPane detailsBodyComponent;
     @FXML private DetailsBodyController detailsBodyComponentController;
+
+    @FXML private AnchorPane resultsBodyComponent;
+    @FXML private ResultsBodyController resultsBodyComponentController;
 
     @FXML
     public void initialize() {
-        if(headerComponentController != null){
+        if(headerComponentController != null && detailsBodyComponentController != null){
             headerComponentController.setMainController(this);
+            detailsBodyComponentController.setMainController(this);
+            resultsBodyComponentController.setMainController(this);
         }
     }
 
@@ -46,7 +52,7 @@ public class AppController {
     }
 
     public void updateScreenOne(){
-        // World is updated, need to pass all the data to all screens
+        detailsBodyComponentController.displayAllData(myRunningWorld, allData);
     }
 
     public void setDataFromFile(PRDWorld world){

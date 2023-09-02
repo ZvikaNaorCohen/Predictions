@@ -30,17 +30,17 @@ public class UIMainMenu extends Application {
 //
 //
         // Body
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("/resources/body/detailsBody.fxml");
-        fxmlLoader.setLocation(url);
-        AnchorPane detailsBody = fxmlLoader.load();
-        DetailsBodyController detailsBodyController = fxmlLoader.getController();
+//        FXMLLoader fxmlLoader = new FXMLLoader();
+//        URL url = getClass().getResource("/resources/body/detailsBody.fxml");
+//        fxmlLoader.setLocation(url);
+//        AnchorPane detailsBody = fxmlLoader.load();
+//        DetailsBodyController detailsBodyController = fxmlLoader.getController();
 
         // Main
         // FXMLLoader
-        fxmlLoader = new FXMLLoader();
+        FXMLLoader fxmlLoader = new FXMLLoader();
         // URL
-        url = getClass().getResource("/resources/app/app.fxml");
+        URL url = getClass().getResource("/resources/app/app.fxml");
         fxmlLoader.setLocation(url);
         ScrollPane root = fxmlLoader.load(url.openStream());
         AppController appController = fxmlLoader.getController();
@@ -49,7 +49,7 @@ public class UIMainMenu extends Application {
         // root.setTop(headerComponent);
         // root.setCenter(bodyComponent);
 
-        appController.setBodyComponentController(detailsBodyController);
+        // appController.setBodyComponentController(detailsBodyController);
         // appController.setHeaderComponentController(headerController);
 
         Scene scene = new Scene(root, 1000, 600);

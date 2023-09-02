@@ -2,6 +2,7 @@ package file.validate.impl;
 
 import generated.*;
 import static java.lang.Character.isDigit;
+import static java.lang.Character.isLetterOrDigit;
 
 public class PRDActionValidator {
     protected String errorMessage = "";
@@ -112,6 +113,7 @@ public class PRDActionValidator {
                 }
                 else{
                     errorMessage = "Can't find neither action type: " + action.getType() + "or divide/multiply/condition. \n";
+                    return false;
                 }
             }
         }
@@ -175,6 +177,9 @@ public class PRDActionValidator {
                 errorMessage = "Value inside random in increase/decrease/multiply/divide function is not a number. \n";
                 return false;
             }
+        }
+        else if (arg.startsWith("evaluate")){
+            return isEvaluationValid(oldWorld, arg);
         }
         else if(allCharactersAreDigits(arg)){
             return true;
@@ -396,6 +401,9 @@ public class PRDActionValidator {
                 return false;
             }
         }
+        else if(action.getValue().startsWith("evaluate")){
+            return handleEvaluateExpression(action, oldWorld);
+        }
         else if(action.getValue().equals("true") || action.getValue().equals("false")){
             String actionPropertyName = action.getProperty();
             String actionEntityName = action.getEntity();
@@ -442,6 +450,9 @@ public class PRDActionValidator {
         } else if (action.getValue().startsWith("random")) {
             return handleRandomExpressionValue(action) && setPropertyValidValue(myWorld, action);
         }
+        else if (action.getValue().startsWith("evaluate")){
+            return handleEvaluateExpression(action, myWorld);
+        }
         else if((action.getValue().equals("true") || action.getValue().equals("false")) && setPropertyValidValue(myWorld, action)){
             return true;
         }
@@ -477,6 +488,65 @@ public class PRDActionValidator {
             errorMessage = "Failure at expression: " + action.getValue() + ". Environment property: " + valueInExpression + "could not be found. \n";
         }
         return found;
+    }
+
+
+    private boolean handleEvaluateExpression(PRDAction action, PRDWorld oldWorld){
+        if(action.getType().equals("increase") || action.getType().equals("decrease")){
+            return isEvaluationValid(oldWorld, action.getBy());
+        }
+        else if(action.getType().equals("calculation")){
+            if(action.getPRDMultiply() != null){
+                return isEvaluationValid(oldWorld, action.getPRDMultiply().getArg1()) &&
+                        isEvaluationValid(oldWorld, action.getPRDMultiply().getArg2());
+            }
+            else if(action.getPRDDivide() != null){
+                return isEvaluationValid(oldWorld, action.getPRDDivide().getArg1()) &&
+                        isEvaluationValid(oldWorld, action.getPRDDivide().getArg2());
+            }
+            else {
+                errorMessage = "Calculation has no divide or multiply. \n";
+                return false;
+            }
+        } else if (action.getType().equals("set")){
+            return isEvaluationValid(oldWorld, action.getValue());
+        }
+        else if(action.getType().equals("condition") && action.getPRDCondition().getSingularity().equals("single"))
+        {
+            return isEvaluationValid(oldWorld, action.getPRDCondition().getValue());
+        } else if (action.getType().equals("proximity")){
+            return isEvaluationValid(oldWorld, action.getPRDEnvDepth().getOf());
+        }
+        else{
+            return true;
+        }
+    }
+
+    private boolean isEvaluationValid(PRDWorld oldWorld, String insideEvaluate){
+        insideEvaluate = extractValueFromExpression(insideEvaluate);
+        String[] parts = insideEvaluate.split("\\.");
+
+        if (parts.length == 2) {
+            String entName = parts[0];
+            String propName = parts[1];
+            PRDEntity tempEntity = findEntityInWorldByName(entName, oldWorld);
+            boolean propExist = doesPropertyExistInEntity(tempEntity, propName);
+            if(!propExist){
+                errorMessage = "Received: " + insideEvaluate + ", but can't find property: " + propName +
+                        "in entity: " + entName + ". \n";
+                return false;
+            }
+            if(tempEntity == null){
+                errorMessage = "Received: " + insideEvaluate + ", but can't find entity: " + entName + ". \n";
+                return false;
+            }
+        }
+        else {
+            errorMessage = "Can't work with expression: " + insideEvaluate + ". \n";
+            return false;
+        }
+
+        return true;
     }
 
     private boolean handleRandomExpressionValue(PRDAction action){

@@ -36,6 +36,10 @@ public class ContextImpl implements Context {
         grid = definitions.getGrid();
     }
 
+    public Set<Rule> getAllRules(){
+        return allRules;
+    }
+
     public void setContextID(int id){
         contextID = id;
     }

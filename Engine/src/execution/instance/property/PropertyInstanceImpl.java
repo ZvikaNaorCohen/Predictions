@@ -35,7 +35,7 @@ public class PropertyInstanceImpl implements PropertyInstance {
     }
 
     @Override
-    public int getTicksNotChanged(){
+    public float getTicksNotChanged(){
         return ticksNotChanged;
     }
 

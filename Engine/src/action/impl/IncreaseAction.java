@@ -10,7 +10,9 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import function.api.Function;
 import function.impl.EnvironmentFunction;
+import function.impl.EvaluateFunction;
 import function.impl.RandomFunction;
+import function.impl.TicksFunction;
 
 import static definition.value.generator.transformer.Transformer.StringToFloat;
 import static definition.value.generator.transformer.Transformer.StringToInteger;
@@ -40,12 +42,38 @@ public class IncreaseAction extends AbstractAction {
                     updatePropertyInstanceValueByEnvironment(context, propertyInstance);
                 } else if (byExpression.startsWith("random")) {
                     updatePropertyInstanceValueByRandom(propertyInstance);
-                } else if(instance.hasPropertyByName(byExpression)) {
+                } else if (byExpression.startsWith("evaluate")){
+                    updatePropertyInstanceValueByEvaluate(context, propertyInstance);
+                }
+                else if (byExpression.startsWith("percent")){
+                    // updatePropertyInstanceValueByPercent(context);
+                }
+                else if (byExpression.startsWith("ticks")){
+                    updatePropertyInstanceValueByTicks(context, propertyInstance);
+                }
+                else if(instance.hasPropertyByName(byExpression)) {
                     updatePropertyInstanceValueByProperty(context, propertyInstance);
                 } else { // ערך חופשי
                     updatePropertyInstanceValueByFreeValue(propertyInstance);
                 }
             }
+        }
+    }
+
+    private void updatePropertyInstanceValueByTicks(Context context, PropertyInstance propertyInstance){
+        Function func = new TicksFunction(byExpression);
+        Float oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Float newValue = oldValue + func.getTicksNotUpdated(context);
+        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+            propertyInstance.updateValue(newValue);
+        }
+    }
+    private void updatePropertyInstanceValueByEvaluate(Context context, PropertyInstance propertyInstance){
+        Function func = new EvaluateFunction(byExpression);
+        Float oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Float newValue = oldValue + (Float)func.getValueFromEvaluate(context);
+        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+            propertyInstance.updateValue(newValue);
         }
     }
     private void updatePropertyInstanceValueByProperty(Context context, PropertyInstance propertyInstance) {

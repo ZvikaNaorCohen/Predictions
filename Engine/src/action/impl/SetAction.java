@@ -8,7 +8,9 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import function.api.Function;
 import function.impl.EnvironmentFunction;
+import function.impl.EvaluateFunction;
 import function.impl.RandomFunction;
+import function.impl.TicksFunction;
 
 import static definition.value.generator.transformer.Transformer.StringToFloat;
 import static definition.value.generator.transformer.Transformer.StringToInteger;
@@ -47,7 +49,27 @@ public class SetAction extends AbstractAction {
                     if (className.equals("Integer") && propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer) randomFunction.getRandomValue())) {
                         instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
                     }
-                } else if (instance.hasPropertyByName(newPropertyValue)) {
+                }
+                else if (newPropertyValue.startsWith("evaluate")){
+                    Function evaluateFunction = new EvaluateFunction(newPropertyValue);
+                    Float value = (Float)evaluateFunction.getValueFromEvaluate(context);
+                    if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value)))
+                    {
+                        instance.getPropertyByName(property).updateValue(value);
+                        return;
+                    }
+                }
+                else if (newPropertyValue.startsWith("percent")){
+                    return;
+                }
+                else if (newPropertyValue.startsWith("ticks")){
+                    Function evaluateFunction = new TicksFunction(newPropertyValue);
+                    Float value = evaluateFunction.getTicksNotUpdated(context);
+                    if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value))) {
+                        instance.getPropertyByName(property).updateValue(value);
+                    }
+                    return;
+                }else if (instance.hasPropertyByName(newPropertyValue)) {
                     propertyInstance.updateValue(instance.getPropertyByName(newPropertyValue));
                 } else { // ערך חופשי
                     updatePropertyInstanceValueByFreeValue(propertyInstance);

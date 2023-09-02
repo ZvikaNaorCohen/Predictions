@@ -30,7 +30,7 @@ public class PercentFunction extends AbstractFunction {
     }
 
     @Override
-    public Integer getTicksNotUpdated(Context context) {
+    public Float getTicksNotUpdated(Context context) {
         return null;
     }
 }

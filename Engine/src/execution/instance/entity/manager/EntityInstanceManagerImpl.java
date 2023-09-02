@@ -17,6 +17,7 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
 
     private int count;
     private List<EntityInstance> instances;
+    private EntityInstance[][] grid;
 
     public EntityInstanceManagerImpl(int rows, int cols) {
         count = 0;
@@ -55,6 +56,15 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
     @Override
     public List<EntityInstance> getInstances() {
         return instances;
+    }
+
+    public void createEntityInstanceByName(String name){
+        for(EntityInstance temp : instances){
+            if(temp.getEntityDefinitionName().equals(name)){
+                create(temp.getEntityDef(), grid);
+                return;
+            }
+        }
     }
 
     @Override

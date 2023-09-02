@@ -4,8 +4,7 @@ import definition.entity.EntityDefinition;
 import definition.property.api.PropertyType;
 import execution.context.Context;
 import function.api.Function;
-import function.impl.EnvironmentFunction;
-import function.impl.RandomFunction;
+import function.impl.*;
 
 import static definition.value.generator.transformer.Transformer.StringToFloat;
 import static definition.value.generator.transformer.Transformer.StringToInteger;
@@ -32,7 +31,20 @@ public abstract class AbstractCalculationAction extends AbstractAction{
         } else if (arg.startsWith("random")) {
             Function func1 = new RandomFunction(arg);
             return func1.getRandomValue();
-        } else if (context.getPrimaryEntityInstance().hasPropertyByName(arg)) {
+        }else if (arg.startsWith("evaluate")){
+            Function func1 = new EvaluateFunction(arg);
+            return func1.getValueFromEvaluate(context);
+        }
+        else if (arg.startsWith("percent"))
+        {
+            Function func1 = new PercentFunction(arg);
+            return func1.getPercentFromFunction(context);
+        }
+        else if (arg.startsWith("ticks")){
+            Function func1 = new TicksFunction(arg);
+            return func1.getTicksNotUpdated(context);
+        }
+        else if (context.getPrimaryEntityInstance().hasPropertyByName(arg)) {
             return context.getPrimaryEntityInstance().getPropertyByName(arg).getValue();
         } else {
             if(context.getPrimaryEntityInstance().getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.DECIMAL){

@@ -18,22 +18,18 @@ import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.entity.manager.EntityInstanceManagerImpl;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.environment.impl.ActiveEnvironmentImpl;
-import generated.PRDEnvProperty;
-import generated.PRDEvironment;
-import generated.PRDWorld;
+import generated.*;
 import rule.Rule;
 import rule.Termination;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static file.generator.PRDtoWorld.*;
 
 public class AllData {
     private Termination terminationRules;
     private Map<String, EntityDefinition> allEntityDefinitions;
+    private Map<String, String> envPropertyNameAndType;
     private Set<Rule> allRules;
     private EnvVariablesManager envVariablesManager;
     private int maxRows, maxCols;
@@ -44,6 +40,7 @@ public class AllData {
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
         envVariablesManager = new EnvVariableManagerImpl();
+        envPropertyNameAndType = getEnvPropertyNameAndDef(oldWorld.getPRDEnvironment());
         maxRows = oldWorld.getPRDGrid().getRows();
         maxCols = oldWorld.getPRDGrid().getColumns();
         grid = new EntityInstance[maxRows][maxCols];
@@ -52,6 +49,20 @@ public class AllData {
     public EntityInstance[][] getGrid(){
         return grid;
     }
+
+    private Map<String, String> getEnvPropertyNameAndDef(PRDEnvironment environment){
+        Map<String, String> answer = new HashMap<>();
+        for(PRDEnvProperty def : environment.getPRDEnvProperty()){
+            answer.put(def.getPRDName(), def.getType());
+        }
+
+        return answer;
+    }
+
+    public Map<String, String> getEnvPropertyNamesAndTypes(){
+        return envPropertyNameAndType;
+    }
+
 
     public int getMaxRows(){return maxRows;}
     public int getMaxCols(){return maxCols;}
@@ -68,14 +79,12 @@ public class AllData {
 
     public Collection<PropertyDefinition> getEnvVariables(){return envVariablesManager.getEnvVariables();}
 
-//     public static EnvVariablesManager getAllEnvProperties(PRDEvironment environment){
+//     public static EnvVariablesManager getAllEnvProperties(PRDEnvironment environment){
+//        // This function is for screen 1, that needs some data for the env properties.
 //        EnvVariablesManager varManager = new EnvVariableManagerImpl();
-//        for(int i=0; i<environment.getPRDEnvProperty().size(); i++){
 //
-//        }
 //        for(PRDEnvProperty prop : environment.getPRDEnvProperty()){
-//
-//            PropertyDefinition newProp = fromPRDToPropEnvDef(prop);
+//            PropertyDefinition newProp = fromPRDToPropEnvDef(prop, 0, false);
 //            varManager.addEnvironmentVariable(newProp);
 //        }
 //

@@ -29,7 +29,7 @@ public class TicksFunction extends AbstractFunction {
     }
 
     @Override
-    public Integer getTicksNotUpdated(Context context) {
+    public Float getTicksNotUpdated(Context context) {
         String[] parts = expression.split("\\.");
         String entityName = parts[0];
         String propertyName = parts[1];
