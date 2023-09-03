@@ -63,6 +63,22 @@ public class AllData {
         return envPropertyNameAndType;
     }
 
+    public int getMaxEntitiesAllowed(){
+        return maxRows * maxCols;
+    }
+
+    public int getCountOfAliveEntities(){
+        int counter = 0;
+        for(int i=0; i<maxRows;i++){
+            for(int j=0; j<maxCols;j++){
+                if(grid[i][j] != null){
+                    counter++;
+                }
+            }
+        }
+
+        return counter;
+    }
 
     public int getMaxRows(){return maxRows;}
     public int getMaxCols(){return maxCols;}

@@ -10,6 +10,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import resources.body.DetailsBodyController;
+import resources.body.NewExecutionBodyController;
 import resources.body.ResultsBodyController;
 import resources.header.HeaderController;
 import execution.context.Context;
@@ -32,12 +33,18 @@ public class AppController {
     @FXML private AnchorPane resultsBodyComponent;
     @FXML private ResultsBodyController resultsBodyComponentController;
 
+    @FXML private AnchorPane newExecutionBody;
+
+    @FXML private NewExecutionBodyController newExecutionBodyController;
+
     @FXML
     public void initialize() {
         if(headerComponentController != null && detailsBodyComponentController != null){
             headerComponentController.setMainController(this);
             detailsBodyComponentController.setMainController(this);
             resultsBodyComponentController.setMainController(this);
+            newExecutionBodyController.setMainController(this);
+
         }
     }
 
@@ -52,7 +59,11 @@ public class AppController {
     }
 
     public void updateScreenOne(){
-        detailsBodyComponentController.displayAllData(myRunningWorld, allData);
+        detailsBodyComponentController.displayAllData(myRunningWorld, allData, oldWorld);
+    }
+
+    public void updateScreenTwo(){
+        newExecutionBodyController.displayAllData(allData);
     }
 
     public void setDataFromFile(PRDWorld world){

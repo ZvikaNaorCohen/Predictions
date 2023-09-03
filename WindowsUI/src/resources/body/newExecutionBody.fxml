@@ -1,12 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="432.0" prefWidth="835.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="subAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.body.NewExecutionBodyController">
    <children>
-      <ScrollPane prefHeight="371.0" prefWidth="262.0" />
-      <ScrollPane layoutX="270.0" prefHeight="371.0" prefWidth="565.0" />
+      <GridPane prefHeight="480.0" prefWidth="950.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="470.2000732421875" minWidth="10.0" prefWidth="363.800048828125" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="586.199951171875" minWidth="10.0" prefWidth="586.199951171875" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="385.1999877929687" minHeight="10.0" prefHeight="371.6000122070312" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="235.60001220703126" minHeight="10.0" prefHeight="109.19998779296878" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="clearButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="115.0" text="CLEAR" GridPane.rowIndex="1" />
+            <Button fx:id="startButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="115.0" text="START" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+            <ScrollPane fx:id="simEntitiesPopulation" prefHeight="200.0" prefWidth="200.0">
+               <content>
+                  <SplitPane prefHeight="366.0" prefWidth="361.0">
+                     <items>
+                        <SplitPane prefHeight="160.0" prefWidth="200.0">
+                           <items>
+                              <TableView fx:id="simEntitiesTable" editable="true" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="entityCol" prefWidth="165.5999053597443" text="Entity" />
+                                  <TableColumn fx:id="desiredPopulationCol" minWidth="0.0" prefWidth="196.00010681152344" text="DesiredPopulation" />
+                                </columns>
+                              </TableView>
+                           </items>
+                        </SplitPane>
+                     </items>
+                  </SplitPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fx:id="simEnvironmentInputsSP" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>

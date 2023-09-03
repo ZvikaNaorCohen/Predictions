@@ -61,6 +61,7 @@ public class HeaderController {
                 filePathText.setText(filePath);
                 showFileLoaded();
                 mainController.updateScreenOne();
+                mainController.updateScreenTwo();
 
             } else {
                 showInvalidFileAlert("File is not an XML file! Please try again.");

@@ -8,13 +8,18 @@ import java.util.List;
 public class EntityDefinitionImpl implements EntityDefinition {
 
     private final String name;
-    private final int population;
+    private int population;
     private final List<PropertyDefinition> properties;
 
     public EntityDefinitionImpl(String name, int population) {
         this.name = name;
         this.population = population;
         properties = new ArrayList<>();
+    }
+
+    @Override
+    public void setDesiredPopulation(int inputPopulation){
+        this.population = inputPopulation;
     }
 
     @Override

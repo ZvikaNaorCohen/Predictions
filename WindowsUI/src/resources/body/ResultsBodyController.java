@@ -7,15 +7,15 @@ import resources.app.AppController;
 
 public class ResultsBodyController {
     @FXML
-    AnchorPane subAnchorPane;
-    @FXML AppController mainController;
+    private AnchorPane subAnchorPane;
+    @FXML private AppController mainController;
 
     @FXML
-    ListView executionListView;
+    private ListView executionListView;
 
-    @FXML ListView executionResultListView;
+    @FXML private ListView executionResultListView;
 
-    @FXML ListView executionDetailsListView;
+    @FXML private ListView executionDetailsListView;
 
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
