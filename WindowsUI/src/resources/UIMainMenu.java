@@ -46,6 +46,7 @@ public class UIMainMenu extends Application {
         AppController appController = fxmlLoader.getController();
 
 
+
         // root.setTop(headerComponent);
         // root.setCenter(bodyComponent);
 
@@ -53,6 +54,7 @@ public class UIMainMenu extends Application {
         // appController.setHeaderComponentController(headerController);
 
         Scene scene = new Scene(root, 1000, 600);
+        primaryStage.setTitle("Predictions V2.0");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

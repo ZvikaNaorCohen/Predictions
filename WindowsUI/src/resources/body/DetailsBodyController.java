@@ -165,6 +165,42 @@ public class DetailsBodyController {
     }
 
 
+    private String getActionDetailToTextArea(PRDAction action){
+        switch(action.getType()){
+            case "increase": // type, entity, property, by
+            {
+                return increaseActionItemToAdd(action);
+            }
+            case "decrease": // type, entity, property, by
+            {
+                return increaseActionItemToAdd(action);
+            }
+            case "calculation": // type, entity, result-prop
+            {
+                return calculationActionItemToAdd(action);
+            }
+            case "condition": // type, entity
+            {
+                return conditionActionItemToAdd(action);
+            }case "set": // type, entity, property, value
+            {
+                return setActionItemToAdd(action);
+            }case "kill": // type, entity
+            {
+                return killActionItemToAdd(action);
+            }
+            case "replace": // type, kill, create, mode
+            {
+                return replaceActionItemToAdd(action);
+            }
+            case "proximity": // between: source-entity, target-entity. of: (expression). PRDActions.
+            {
+                return proximityActionItemToAdd(action);
+            }
+        }
+
+        return "";
+    }
     public void setMainController(AppController mainController) {
         this.mainController = mainController;
     }
@@ -172,51 +208,9 @@ public class DetailsBodyController {
     private void updateRulesSub(TreeItem<String> rulesSub, PRDRules allRules){
         for (PRDRule rule : allRules.getPRDRule()) {
             TreeItem<String> ruleItem = new TreeItem<>(rule.getName());
-            for(PRDAction action : rule.getPRDActions().getPRDAction()){
-                String actionItemToAdd = "";
-                switch(action.getType()){
-
-                    case "increase": // type, entity, property, by
-                    {
-                        actionItemToAdd = increaseActionItemToAdd(action);
-                        break;
-                    }
-                    case "decrease": // type, entity, property, by
-                    {
-                        actionItemToAdd = increaseActionItemToAdd(action);
-                        break;
-                    }
-                    case "calculation": // type, entity, result-prop
-                    {
-                        actionItemToAdd = calculationActionItemToAdd(action);
-                        break;
-                    }
-                    case "condition": // type, entity
-                    {
-                        actionItemToAdd = conditionActionItemToAdd(action);
-                        break;
-                    }case "set": // type, entity, property, value
-                    {
-                        actionItemToAdd = setActionItemToAdd(action);
-                        break;
-                    }case "kill": // type, entity
-                    {
-                        actionItemToAdd = killActionItemToAdd(action);
-                        break;
-                    }
-                    case "replace": // type, kill, create, mode
-                    {
-                        actionItemToAdd = replaceActionItemToAdd(action);
-                        break;
-                    }
-                    case "proximity": // between: source-entity, target-entity. of: (expression). PRDActions.
-                    {
-                        actionItemToAdd = proximityActionItemToAdd(action);
-                        break;
-                    }
-                }
-                // String actionItemToAdd = "Type:" + action.getActionType().toString() + ". Entity: " + action.getContextEntity().getName() + ". \n";
-                TreeItem<String> actionItem = new TreeItem<>(action.getType());
+            for(int i=0; i<rule.getPRDActions().getPRDAction().size(); i++){
+                PRDAction action = rule.getPRDActions().getPRDAction().get(i);
+                TreeItem<String> actionItem = new TreeItem<>(i+1 +". " + action.getType());
                 ruleItem.getChildren().add(actionItem);
             }
             rulesSub.getChildren().add(ruleItem);
@@ -273,7 +267,7 @@ public class DetailsBodyController {
         }
     }
 
-    private void handleClick(TreeItem<String> selectedItem, AllData allData) {
+    private void handleClick(TreeItem<String> selectedItem, AllData allData, PRDWorld world) {
         if (selectedItem != null) {
             String itemValue = selectedItem.getValue();
             if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Data")) {
@@ -287,16 +281,28 @@ public class DetailsBodyController {
                 } else if (selectedItem.getParent().getValue().equals("Entities")) {
                     handleEntityClicked(itemValue, allData.getMapAllEntities());
                 }
-                // wait for aviad response in email - how to show the data
-//                else if (selectedItem.getParent().getParent().getValue().equals("Rules")){
-//                    handleActionClicked(itemValue, selectedItem.getParent().getValue(), allData.getAllRulesFromAllData());
-//                }
+                else if (selectedItem.getParent().getParent().getValue().equals("Rules")){
+                    handleActionClicked(itemValue, selectedItem.getParent().getValue(), world.getPRDRules());
+                }
             }
         }
     }
 
-    private void handleActionClicked(String actionName, String ruleName, Set<Rule> allRules){
+    private PRDRule getPRDRuleByName(String ruleName, PRDRules allRules){
+        for(PRDRule rule : allRules.getPRDRule()){
+            if(rule.getName().equals(ruleName)){
+                return rule;
+            }
+        }
 
+        return null;
+    }
+
+    private void handleActionClicked(String actionName, String ruleName, PRDRules allRules){
+        String[] parts = actionName.split("\\.");
+        Integer index = Integer.parseInt(parts[0]);
+        index--;
+        detailsTextArea.setText(getActionDetailToTextArea(getPRDRuleByName(ruleName, allRules).getPRDActions().getPRDAction().get(index)));
     }
 
     public void displayAllData(Context context, AllData allData, PRDWorld oldWorld) {
@@ -324,7 +330,7 @@ public class DetailsBodyController {
             @Override
             public void handle(MouseEvent event) {
                 TreeItem<String> selectedItem = masterTreeView.getSelectionModel().getSelectedItem();
-                handleClick(selectedItem, allData);
+                handleClick(selectedItem, allData, oldWorld);
             }
         });
     }
