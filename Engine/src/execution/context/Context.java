@@ -13,6 +13,8 @@ public interface Context {
     Termination getTerminationRules();
     void setContextID(int id);
 
+    EntityInstance[][] getGrid();
+
     Set<Rule> getAllRules();
     int getID();
     EntityInstance getPrimaryEntityInstance();

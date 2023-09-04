@@ -46,6 +46,8 @@ public class ContextImpl implements Context {
 
     public int getID(){return contextID;}
 
+    public EntityInstance[][] getGrid(){return grid;}
+
     public ActiveEnvironment getActiveEnvironment(){
         return activeEnvironment;
     }
