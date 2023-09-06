@@ -20,6 +20,8 @@ public class Termination {
         endByTicks = ticks;
     }
 
+    public boolean endByUser(){return endByUser;}
+
     public Termination(boolean byUser){
         endByUser = byUser;
     }

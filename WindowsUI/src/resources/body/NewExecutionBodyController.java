@@ -2,6 +2,7 @@ package resources.body;
 
 import definition.entity.EntityDefinition;
 import engine.AllData;
+import execution.instance.entity.EntityInstance;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,7 +14,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.DefaultStringConverter;
 import resources.app.AppController;
 
+import java.util.Map;
+
 public class NewExecutionBodyController {
+    private int totalEntitiesAllowed;
+    private int currentTotalEntities;
 
     @FXML
     AppController mainController;
@@ -30,13 +35,13 @@ public class NewExecutionBodyController {
     private AnchorPane subAnchorPane;
 
     @FXML
-    private TableColumn<String, String> entityCol; // Update the TableColumn type
+    private TableColumn<EntityDefinition, String> entityCol;
 
     @FXML
-    private TableColumn<String, String> desiredPopulationCol; // Change the TableColumn type
+    private TableColumn<EntityDefinition, String> desiredPopulationCol;
 
     @FXML
-    private TableView<String> simEntitiesTable;
+    private TableView<EntityDefinition> simEntitiesTable;
     @FXML
     private ScrollPane simEnvironmentInputsSP;
 
@@ -44,44 +49,53 @@ public class NewExecutionBodyController {
         this.mainController = mainController;
     }
 
-    public void displayAllData(AllData allData){
-        ObservableList<String> data = FXCollections.observableArrayList(allData.getMapAllEntities().keySet());
-        simEntitiesTable.setItems(data);
-        entityCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()));
+    public void displayAllData(AllData allData) {
+        ObservableList<EntityDefinition> entities = FXCollections.observableArrayList(allData.getMapAllEntities().values());
+        // ObservableList<String> populations = FXCollections.observableArrayList();
+        totalEntitiesAllowed = allData.getMaxEntitiesAllowed();
+        simEntitiesTable.setItems(entities);
+        for(Map.Entry<String, EntityDefinition> string : allData.getMapAllEntities().entrySet()){
+            currentTotalEntities += string.getValue().getPopulation();
+        }
+
+        entityCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        desiredPopulationCol.setCellValueFactory(cellData -> {
+            EntityDefinition entity = cellData.getValue();
+            return new SimpleStringProperty(Integer.toString(entity.getPopulation()));
+        });
+
+
 
         desiredPopulationCol.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
         desiredPopulationCol.setOnEditCommit(event -> {
-            String newValueInString = event.getNewValue();
-            String entityName = event.getRowValue();
+                String newValueInString = event.getNewValue();
+                EntityDefinition entity = event.getRowValue();
+
             try {
                 int newIntValue = Integer.parseInt(newValueInString);
-                EntityDefinition entity = allData.getMapAllEntities().get(entityName);
-                entity.setDesiredPopulation(newIntValue);
-
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                int maxEntitiesAllowed = allData.getMaxEntitiesAllowed();
-                int numberOfAliveEntities = allData.getCountOfAliveEntities();
 
-                if(newIntValue + numberOfAliveEntities <= maxEntitiesAllowed){
+                if (newIntValue + currentTotalEntities <= totalEntitiesAllowed) {
                     alert.setContentText("Entity: " + entity.getName() + " received population: " + newIntValue + ". ");
-                }
-                else if(maxEntitiesAllowed < numberOfAliveEntities+newIntValue){
-                    alert.setAlertType(Alert.AlertType.ERROR);
-                    alert.setContentText("Can only have: " + maxEntitiesAllowed + " entities on screen. You tried to put: " + newIntValue + " + " + numberOfAliveEntities + " entities. ");
-                    event.getTableView().getItems().set(event.getTablePosition().getRow()-1, entityName);
+                    entity.setDesiredPopulation(newIntValue);
+                    currentTotalEntities += newIntValue;
+                } else {
+                    throw new Exception("Can only have: " + totalEntitiesAllowed + " entities on screen. You tried to put: " + newIntValue + " + " + currentTotalEntities + " entities. ");
                 }
 
                 alert.showAndWait();
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Invalid Population Input");
-                alert.setContentText("The string input: " + newValueInString + " is not an integer. This is population field - give me a number !!!");
+                alert.setContentText("Invalid input. Reason: " + e);
                 alert.showAndWait();
 
-                event.getTableView().getItems().set(event.getTablePosition().getRow(), entityName);
+                currentTotalEntities -= entity.getPopulation();
+                entity.setDesiredPopulation(0);
+                simEntitiesTable.refresh(); // Refresh the table to reflect the change
             }
         });
-
     }
+
 
 }

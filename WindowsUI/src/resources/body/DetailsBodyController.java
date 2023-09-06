@@ -54,7 +54,7 @@ public class DetailsBodyController {
 
     private String increaseActionItemToAdd(PRDAction action){
         String answer = "";
-        answer += "Action type: " + action.getType() + ". Main entity: " + action.getEntity() + ". \n ";
+        answer += "Action type: " + action.getType() + ". Main entity: " + action.getEntity() + ". \n";
         if(action.getPRDSecondaryEntity() != null){
             answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
         }
@@ -68,7 +68,7 @@ public class DetailsBodyController {
 
     private String calculationActionItemToAdd(PRDAction action){
         String answer = "";
-        answer += "Action type: " + action.getType() + ". Main entity: " + action.getEntity() + ". \n ";
+        answer += "Action type: " + action.getType() + ". Main entity: " + action.getEntity() + ". \n";
         answer += "Result-prop: " + action.getResultProp() +". \n";
 
 
@@ -267,12 +267,36 @@ public class DetailsBodyController {
         }
     }
 
+    private void handleTerminationClick(AllData allData){
+        String textToSet = "";
+        if(allData.getTerminationFromAllData().endByUser()){
+            textToSet = "Termination is ending by user input (should click pause/stop buttons). \n";
+        }
+        else {
+            if(allData.getTerminationFromAllData().getEndBySeconds() != -1){
+                textToSet = "End by seconds: " + allData.getTerminationFromAllData().getEndBySeconds() + ". \n";
+            }
+            if(allData.getTerminationFromAllData().getEndByTicks() != -1){
+                textToSet += "End by ticks: " + allData.getTerminationFromAllData().getEndByTicks() + ". \n";
+            }
+        }
+
+        detailsTextArea.setText(textToSet);
+    }
+
     private void handleClick(TreeItem<String> selectedItem, AllData allData, PRDWorld world) {
         if (selectedItem != null) {
             String itemValue = selectedItem.getValue();
             if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Data")) {
-                // Display action details in the TextArea
-                detailsTextArea.setText("Selected:" + itemValue);
+                if(selectedItem.getValue().equals("Grid")){
+                    detailsTextArea.setText("Grid max rows: " + allData.getMaxRows() + ". \nGrid max cols: " + allData.getMaxCols() + ". ");
+                }
+                else if (selectedItem.getValue().equals("Termination")){
+                    handleTerminationClick(allData);
+                }
+                else{
+                    detailsTextArea.setText("Selected:" + itemValue);
+                }
             } else {
                 if (selectedItem.getParent().getValue().equals("Rules")) {
                     handleRuleClicked(itemValue, allData.getAllRulesFromAllData());
@@ -310,14 +334,17 @@ public class DetailsBodyController {
         TreeItem<String> rulesSub = new TreeItem<>("Rules");
         TreeItem<String> envSub = new TreeItem<>("EnvVariables");
         TreeItem<String> entitiesSub = new TreeItem<>("Entities");
+        TreeItem<String> gridSub = new TreeItem<>("Grid");
+        TreeItem<String> terminationSub = new TreeItem<>("Termination");
 
         root.getChildren().add(rulesSub);
         root.getChildren().add(envSub);
         root.getChildren().add(entitiesSub);
+        root.getChildren().add(gridSub);
+        root.getChildren().add(terminationSub);
 
         root.setExpanded(true);
 
-        Set<Rule> allRules = context.getAllRules();
         updateRulesSub(rulesSub, oldWorld.getPRDRules());
         updateEnvSub(envSub, allData.getEnvPropertyNamesAndTypes());
         updateEntitiesSub(entitiesSub, allData.getMapAllEntities());

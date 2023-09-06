@@ -522,6 +522,54 @@ public class PRDActionValidator {
         }
     }
 
+    private boolean validInsidePercentExpression(PRDAction action, PRDWorld oldWorld, String percent){
+        if(percent.startsWith("environment")){
+            String valueInsideEnvironment = extractValueFromExpression(percent);
+            PRDEnvProperty prop = getEnvPropFromWorldByName(valueInsideEnvironment, oldWorld);
+            if(prop == null){
+                errorMessage = "Couldn't find property: " + valueInsideEnvironment + " as environment property. \n";
+                return false;
+            }
+            if(!prop.getType().equals("decimal") && !prop.getType().equals("float")){
+                errorMessage = "In increase/decrease/multiply/divide function, environment property " + valueInsideEnvironment + " is not numeric. \n";
+                return false;
+            }
+        }
+        if(percent.startsWith("random")){
+            String valueInsideRandom = extractValueFromExpression(percent);
+            if(!stringPotentiallyFloat(valueInsideRandom)){
+                errorMessage = "Value inside random in increase/decrease/multiply/divide function is not a number. \n";
+                return false;
+            }
+        }
+        if(percent.startsWith("evaluate")){
+            return true;
+        }
+
+        return true;
+    }
+
+    private boolean isPercentValid(PRDAction action, PRDWorld oldWorld, String wholeString){
+        String[] parts = wholeString.split(",");
+
+        // Check if there are two parts
+        if (parts.length == 2) {
+            String part1 = parts[0].trim(); // Trim to remove leading/trailing spaces
+            String part2 = parts[1].trim(); // Trim to remove leading/trailing spaces
+
+            if(validInsidePercentExpression(action, oldWorld, part1) && validInsidePercentExpression(action, oldWorld, part2)){
+                // Check that both are decimal
+                return true;
+            }
+
+            errorMessage = "Couldn't figure expressions in percent. Expression1: " + part1 + ". Expression2: " + part2 + ". \n";
+
+        } else {
+            errorMessage = "In Percent expression, couldn't resolve the expression: " + wholeString + ". \n";
+        }
+        return false;
+    }
+
     private boolean isEvaluationValid(PRDWorld oldWorld, String insideEvaluate){
         insideEvaluate = extractValueFromExpression(insideEvaluate);
         String[] parts = insideEvaluate.split("\\.");
@@ -542,7 +590,7 @@ public class PRDActionValidator {
             }
         }
         else {
-            errorMessage = "Can't work with expression: " + insideEvaluate + ". \n";
+            errorMessage = "Can't work with evaluation expression: " + insideEvaluate + ". \n";
             return false;
         }
 
