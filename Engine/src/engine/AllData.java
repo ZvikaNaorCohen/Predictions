@@ -30,6 +30,7 @@ public class AllData {
     private Termination terminationRules;
     private Map<String, EntityDefinition> allEntityDefinitions;
     private Map<String, String> envPropertyNameAndType;
+    private Map<String, PRDEnvProperty> envPropNameAndPRDEnvProp;
     private Set<Rule> allRules;
     private EnvVariablesManager envVariablesManager;
     private int maxRows, maxCols;
@@ -41,11 +42,22 @@ public class AllData {
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
         envVariablesManager = new EnvVariableManagerImpl();
         envPropertyNameAndType = getEnvPropertyNameAndDef(oldWorld.getPRDEnvironment());
+        envPropNameAndPRDEnvProp = getEnvProperties(oldWorld.getPRDEnvironment());
         maxRows = oldWorld.getPRDGrid().getRows();
         maxCols = oldWorld.getPRDGrid().getColumns();
         grid = new EntityInstance[maxRows][maxCols];
     }
 
+    public Map<String, PRDEnvProperty> getMapOfPropEnvNameAndDef(){return envPropNameAndPRDEnvProp;}
+
+    private Map<String, PRDEnvProperty> getEnvProperties(PRDEnvironment environment){
+        Map<String, PRDEnvProperty> answer = new HashMap<>();
+        for(PRDEnvProperty def : environment.getPRDEnvProperty()){
+            answer.put(def.getPRDName(), def);
+        }
+
+        return answer;
+    }
     public EntityInstance[][] getGrid(){
         return grid;
     }

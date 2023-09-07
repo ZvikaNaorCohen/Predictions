@@ -29,6 +29,10 @@ public class AppController {
     @FXML private HeaderController headerComponentController;
     @FXML private AnchorPane detailsBodyComponent;
     @FXML private DetailsBodyController detailsBodyComponentController;
+    @FXML private TabPane allTabs;
+    @FXML private Tab newExecutionTab;
+    @FXML private Tab detailsTab;
+    @FXML private Tab resultsTab;
 
     @FXML private AnchorPane resultsBodyComponent;
     @FXML private ResultsBodyController resultsBodyComponentController;
@@ -48,6 +52,10 @@ public class AppController {
         }
     }
 
+    public void switchToResultsTab() {
+        allTabs.getSelectionModel().select(resultsTab);
+    }
+
     public void setHeaderComponentController(HeaderController headerComponentController) {
         this.headerComponentController = headerComponentController;
         headerComponentController.setMainController(this);
@@ -63,7 +71,7 @@ public class AppController {
     }
 
     public void updateScreenTwo(){
-        newExecutionBodyController.displayAllData(allData);
+        newExecutionBodyController.displayAllData(oldWorld, allData);
     }
 
     public void setDataFromFile(PRDWorld world){

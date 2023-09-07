@@ -10,7 +10,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <AnchorPane fx:id="subAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.body.NewExecutionBodyController">
    <children>
       <GridPane prefHeight="480.0" prefWidth="950.0">
@@ -43,7 +42,17 @@
                   </SplitPane>
                </content>
             </ScrollPane>
-            <ScrollPane fx:id="simEnvironmentInputsSP" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+            <ScrollPane fx:id="simEnvironmentInputsSP" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <content>
+                  <TableView fx:id="envPropertiesTable" editable="true" prefHeight="368.0" prefWidth="581.0">
+                    <columns>
+                      <TableColumn fx:id="envPropNameCol" prefWidth="140.79992371797562" text="EnvPropName" />
+                      <TableColumn fx:id="envPropTypeCol" minWidth="0.0" prefWidth="114.40003967285156" text="Type" />
+                        <TableColumn fx:id="envPropRangeCol" minWidth="0.0" prefWidth="115.199951171875" text="Range" />
+                        <TableColumn fx:id="envPropDesiredValueCol" minWidth="0.0" prefWidth="209.60000000000002" text="Desired Value" />
+                    </columns>
+                  </TableView>
+               </content></ScrollPane>
          </children>
       </GridPane>
    </children>
