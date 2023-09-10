@@ -17,6 +17,10 @@ public class EnvVariableManagerImpl implements EnvVariablesManager {
         propNameToPropDefinition = new HashMap<>();
     }
 
+    public PropertyDefinition getPropertyDefinitionByName(String name){
+        return propNameToPropDefinition.get(name);
+    }
+
     @Override
     public void addEnvironmentVariable(PropertyDefinition propertyDefinition) {
         propNameToPropDefinition.put(propertyDefinition.getName(), propertyDefinition);

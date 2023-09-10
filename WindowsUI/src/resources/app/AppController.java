@@ -66,7 +66,7 @@ public class AppController {
 
     public void runExecution(Context context){
         executionManager.addNewContext(context);
-        // context.runSimulation();
+        context.runSimulation();
     }
 
     public void addNewExecution(Context context){

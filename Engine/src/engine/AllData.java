@@ -18,6 +18,7 @@ import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.entity.manager.EntityInstanceManagerImpl;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.environment.impl.ActiveEnvironmentImpl;
+import file.generator.PRDtoWorld;
 import generated.*;
 import rule.Rule;
 import rule.Termination;
@@ -40,7 +41,7 @@ public class AllData {
         terminationRules = getTerminationRules(oldWorld.getPRDTermination());
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
-        envVariablesManager = new EnvVariableManagerImpl();
+        envVariablesManager = PRDtoWorld.getEnvVariablesManager(oldWorld);
         envPropertyNameAndType = getEnvPropertyNameAndDef(oldWorld.getPRDEnvironment());
         envPropNameAndPRDEnvProp = getEnvProperties(oldWorld.getPRDEnvironment());
         maxRows = oldWorld.getPRDGrid().getRows();

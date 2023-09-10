@@ -16,6 +16,24 @@ public class DivideAction extends AbstractCalculationAction {
         argument2 = arg2;
     }
 
+    private int getIntFromObject(Object input){
+        if(input instanceof Integer){
+            return (int) input;
+        }
+        else{
+            return Math.round((float)input);
+        }
+    }
+
+    private float getFloatFromObject(Object input){
+        if(input instanceof Integer){
+            return Math.round((float)input);
+        }
+        else{
+            return (float)input;
+        }
+    }
+
     @Override
     public void invoke(Context context) {
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
@@ -25,15 +43,15 @@ public class DivideAction extends AbstractCalculationAction {
                 Object argument2Value = getArgumentValue(context, argument2);
 
                 if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.DECIMAL) {
-                    Integer val1 = (Integer) argument1Value;
-                    Integer val2 = (Integer) argument2Value;
+                    int val1 = getIntFromObject(argument1Value);
+                    int val2 = getIntFromObject(argument2Value);
                     if(instance.getPropertyByName(resultProp).getPropertyDefinition().newValueInCorrectBounds(val1/val2)) {
                         instance.getPropertyByName(resultProp).updateValue(val1 / val2);
                     }
                 }
                 if (instance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
-                    Float val1 = (Float) argument1Value;
-                    Float val2 = (Float) argument2Value;
+                    float val1 = getFloatFromObject(argument1Value);
+                    float val2 = getFloatFromObject(argument2Value);
                     if(instance.getPropertyByName(resultProp).getPropertyDefinition().newValueInCorrectBounds(val1/val2)){
                         instance.getPropertyByName(resultProp).updateValue(val1 / val2);
                     }

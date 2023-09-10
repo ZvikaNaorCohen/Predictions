@@ -1,14 +1,16 @@
 package resources.body;
 
 import definition.entity.EntityDefinition;
+import definition.environment.api.EnvVariablesManager;
 import definition.property.api.PropertyDefinition;
 import engine.AllData;
 import execution.context.Context;
 import execution.context.ContextImpl;
-import execution.instance.entity.EntityInstance;
-import generated.PRDEntity;
+import execution.instance.environment.api.ActiveEnvironment;
+import execution.instance.environment.impl.ActiveEnvironmentImpl;
+import execution.instance.property.PropertyInstance;
+import execution.instance.property.PropertyInstanceImpl;
 import generated.PRDEnvProperty;
-import generated.PRDProperty;
 import generated.PRDWorld;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -193,6 +195,7 @@ public class NewExecutionBodyController {
 
     private void handleStartButtonClick(AllData allData){
         Context context = new ContextImpl(allData);
+        context.setActiveEnvironment(createActiveEnvironment(allData));
         context.setContextID(mainController.getIDForContext());
         mainController.addNewExecution(context);
         mainController.runExecution(context);
@@ -217,5 +220,43 @@ public class NewExecutionBodyController {
 
     }
 
+    private PropertyInstance propertyInstanceFixedValue(String oldValue, PropertyDefinition definition){
+        switch(definition.getType().name()){
+            case "float":{
+                return new PropertyInstanceImpl(definition, Float.parseFloat(oldValue));
+            }
 
+            case "boolean":
+            {
+                if(oldValue.equals("true")){
+                    return new PropertyInstanceImpl(definition, true);
+                }
+                else{
+                    return new PropertyInstanceImpl(definition, false);
+                }
+            }
+
+            case "string":{
+                return new PropertyInstanceImpl(definition, oldValue);
+            }
+        }
+
+        return null;
+    }
+
+    private ActiveEnvironment createActiveEnvironment(AllData allData) {
+        ActiveEnvironment newActiveEnv = new ActiveEnvironmentImpl();
+        for (PRDEnvProperty envProperty : envPropertiesTable.getItems()) {
+            String desiredValue = envPropDesiredValueCol.getCellObservableValue(envProperty).getValue();
+            String propertyName = envProperty.getPRDName();
+            PropertyDefinition newDefinition = allData.getEnvVariablesManager().getPropertyDefinitionByName(propertyName);
+            if (desiredValue.equals("")) {
+                newActiveEnv.addPropertyInstance(new PropertyInstanceImpl(newDefinition, newDefinition.generateValue()));
+            } else {
+                newActiveEnv.addPropertyInstance(propertyInstanceFixedValue(desiredValue, newDefinition));
+            }
+
+        }
+        return newActiveEnv;
+    }
 }

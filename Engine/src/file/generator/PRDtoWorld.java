@@ -229,10 +229,50 @@ public class PRDtoWorld {
         return newProp;
     }
 
+    private static PropertyDefinition fromPRDToEnvironmentDef(PRDEnvProperty prop) {
+        if (prop.getPRDRange() == null) {
+            switch (prop.getType()) {
+                case "decimal": {
+                    return new IntegerPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(1), 0, 0);
+                }
+                case "float": {
+                    return new FloatPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(1f), 0, 0);
+                }
+                case "boolean": {
+                    return new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(true), 0, 0);
+                }
+                case "string": {
+                    return new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>("ya welli"), 0, 0);
+                }
+            }
+        } else {
+            switch (prop.getType()) {
+                case "decimal": {
+                    int from = (int) prop.getPRDRange().getFrom();
+                    int to = (int) prop.getPRDRange().getTo();
+                    return new IntegerPropertyDefinition(prop.getPRDName(), new RandomIntegerGenerator(from, to), from, to);
+                }
+                case "float": {
+                    int from = (int) prop.getPRDRange().getFrom();
+                    int to = (int) prop.getPRDRange().getTo();
+                    return new FloatPropertyDefinition(prop.getPRDName(), new RandomFloatGenerator(from, to), from, to);
+                }
+                case "boolean": {
+                    return new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(true), 0, 0);
+                }
+                case "string": {
+                    return new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>("ya welli"), 0, 0);
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static Map<String, EntityDefinition> getAllEntityDefinitions(PRDEntities entities) {
         Map<String, EntityDefinition> myList = new HashMap<>();
         for (PRDEntity entity : entities.getPRDEntity()) {
-            EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), 999);
+            EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), 5);
             for (PRDProperty prop : entity.getPRDProperties().getPRDProperty()) {
                 PropertyDefinition newProp = fromPRDToPropDef(prop);
                 entityImpl.addPropertyDefinition(newProp);
@@ -240,5 +280,15 @@ public class PRDtoWorld {
             myList.put(entityImpl.getName(), entityImpl);
         }
         return myList;
+    }
+
+    public static EnvVariablesManager getEnvVariablesManager(PRDWorld world){
+        EnvVariablesManager envVariablesManager = new EnvVariableManagerImpl();
+        for(PRDEnvProperty envProperty : world.getPRDEnvironment().getPRDEnvProperty()){
+            PropertyDefinition newDefinition = fromPRDToEnvironmentDef(envProperty);
+            envVariablesManager.addEnvironmentVariable(newDefinition);
+        }
+
+        return envVariablesManager;
     }
 }
