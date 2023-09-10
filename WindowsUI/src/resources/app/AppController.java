@@ -3,6 +3,7 @@ package resources.app;
 import DTO.ContextDTO;
 import engine.AllData;
 import execution.context.ContextImpl;
+import executionManager.ExecutionManager;
 import generated.PRDWorld;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
@@ -20,6 +21,9 @@ import java.util.Map;
 
 public class AppController {
     private Context myRunningWorld;
+    private ExecutionManager executionManager = new ExecutionManager();
+
+    private Map<Integer, Context> idToContext = new HashMap<>();
     private PRDWorld oldWorld;
     private Map<String, Context> pastRuns;
 
@@ -52,8 +56,22 @@ public class AppController {
         }
     }
 
+    public int getIDForContext(){
+        return executionManager.getIDForContext();
+    }
+
     public void switchToResultsTab() {
         allTabs.getSelectionModel().select(resultsTab);
+    }
+
+    public void runExecution(Context context){
+        executionManager.addNewContext(context);
+        // context.runSimulation();
+    }
+
+    public void addNewExecution(Context context){
+        idToContext.put(context.getID(), context);
+        resultsBodyComponentController.addNewExecution(context);
     }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {

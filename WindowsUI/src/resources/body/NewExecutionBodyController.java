@@ -3,6 +3,8 @@ package resources.body;
 import definition.entity.EntityDefinition;
 import definition.property.api.PropertyDefinition;
 import engine.AllData;
+import execution.context.Context;
+import execution.context.ContextImpl;
 import execution.instance.entity.EntityInstance;
 import generated.PRDEntity;
 import generated.PRDEnvProperty;
@@ -189,12 +191,16 @@ public class NewExecutionBodyController {
         });
     }
 
-    private void handleButtonClick(){
+    private void handleStartButtonClick(AllData allData){
+        Context context = new ContextImpl(allData);
+        context.setContextID(mainController.getIDForContext());
+        mainController.addNewExecution(context);
+        mainController.runExecution(context);
         mainController.switchToResultsTab();
     }
 
     public void displayAllData(PRDWorld oldWorld, AllData allData) {
-        startButton.setOnMouseClicked(event -> handleButtonClick());
+        startButton.setOnMouseClicked(event -> handleStartButtonClick(allData));
         ObservableList<EntityDefinition> entities = FXCollections.observableArrayList(allData.getMapAllEntities().values());
         ObservableList<PRDEnvProperty> envProperties = FXCollections.observableArrayList(allData.getMapOfPropEnvNameAndDef().values());
 

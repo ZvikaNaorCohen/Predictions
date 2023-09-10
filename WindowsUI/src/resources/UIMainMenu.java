@@ -53,7 +53,7 @@ public class UIMainMenu extends Application {
         // appController.setBodyComponentController(detailsBodyController);
         // appController.setHeaderComponentController(headerController);
 
-        Scene scene = new Scene(root, 1000, 600);
+        Scene scene = new Scene(root, 1260, 720);
         primaryStage.setTitle("Predictions V2.0");
         primaryStage.setScene(scene);
         primaryStage.show();
