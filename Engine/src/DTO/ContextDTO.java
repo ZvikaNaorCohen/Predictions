@@ -10,6 +10,7 @@ import definition.entity.EntityDefinition;
 import definition.property.api.PropertyDefinition;
 import engine.AllData;
 import execution.context.Context;
+import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import rule.Rule;
 
@@ -17,9 +18,28 @@ import java.util.*;
 
 public class ContextDTO {
     Map<String, EntityDefinitionDTO> allEntitiesDTO;
+    Map<Integer, EntityInstance> aliveEntityInstances;
+    Map<String, Integer> entityNameToAliveCount;
     Set<RuleDTO> allRulesDTO;
     TerminationDTO terminationDTO;
     List<PropertyInstanceDTO> propertyInstanceDTOs;
+
+    public Map<String, Integer> getAliveCountMap(){return entityNameToAliveCount;}
+
+    public ContextDTO(Context context){
+        aliveEntityInstances = new HashMap<>();
+        entityNameToAliveCount = new HashMap<>();
+        for(EntityInstance instance : context.getEntityInstanceManager().getInstances()){
+            aliveEntityInstances.put(instance.getId(), instance);
+            if(entityNameToAliveCount.get(instance.getEntityDefinitionName()) != null){
+                int aliveInstances = entityNameToAliveCount.get(instance.getEntityDefinitionName())+1;
+                entityNameToAliveCount.put(instance.getEntityDefinitionName(), aliveInstances);
+            }
+            else{
+                entityNameToAliveCount.put(instance.getEntityDefinitionName(), 1);
+            }
+        }
+    }
 
 
     public ContextDTO(AllData allDefinitions){

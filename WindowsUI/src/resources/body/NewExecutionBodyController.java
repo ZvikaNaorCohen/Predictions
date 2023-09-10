@@ -1,8 +1,8 @@
 package resources.body;
 
 import definition.entity.EntityDefinition;
-import definition.environment.api.EnvVariablesManager;
 import definition.property.api.PropertyDefinition;
+import definition.property.api.PropertyType;
 import engine.AllData;
 import execution.context.Context;
 import execution.context.ContextImpl;
@@ -23,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.DefaultStringConverter;
 import resources.app.AppController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class NewExecutionBodyController {
@@ -39,6 +40,8 @@ public class NewExecutionBodyController {
 
     // @FXML
     // private ScrollPane simEntitiesPopulationSP;
+
+    private Map<PRDEnvProperty, Object> userPRDEnvPropsInputs = new HashMap<>();
 
     @FXML
     private AnchorPane subAnchorPane;
@@ -112,7 +115,7 @@ public class NewExecutionBodyController {
 
             try {
                 if (envProperty.getType().equals("string")) {
-                    // All good, handle.
+                    userPRDEnvPropsInputs.put(envProperty, newValueInString);
                 } else if (envProperty.getType().equals("float")) {
                     float newFloatValue = Float.parseFloat(newValueInString);
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -130,8 +133,11 @@ public class NewExecutionBodyController {
                     alert.showAndWait();
                 }
                 else if (envProperty.getType().equals("boolean")){
-                    if(newValueInString.equals("true") || newValueInString.equals("false")){
-                        // All good, handle
+                    if(newValueInString.equals("true")) {
+                        userPRDEnvPropsInputs.put(envProperty, true);
+                    }
+                    else if(newValueInString.equals("false")){
+                        userPRDEnvPropsInputs.put(envProperty, false);
                     }
                     else{
                         throw new Exception("Boolean env property and received something different than true/false. \n");
@@ -195,7 +201,7 @@ public class NewExecutionBodyController {
 
     private void handleStartButtonClick(AllData allData){
         Context context = new ContextImpl(allData);
-        context.setActiveEnvironment(createActiveEnvironment(allData));
+        context.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
         context.setContextID(mainController.getIDForContext());
         mainController.addNewExecution(context);
         mainController.runExecution(context);
@@ -221,12 +227,12 @@ public class NewExecutionBodyController {
     }
 
     private PropertyInstance propertyInstanceFixedValue(String oldValue, PropertyDefinition definition){
-        switch(definition.getType().name()){
-            case "float":{
+        switch(definition.getType()){
+            case FLOAT:{
                 return new PropertyInstanceImpl(definition, Float.parseFloat(oldValue));
             }
 
-            case "boolean":
+            case BOOLEAN:
             {
                 if(oldValue.equals("true")){
                     return new PropertyInstanceImpl(definition, true);
@@ -236,7 +242,7 @@ public class NewExecutionBodyController {
                 }
             }
 
-            case "string":{
+            case STRING:{
                 return new PropertyInstanceImpl(definition, oldValue);
             }
         }
@@ -244,17 +250,19 @@ public class NewExecutionBodyController {
         return null;
     }
 
-    private ActiveEnvironment createActiveEnvironment(AllData allData) {
+    private ActiveEnvironment createActiveEnvironment(AllData allData, Map<PRDEnvProperty, Object> userInputsForEnvProps) {
         ActiveEnvironment newActiveEnv = new ActiveEnvironmentImpl();
         for (PRDEnvProperty envProperty : envPropertiesTable.getItems()) {
-            String desiredValue = envPropDesiredValueCol.getCellObservableValue(envProperty).getValue();
+            String desiredValue = (String)userInputsForEnvProps.get(envProperty);
             String propertyName = envProperty.getPRDName();
             PropertyDefinition newDefinition = allData.getEnvVariablesManager().getPropertyDefinitionByName(propertyName);
-            if (desiredValue.equals("")) {
-                newActiveEnv.addPropertyInstance(new PropertyInstanceImpl(newDefinition, newDefinition.generateValue()));
+            PropertyInstance prop;
+            if (desiredValue == null) {
+                prop = new PropertyInstanceImpl(newDefinition, newDefinition.generateValue());
             } else {
-                newActiveEnv.addPropertyInstance(propertyInstanceFixedValue(desiredValue, newDefinition));
+                prop = propertyInstanceFixedValue(desiredValue, newDefinition);
             }
+            newActiveEnv.addPropertyInstance(prop);
 
         }
         return newActiveEnv;
