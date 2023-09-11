@@ -34,6 +34,7 @@ public class IncreaseAction extends AbstractAction {
 
         // Handle expression:
 
+
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
                 context.setPrimaryEntityInstance(instance);

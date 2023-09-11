@@ -2,6 +2,7 @@ package execution.context;
 
 import engine.AllData;
 import execution.instance.entity.EntityInstance;
+import execution.instance.entity.EntityInstanceImpl;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;

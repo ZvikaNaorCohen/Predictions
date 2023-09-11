@@ -27,7 +27,7 @@
       </ScrollPane>
       <ScrollPane prefHeight="550.0" prefWidth="214.0">
          <content>
-            <ListView fx:id="executionListView" prefHeight="547.0" prefWidth="211.0" />
+            <ListView fx:id="executionListView" onMouseClicked="#onExecutionItemSelected" prefHeight="547.0" prefWidth="211.0" />
          </content>
       </ScrollPane>
       <ScrollPane layoutX="214.0" layoutY="1.0" prefHeight="234.0" prefWidth="991.0">

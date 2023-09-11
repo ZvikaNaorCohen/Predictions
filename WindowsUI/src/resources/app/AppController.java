@@ -64,6 +64,10 @@ public class AppController {
         allTabs.getSelectionModel().select(resultsTab);
     }
 
+    public ExecutionManager getExecutionManager() {
+        return executionManager;
+    }
+
     public void runExecution(Context context){
         executionManager.addNewContext(context);
         context.runSimulation();

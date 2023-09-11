@@ -10,6 +10,7 @@ import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.environment.impl.ActiveEnvironmentImpl;
 import execution.instance.property.PropertyInstance;
 import execution.instance.property.PropertyInstanceImpl;
+import generated.PRDEntity;
 import generated.PRDEnvProperty;
 import generated.PRDWorld;
 import javafx.beans.property.SimpleStringProperty;
@@ -172,11 +173,13 @@ public class NewExecutionBodyController {
         });
     }
 
-    private void setEnvPropertiesList(PRDWorld oldWorld, ObservableList<PRDEnvProperty> envProperties){
+    private void setEnvPropertiesList(PRDWorld oldWorld, ObservableList<PRDEnvProperty> envProperties, AllData allData){
         envPropertiesTable.setItems(envProperties);
         envPropNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         envPropDesiredValueCol.setCellValueFactory(cellData -> {
-            return new SimpleStringProperty("");
+            PRDEnvProperty prop = cellData.getValue();
+            PropertyDefinition propDef = allData.getEnvVariablesManager().getPropertyDefinitionByName(prop.getPRDName());
+            return new SimpleStringProperty(propDef.generateValue().toString());
         });
 
         envPropNameCol.setCellValueFactory(cellData -> {
@@ -208,14 +211,33 @@ public class NewExecutionBodyController {
         mainController.switchToResultsTab();
     }
 
+    private void handleClearButtonClick(PRDWorld oldWorld, AllData allData){
+        for(EntityDefinition def : allData.getMapAllEntities().values()){
+            def.setDesiredPopulation(0);
+        }
+
+        for (PRDEnvProperty item : oldWorld.getPRDEnvironment().getPRDEnvProperty()) {
+            envPropDesiredValueCol.setCellValueFactory(new PropertyValueFactory<>("")); // Clear the value
+        }
+
+        for (PRDEntity entity : oldWorld.getPRDEntities().getPRDEntity()) {
+            desiredPopulationCol.setCellValueFactory(new PropertyValueFactory<>("")); // Clear the value
+        }
+        currentTotalEntities = 0;
+
+        envPropertiesTable.refresh();
+        simEntitiesTable.refresh();
+    }
+
     public void displayAllData(PRDWorld oldWorld, AllData allData) {
         startButton.setOnMouseClicked(event -> handleStartButtonClick(allData));
+        clearButton.setOnMouseClicked(event -> handleClearButtonClick(oldWorld, allData));
         ObservableList<EntityDefinition> entities = FXCollections.observableArrayList(allData.getMapAllEntities().values());
         ObservableList<PRDEnvProperty> envProperties = FXCollections.observableArrayList(allData.getMapOfPropEnvNameAndDef().values());
 
 
         setEntitiesObservableList(allData, entities);
-        setEnvPropertiesList(oldWorld, envProperties);
+        setEnvPropertiesList(oldWorld, envProperties, allData);
 
 
         desiredPopulationCol.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));

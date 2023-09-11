@@ -39,6 +39,8 @@ public class ResultsBodyController {
 
     @FXML private ListView executionDetailsListView;
 
+    private int selectedContextID = -1; // Initialize to an invalid value
+
     public ResultsBodyController() {
     }
 
@@ -48,30 +50,51 @@ public class ResultsBodyController {
 
     public void addNewExecution(Context context){
         executionListView.getItems().add(context.getID());
-        addExecutionEntities(context);
+        // Initially, set the selectedContextID to the first ID in the list
+//        if (selectedContextID == -1 && !executionListView.getItems().isEmpty()) {
+//            selectedContextID = executionListView.getItems().get(0);
+//        }
+//        addExecutionEntities(context);
+    }
+
+    @FXML
+    private void onExecutionItemSelected() {
+        Integer selectedID = executionListView.getSelectionModel().getSelectedItem();
+        if (selectedID != null) {
+            selectedContextID = selectedID;
+            // Refresh the displayed data for the selected context
+            Context selectedContext = findContextById(selectedContextID); // Implement this method
+            addExecutionEntities(selectedContext);
+        }
+    }
+
+    private Context findContextById(int contextID) {
+        return mainController.getExecutionManager().getContextByID(contextID);
     }
 
     private void addExecutionEntities(Context context){
-        ContextDTO contextDTO = new ContextDTO(context);
+        if (context != null) {
+            ContextDTO contextDTO = new ContextDTO(context);
 
-        Map<String, Integer> entityNameToAliveCount = contextDTO.getAliveCountMap();
-        ObservableList<EntityData> entityDataList = FXCollections.observableArrayList();
+            Map<String, Integer> entityNameToAliveCount = contextDTO.getAliveCountMap();
+            ObservableList<EntityData> entityDataList = FXCollections.observableArrayList();
 
-        // Populate the entityDataList with EntityData objects
-        entityDataList.clear();
-        for (Map.Entry<String, Integer> entry : entityNameToAliveCount.entrySet()) {
-            String entityName = entry.getKey();
-            Integer count = entry.getValue();
+            // Populate the entityDataList with EntityData objects
+            entityDataList.clear();
+            for (Map.Entry<String, Integer> entry : entityNameToAliveCount.entrySet()) {
+                String entityName = entry.getKey();
+                Integer count = entry.getValue();
 
-            EntityData entityData = new EntityData(entityName, count);
-            entityDataList.add(entityData);
+                EntityData entityData = new EntityData(entityName, count);
+                entityDataList.add(entityData);
+            }
+
+            // Set the items for the entitiesTable
+            entitiesTable.setItems(entityDataList);
+
+            // Define how the columns should map to the data properties
+            nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+            countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
         }
-
-        // Set the items for the entitiesTable
-        entitiesTable.setItems(entityDataList);
-
-        // Define how the columns should map to the data properties
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
     }
 }

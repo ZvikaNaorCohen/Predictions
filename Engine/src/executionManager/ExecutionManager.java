@@ -20,4 +20,8 @@ public class ExecutionManager {
     public int getIDForContext(){
         return allRunningContexts.size() + 1;
     }
+
+    public Context getContextByID(int id){
+        return allRunningContexts.get(id);
+    }
 }

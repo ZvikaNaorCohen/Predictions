@@ -242,7 +242,7 @@ public class PRDtoWorld {
                     return new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(true), 0, 0);
                 }
                 case "string": {
-                    return new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>("ya welli"), 0, 0);
+                    return new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>("I'm editable!"), 0, 0);
                 }
             }
         } else {
@@ -261,7 +261,7 @@ public class PRDtoWorld {
                     return new BooleanPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>(true), 0, 0);
                 }
                 case "string": {
-                    return new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>("ya welli"), 0, 0);
+                    return new StringPropertyDefinition(prop.getPRDName(), new FixedValueGenerator<>("I'm editable!"), 0, 0);
                 }
             }
         }
@@ -272,7 +272,7 @@ public class PRDtoWorld {
     public static Map<String, EntityDefinition> getAllEntityDefinitions(PRDEntities entities) {
         Map<String, EntityDefinition> myList = new HashMap<>();
         for (PRDEntity entity : entities.getPRDEntity()) {
-            EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), 5);
+            EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entity.getName(), 1);
             for (PRDProperty prop : entity.getPRDProperties().getPRDProperty()) {
                 PropertyDefinition newProp = fromPRDToPropDef(prop);
                 entityImpl.addPropertyDefinition(newProp);
