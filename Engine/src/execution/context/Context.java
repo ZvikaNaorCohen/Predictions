@@ -23,6 +23,8 @@ public interface Context {
     int getSecondsPassed();
     SimpleBooleanProperty isRunning();
     SimpleBooleanProperty isPaused();
+    Set<String> getAliveEntityNames();
+    Set<String> getSpecificEntityProperties(String entityName);
     void stopRun();
     void resumeRun();
     void pauseRun();

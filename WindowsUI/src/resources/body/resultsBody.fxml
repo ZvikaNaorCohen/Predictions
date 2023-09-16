@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,9 +19,9 @@
 
 <AnchorPane fx:id="subAnchorPane" prefHeight="577.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.body.ResultsBodyController">
    <children>
-      <ScrollPane layoutX="214.0" layoutY="158.0" prefHeight="388.0" prefWidth="991.0">
+      <ScrollPane layoutX="214.0" layoutY="158.0" prefHeight="150.0" prefWidth="991.0">
          <content>
-            <TableView fx:id="entitiesTable" prefHeight="170.0" prefWidth="988.0">
+            <TableView fx:id="entitiesTable" prefHeight="146.0" prefWidth="986.0">
               <columns>
                 <TableColumn fx:id="nameCol" prefWidth="449.06670838594437" text="Entity Name" />
                 <TableColumn fx:id="countCol" prefWidth="444.00006103515625" text="Entity Count" />
@@ -26,9 +29,9 @@
             </TableView>
          </content>
       </ScrollPane>
-      <ScrollPane prefHeight="550.0" prefWidth="214.0">
+      <ScrollPane prefHeight="576.0" prefWidth="207.0">
          <content>
-            <ListView fx:id="executionListView" onMouseClicked="#onExecutionItemSelected" prefHeight="547.0" prefWidth="211.0" />
+            <ListView fx:id="executionListView" onMouseClicked="#onExecutionItemSelected" prefHeight="574.0" prefWidth="204.0" />
          </content>
       </ScrollPane>
       <ScrollPane layoutX="214.0" layoutY="1.0" prefHeight="157.0" prefWidth="991.0">
@@ -93,6 +96,61 @@
                   </Text>
                </children>
             </GridPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="217.0" layoutY="308.0" prefHeight="266.0" prefWidth="991.0">
+         <content>
+            <TabPane prefHeight="263.0" prefWidth="979.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Graph" />
+                <Tab text="Histogram">
+                     <content>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="482.5333251953125" minWidth="10.0" prefWidth="325.93337020874026" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="710.7999877929688" minWidth="10.0" prefWidth="310.0000366210937" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="710.7999877929688" minWidth="10.0" prefWidth="116.5999877929687" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="710.7999877929688" minWidth="10.0" prefWidth="111.79995117187502" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="710.7999877929688" minWidth="10.0" prefWidth="118.20004882812498" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="124.86664428710938" minHeight="10.0" prefHeight="124.86664428710938" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="137.66669311523438" minHeight="10.0" prefHeight="109.93335571289063" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label prefHeight="81.0" prefWidth="218.0" text="Entity Definition">
+                                 <font>
+                                    <Font size="28.0" />
+                                 </font>
+                              </Label>
+                              <Label prefHeight="90.0" prefWidth="401.0" text="Property" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="28.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="histogramButton" disable="true" mnemonicParsing="false" onAction="#histogramButtonOnPressed" prefHeight="92.0" prefWidth="103.0" text="Histogram" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                              <ComboBox fx:id="entityComboBox" disable="true" onAction="#onSelectedEntity" prefHeight="63.0" prefWidth="281.0" promptText="Choose entity..." GridPane.rowIndex="1" />
+                              <ComboBox fx:id="propertyComboBox" disable="true" prefHeight="63.0" prefWidth="280.0" promptText="Choose property..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button disable="true" mnemonicParsing="false" prefHeight="94.0" prefWidth="98.0" text="Consistency" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Button>
+                              <Button disable="true" mnemonicParsing="false" prefHeight="94.0" prefWidth="98.0" text="Average" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </GridPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
          </content>
       </ScrollPane>
    </children>

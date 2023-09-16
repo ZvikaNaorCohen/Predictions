@@ -11,6 +11,8 @@ import rule.Rule;
 import rule.Termination;
 import sun.java2d.pipe.SpanShapeRenderer;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -161,6 +163,38 @@ public class ContextImpl implements Runnable, Context {
         }
 
         keepRunning.set(false);
+    }
+
+    @Override
+    public Set<String> getAliveEntityNames(){
+        Set<String> entityNames = new HashSet<>();
+        for(EntityInstance instance : entityInstanceManager.getInstances())
+        {
+            String name = instance.getEntityDefinitionName();
+            if(!entityNames.contains(name)){
+                entityNames.add(name);
+            }
+        }
+
+        return entityNames;
+    }
+
+    @Override
+    public Set<String> getSpecificEntityProperties(String entityName){
+        Set<String> properties = new HashSet<>();
+        for(EntityInstance instance : entityInstanceManager.getInstances())
+        {
+            if(instance.getEntityDefinitionName().equals(entityName)){
+                for(PropertyInstance propInstance : instance.getAllPropertyInstances().values())
+                {
+                    properties.add(propInstance.getPropertyDefinition().getName());
+                }
+
+                break;
+            }
+        }
+
+        return properties;
     }
 
     @Override

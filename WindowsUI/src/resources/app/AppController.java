@@ -53,6 +53,7 @@ public class AppController {
     public void queueManagementButtonOnClick(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Queue Management");
+        alert.setHeaderText("Most updated information:");
         String text = "";
         int queueSize = executionManager.getQueueSize();
         int runningContexts = executionManager.getRunningContexts();
