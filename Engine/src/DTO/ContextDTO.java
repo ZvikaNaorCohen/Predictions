@@ -23,6 +23,14 @@ public class ContextDTO {
     Set<RuleDTO> allRulesDTO;
     TerminationDTO terminationDTO;
     List<PropertyInstanceDTO> propertyInstanceDTOs;
+    int currentTick;
+    int secondsPassed;
+
+    public int getCurrentTicks(){
+        return currentTick;
+    }
+
+    public int getSecondsPassed() {return secondsPassed;}
 
     public Map<String, Integer> getAliveCountMap(){return entityNameToAliveCount;}
 
@@ -39,6 +47,9 @@ public class ContextDTO {
                 entityNameToAliveCount.put(instance.getEntityDefinitionName(), 1);
             }
         }
+
+        currentTick = context.getCurrentTick();
+        secondsPassed = context.getSecondsPassed();
     }
 
 

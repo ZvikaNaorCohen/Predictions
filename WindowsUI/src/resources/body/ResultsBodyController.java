@@ -1,29 +1,40 @@
 package resources.body;
 
 import DTO.ContextDTO;
-import definition.entity.EntityDefinition;
 import execution.context.Context;
 import executionManager.EntityData;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import resources.app.AppController;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import java.util.List;
+
 import java.util.Map;
 
 public class ResultsBodyController {
+    private final String runningLabel = " - RUNNING";
+    private final String finishedLabel = " - FINISHED";
     @FXML
     private AnchorPane subAnchorPane;
     @FXML private AppController mainController;
 
     @FXML
-    private ListView<Integer> executionListView;
+    private ListView<String> executionListView;
 
     @FXML private ListView executionResultListView;
+
+    @FXML private Text progressText;
+    // @FXML private Text simulationFinishedText;
+    @FXML private Text secondsText;
+    @FXML private Text ticksText;
 
     @FXML private Label progressLabel;
     @FXML private Label tickLabel;
@@ -36,12 +47,32 @@ public class ResultsBodyController {
     @FXML private TableView<EntityData> entitiesTable;
     @FXML private TableColumn<EntityData, String> nameCol;
     @FXML private TableColumn<EntityData, Integer> countCol;
+    private ScheduledExecutorService executorService;
 
     @FXML private ListView executionDetailsListView;
 
     private int selectedContextID = -1; // Initialize to an invalid value
 
     public ResultsBodyController() {
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(this::updateTexts, 0, 200, TimeUnit.MILLISECONDS);
+    }
+
+    private void updateTexts() {
+        if (selectedContextID != -1) {
+            Context selectedContext = findContextById(selectedContextID);
+            if (selectedContext != null) {
+                ContextDTO contextDTO = new ContextDTO(selectedContext);
+                String ticksPassed = String.valueOf(contextDTO.getCurrentTicks());
+                String secondsPassed = String.valueOf(contextDTO.getSecondsPassed());
+                Platform.runLater(() -> {
+                    ticksText.setText(ticksPassed);
+                    secondsText.setText(secondsPassed);
+                    addExecutionEntities(selectedContext);
+                    handleEndOfSimulation(selectedContext);
+                });
+            }
+        }
     }
 
     public void setMainController(AppController mainController) {
@@ -49,22 +80,63 @@ public class ResultsBodyController {
     }
 
     public void addNewExecution(Context context){
-        executionListView.getItems().add(context.getID());
-        // Initially, set the selectedContextID to the first ID in the list
-//        if (selectedContextID == -1 && !executionListView.getItems().isEmpty()) {
-//            selectedContextID = executionListView.getItems().get(0);
-//        }
-//        addExecutionEntities(context);
+        String dataToAdd = context.getID() + runningLabel;
+        executionListView.getItems().add(dataToAdd);
+    }
+
+    private void updateExecutionLabelToFinished(){
+        ObservableList<String> items = executionListView.getItems();
+
+        for (int i = 0; i < items.size(); i++) {
+            String item = items.get(i);
+            if (item.equals(selectedContextID + runningLabel)) {
+                String updatedItem = selectedContextID + finishedLabel;
+                items.set(i, updatedItem);
+                executionListView.refresh();
+                break;
+            }
+        }
+    }
+
+    private void handleEndOfSimulation(Context context){
+        if(!context.isRunning().get()){
+            updateExecutionLabelToFinished();
+            pauseButton.disableProperty().unbind();
+            resumeButton.disableProperty().unbind();
+            stopButton.disableProperty().unbind();
+            // simulationFinishedText.setText("SIMULATION FINISHED");
+            pauseButton.setDisable(true);
+            resumeButton.setDisable(true);
+            stopButton.setDisable(true);
+        }
+        else{
+            // simulationFinishedText.setText("");
+        }
     }
 
     @FXML
     private void onExecutionItemSelected() {
-        Integer selectedID = executionListView.getSelectionModel().getSelectedItem();
+        String selectedIDString = executionListView.getSelectionModel().getSelectedItem();
+        String[] parts1 = selectedIDString.split("[\\s-]+");
+        Integer selectedID = Integer.parseInt(parts1[0]);
         if (selectedID != null) {
             selectedContextID = selectedID;
-            // Refresh the displayed data for the selected context
+
             Context selectedContext = findContextById(selectedContextID); // Implement this method
             addExecutionEntities(selectedContext);
+
+            pauseButton.disableProperty().bind(selectedContext.isPaused());
+            resumeButton.disableProperty().bind(selectedContext.isPaused().not());
+            stopButton.disableProperty().bind(selectedContext.isRunning().not());
+            handleEndOfSimulation(selectedContext);
+            pauseButton.setOnMouseClicked(event -> {selectedContext.pauseRun();});
+            resumeButton.setOnMouseClicked(event -> {selectedContext.resumeRun();});
+            stopButton.setOnMouseClicked(event -> {selectedContext.stopRun();
+                pauseButton.disableProperty().unbind();
+                resumeButton.disableProperty().unbind();
+                // simulationFinishedText.setText("SIMULATION FINISHED");
+                pauseButton.setDisable(true);
+                resumeButton.setDisable(true);});
         }
     }
 
@@ -95,6 +167,12 @@ public class ResultsBodyController {
             // Define how the columns should map to the data properties
             nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
             countCol.setCellValueFactory(new PropertyValueFactory<>("count"));
+
+            refreshTables();
         }
+    }
+
+    private void refreshTables(){
+        entitiesTable.refresh();
     }
 }

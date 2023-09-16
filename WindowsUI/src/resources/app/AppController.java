@@ -6,10 +6,9 @@ import execution.context.ContextImpl;
 import executionManager.ExecutionManager;
 import generated.PRDWorld;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import resources.body.DetailsBodyController;
 import resources.body.NewExecutionBodyController;
 import resources.body.ResultsBodyController;
@@ -30,6 +29,10 @@ public class AppController {
     private AllData allData;
     @FXML
     private ScrollPane headerComponent;
+
+    @FXML
+    private GridPane secondGridPane;
+
     @FXML private HeaderController headerComponentController;
     @FXML private AnchorPane detailsBodyComponent;
     @FXML private DetailsBodyController detailsBodyComponentController;
@@ -37,6 +40,7 @@ public class AppController {
     @FXML private Tab newExecutionTab;
     @FXML private Tab detailsTab;
     @FXML private Tab resultsTab;
+    @FXML private Button queueManagementButton;
 
     @FXML private AnchorPane resultsBodyComponent;
     @FXML private ResultsBodyController resultsBodyComponentController;
@@ -46,13 +50,28 @@ public class AppController {
     @FXML private NewExecutionBodyController newExecutionBodyController;
 
     @FXML
+    public void queueManagementButtonOnClick(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Queue Management");
+        String text = "";
+        int queueSize = executionManager.getQueueSize();
+        int runningContexts = executionManager.getRunningContexts();
+        text += "Size of queue: " + queueSize + ". \n";
+        text += "Running threads: " +  runningContexts + ". \n";
+        text += "Finished threads: " + (queueSize - runningContexts) + ". \n";
+
+        alert.setContentText(text);
+        alert.showAndWait();
+    }
+
+    @FXML
     public void initialize() {
+        secondGridPane.toBack();
         if(headerComponentController != null && detailsBodyComponentController != null){
             headerComponentController.setMainController(this);
             detailsBodyComponentController.setMainController(this);
             resultsBodyComponentController.setMainController(this);
             newExecutionBodyController.setMainController(this);
-
         }
     }
 
@@ -70,7 +89,7 @@ public class AppController {
 
     public void runExecution(Context context){
         executionManager.addNewContext(context);
-        context.runSimulation();
+        executionManager.runSpecificContext(context.getID());
     }
 
     public void addNewExecution(Context context){

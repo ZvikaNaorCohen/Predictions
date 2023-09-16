@@ -4,6 +4,7 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
+import javafx.beans.property.SimpleBooleanProperty;
 import rule.Rule;
 import rule.Termination;
 
@@ -17,13 +18,21 @@ public interface Context {
 
     Set<Rule> getAllRules();
     int getID();
+    int getCurrentTick();
+
+    int getSecondsPassed();
+    SimpleBooleanProperty isRunning();
+    SimpleBooleanProperty isPaused();
+    void stopRun();
+    void resumeRun();
+    void pauseRun();
     EntityInstance getPrimaryEntityInstance();
     EntityInstance getSecondaryEntityInstance();
     ActiveEnvironment getActiveEnvironment();
     boolean shouldSimulationTerminate(int ticks, int seconds);
     void singleSimulationRun(int ticks);
 
-    String runSimulation();
+   // String runSimulation();
     void removeEntity(EntityInstance entityInstance);
     PropertyInstance getEnvironmentVariable(String name);
     void setPrimaryEntityInstance(EntityInstance instance);

@@ -11,7 +11,30 @@ import java.util.concurrent.Executors;
 public class ExecutionManager {
     private Map<Integer, Context> allRunningContexts = new HashMap<>();
 
-    private ExecutorService threadExecutor = Executors.newFixedThreadPool(1);
+    private ExecutorService threadExecutor = Executors.newCachedThreadPool();
+
+    public void runSpecificContext(int contextID){
+        threadExecutor.execute((Runnable) allRunningContexts.get(contextID));
+    }
+
+    public int getQueueSize(){
+        return allRunningContexts.size();
+    }
+
+    public int getRunningContexts(){
+        int counter = 0;
+        for(Map.Entry<Integer,Context> entry : allRunningContexts.entrySet()){
+            if(entry.getValue().isRunning().get()){
+                counter++;
+            }
+        }
+
+        return counter;
+    }
+
+    public boolean isContextRunning(int contextID){
+        return allRunningContexts.get(contextID).isRunning().get();
+    }
 
     public void addNewContext(Context context){
         allRunningContexts.put(allRunningContexts.size()+1, context);

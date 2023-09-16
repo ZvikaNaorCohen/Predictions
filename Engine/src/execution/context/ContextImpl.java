@@ -6,13 +6,15 @@ import execution.instance.entity.EntityInstanceImpl;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
+import javafx.beans.property.SimpleBooleanProperty;
 import rule.Rule;
 import rule.Termination;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.util.Random;
 import java.util.Set;
 
-public class ContextImpl implements Context {
+public class ContextImpl implements Runnable, Context {
 
     int contextID;
     private EntityInstance primaryEntityInstance;
@@ -20,8 +22,19 @@ public class ContextImpl implements Context {
     private EntityInstanceManager entityInstanceManager;
     private ActiveEnvironment activeEnvironment;
     private Set<Rule> allRules;
+    private int currentTick = 0;
+    private int secondsPassed = 0;
+
+    private long startTime = 0;
+    private long pauseStartTime = 0;
+    private long totalPauseTime = 0;
+
+    private long pauseTime = 0;
+
 
     private int maxRows, maxCols;
+    private SimpleBooleanProperty keepRunning = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
 
     private Termination terminationRules;
 
@@ -81,29 +94,73 @@ public class ContextImpl implements Context {
         return activeEnvironment.getProperty(name);
     }
 
+    private void sleepForAWhile() throws InterruptedException {
+        Thread.sleep(200);
+    }
+
     @Override
-    public String runSimulation(){
-        int ticks = 0;
-        int seconds = 0;
-        long startTime = System.currentTimeMillis();
+    public SimpleBooleanProperty isRunning(){
+        return keepRunning;
+    }
+
+    @Override
+    public void resumeRun() {
+        paused.set(false);
+        totalPauseTime += System.currentTimeMillis() - pauseStartTime;
+    }
+
+    @Override
+    public void stopRun(){keepRunning.set(false);}
+
+    @Override
+    public void pauseRun(){
+        paused.set(true);
+        pauseStartTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public SimpleBooleanProperty isPaused(){
+        return paused;
+    }
+
+    @Override
+    public int getCurrentTick(){
+        return currentTick;
+    }
+
+    @Override
+    public int getSecondsPassed(){return secondsPassed;}
+
+    @Override
+    public void run(){
+        startTime = System.currentTimeMillis();
         Random random = new Random();
-        while(!shouldSimulationTerminate(ticks, seconds)){
-            for(Rule rule : allRules){
-                double randomValue = random.nextDouble();
-                if (rule.getActivation().isActive(ticks) || randomValue < rule.getActivation().getProb()) {
-                    rule.getActionsToPerform().forEach(action -> action.invoke(this));
+        while(!shouldSimulationTerminate(currentTick, secondsPassed) && keepRunning.get()){
+            try{
+                if(paused.get()){
+                    pauseTime = System.currentTimeMillis();
+                    sleepForAWhile();
                 }
+                else{
+                    sleepForAWhile();
+                    for(Rule rule : allRules){
+                        double randomValue = random.nextDouble();
+                        if (rule.getActivation().isActive(currentTick) || randomValue < rule.getActivation().getProb()) {
+                            rule.getActionsToPerform().forEach(action -> action.invoke(this));
+                        }
+                    }
+                    long currentTime = System.currentTimeMillis();
+                    long elapsedTime = currentTime - startTime - totalPauseTime;
+                    secondsPassed = (int) (elapsedTime / 1000);
+                    currentTick++;
+                }
+            }catch (InterruptedException exception) {
+                keepRunning.set(false);
+                exception.printStackTrace();
             }
-            long currentTime = System.currentTimeMillis();
-            seconds = (int) ((currentTime - startTime) / 1000);
-            ticks++;
         }
-        if(ticks >= terminationRules.getEndByTicks()){
-            return "ticks";
-        }
-        else{
-            return "seconds";
-        }
+
+        keepRunning.set(false);
     }
 
     @Override
@@ -125,4 +182,5 @@ public class ContextImpl implements Context {
     public EntityInstanceManager getEntityInstanceManager(){return entityInstanceManager;}
 
     public Set<Rule> getALlRules(){return allRules;}
+
 }
