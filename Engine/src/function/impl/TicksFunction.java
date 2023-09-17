@@ -30,15 +30,21 @@ public class TicksFunction extends AbstractFunction {
 
     @Override
     public Float getTicksNotUpdated(Context context) {
-        String[] parts = expression.split("\\.");
-        String entityName = parts[0];
-        String propertyName = parts[1];
+        int openParenIndex = expression.indexOf("(");
+        int dotIndex = expression.indexOf(".");
 
-        if(context.getPrimaryEntityInstance().getEntityDefinitionName().equals(entityName)){
-            return context.getPrimaryEntityInstance().getPropertyByName(propertyName).getTicksNotChanged();
+        if (openParenIndex != -1 && dotIndex != -1) {
+            String entityName = expression.substring(openParenIndex + 1, dotIndex);
+            String propertyName = expression.substring(dotIndex + 1, expression.length() - 1);
+
+            if(context.getPrimaryEntityInstance().getEntityDefinitionName().equals(entityName)){
+                return context.getPrimaryEntityInstance().getPropertyByName(propertyName).getTicksNotChanged();
+            }
+            else {
+                return context.getSecondaryEntityInstance().getPropertyByName(propertyName).getTicksNotChanged();
+            }
         }
-        else {
-            return context.getSecondaryEntityInstance().getPropertyByName(propertyName).getTicksNotChanged();
-        }
+
+        return 0f;
     }
 }

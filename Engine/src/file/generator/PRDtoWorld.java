@@ -29,15 +29,13 @@ public class PRDtoWorld {
     public static Termination getTerminationRules(PRDTermination inputTermination){
         int seconds = -1;
         int ticks = -1;
-        if(inputTermination.getPRDBySecondOrPRDByTicks().get(0) != null) {
-            ticks = ((PRDByTicks) inputTermination.getPRDBySecondOrPRDByTicks().get(0)).getCount();
-        }
-        if(inputTermination.getPRDBySecondOrPRDByTicks().get(1) != null){
-            seconds = ((PRDBySecond)inputTermination.getPRDBySecondOrPRDByTicks().get(1)).getCount();
-        }
-        if(inputTermination.getPRDBySecondOrPRDByTicks().get(1) == null &&
-            inputTermination.getPRDBySecondOrPRDByTicks().get(0) == null)
-        {
+        if(inputTermination.getPRDBySecondOrPRDByTicks().size() != 0) {
+            if(inputTermination.getPRDBySecondOrPRDByTicks().get(0) != null) {
+                ticks = ((PRDByTicks) inputTermination.getPRDBySecondOrPRDByTicks().get(0)).getCount();
+            }else{
+                seconds = ((PRDBySecond)inputTermination.getPRDBySecondOrPRDByTicks().get(1)).getCount();
+            }
+        }else{
             return new Termination(true);
         }
 

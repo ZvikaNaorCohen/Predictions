@@ -8,11 +8,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import rule.Rule;
 import rule.Termination;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface Context {
     Termination getTerminationRules();
     void setContextID(int id);
+
+    Map<Integer, Integer> getDataForGraph();
+
+    float getProgressBarPercent();
 
     EntityInstance[][] getGrid();
 

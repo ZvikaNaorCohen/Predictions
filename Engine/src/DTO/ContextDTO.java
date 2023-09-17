@@ -26,11 +26,15 @@ public class ContextDTO {
     int currentTick;
     int secondsPassed;
 
+    float progressBarPercent = 0;
+
     public int getCurrentTicks(){
         return currentTick;
     }
 
     public int getSecondsPassed() {return secondsPassed;}
+
+    public float getProgressBarPercent() {return progressBarPercent;}
 
     public Map<String, Integer> getAliveCountMap(){return entityNameToAliveCount;}
 
@@ -50,6 +54,11 @@ public class ContextDTO {
 
         currentTick = context.getCurrentTick();
         secondsPassed = context.getSecondsPassed();
+        progressBarPercent = context.getProgressBarPercent();
+    }
+
+    public float getProgressPercent(){
+        return progressBarPercent;
     }
 
 

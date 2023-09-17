@@ -11,10 +11,7 @@ import rule.Rule;
 import rule.Termination;
 import sun.java2d.pipe.SpanShapeRenderer;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class ContextImpl implements Runnable, Context {
 
@@ -35,8 +32,10 @@ public class ContextImpl implements Runnable, Context {
 
 
     private int maxRows, maxCols;
-    private SimpleBooleanProperty keepRunning = new SimpleBooleanProperty(true);
-    private SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty keepRunning = new SimpleBooleanProperty(true);
+    private float progressBarPercent = 0;
+    private final SimpleBooleanProperty paused = new SimpleBooleanProperty(false);
+    private final Map<Integer, Integer> aliveEntitiesPerTick = new HashMap<>();
 
     private Termination terminationRules;
 
@@ -68,7 +67,20 @@ public class ContextImpl implements Runnable, Context {
         return activeEnvironment;
     }
 
+    private void updateProgressPercent(int ticks, int seconds){
+        float percent = 0;
+        if(terminationRules.getEndByTicks() != -1){
+            percent = (float) ticks / terminationRules.getEndByTicks();
+        }
+        if(terminationRules.getEndBySeconds() != -1){
+            percent = Math.max(percent, (float) seconds / terminationRules.getEndBySeconds());
+        }
+
+        progressBarPercent = Float.parseFloat(String.format("%.2f", percent*100));
+    }
+
     public boolean shouldSimulationTerminate(int ticks, int seconds){
+        updateProgressPercent(ticks, seconds);
         return ticks >= terminationRules.getEndByTicks() || seconds >= terminationRules.getEndBySeconds();
     }
     @Override
@@ -151,6 +163,7 @@ public class ContextImpl implements Runnable, Context {
                             rule.getActionsToPerform().forEach(action -> action.invoke(this));
                         }
                     }
+                    updateAliveEntitiesPerTick(currentTick);
                     long currentTime = System.currentTimeMillis();
                     long elapsedTime = currentTime - startTime - totalPauseTime;
                     secondsPassed = (int) (elapsedTime / 1000);
@@ -165,6 +178,16 @@ public class ContextImpl implements Runnable, Context {
         keepRunning.set(false);
     }
 
+    private void updateAliveEntitiesPerTick(int currentTick)
+    {
+        aliveEntitiesPerTick.put(currentTick, entityInstanceManager.getInstances().size());
+    }
+
+    @Override
+    public float getProgressBarPercent(){
+        return progressBarPercent;
+    }
+
     @Override
     public Set<String> getAliveEntityNames(){
         Set<String> entityNames = new HashSet<>();
@@ -177,6 +200,11 @@ public class ContextImpl implements Runnable, Context {
         }
 
         return entityNames;
+    }
+
+    @Override
+    public Map<Integer, Integer> getDataForGraph(){
+        return aliveEntitiesPerTick;
     }
 
     @Override

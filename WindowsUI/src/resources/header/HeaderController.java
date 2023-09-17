@@ -50,10 +50,11 @@ public class HeaderController {
                 // Check that the xml is fine
                 PRDWorld inputWorld = getWorldFromScheme(filePath.toLowerCase());
                 PRDWorldValid worldValidator = new PRDWorldValid();
-//                if(!worldValidator.isWorldValid(inputWorld)){
-//                    showInvalidFileAlert(worldValidator.getErrorMessage());
-//                    return;
-//                }
+//                worldValidator.isWorldValid(inputWorld);
+                if(!worldValidator.isWorldValid(inputWorld)){
+                    showInvalidFileAlert(worldValidator.getErrorMessage());
+                    return;
+                }
 
                 mainController.setDataFromFile(inputWorld);
 
@@ -79,7 +80,7 @@ public class HeaderController {
     private void showInvalidFileAlert(String text) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid File");
-        alert.setHeaderText(null);
+        alert.setHeaderText("INVALID FILE!");
         alert.setContentText(text);
         alert.getButtonTypes().setAll(ButtonType.OK);
         alert.showAndWait();

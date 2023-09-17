@@ -63,22 +63,41 @@ public class IncreaseAction extends AbstractAction {
 
     private void updatePropertyInstanceValueByTicks(Context context, PropertyInstance propertyInstance){
         Function func = new TicksFunction(byExpression);
-        Float oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
         Float newValue = oldValue + func.getTicksNotUpdated(context);
         if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
             propertyInstance.updateValue(newValue);
         }
     }
+
+    private Object getValueFromEvaluate(Context context) {
+        int openParenIndex = byExpression.indexOf("(");
+        int dotIndex = byExpression.indexOf(".");
+
+        if (openParenIndex != -1 && dotIndex != -1) {
+            String entityName = byExpression.substring(openParenIndex + 1, dotIndex);
+            String propertyName = byExpression.substring(dotIndex + 1, byExpression.length() - 1);
+
+            if(context.getPrimaryEntityInstance().getEntityDefinitionName().equals(entityName)){
+                return context.getPrimaryEntityInstance().getPropertyByName(propertyName).getValue();
+            }
+            else {
+                return context.getSecondaryEntityInstance().getPropertyByName(propertyName).getValue();
+            }
+        }
+
+        return 0;
+    }
     private void updatePropertyInstanceValueByEvaluate(Context context, PropertyInstance propertyInstance){
         Function func = new EvaluateFunction(byExpression);
-        Float oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        Float newValue = oldValue + (Float)func.getValueFromEvaluate(context);
+        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+        Float newValue = oldValue + (Float)getValueFromEvaluate(context);
         if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
             propertyInstance.updateValue(newValue);
         }
     }
     private void updatePropertyInstanceValueByProperty(Context context, PropertyInstance propertyInstance) {
-        Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Object oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = (Integer) oldValue + (Integer)context.getPrimaryEntityInstance().getPropertyByName(byExpression).getValue();
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
@@ -94,7 +113,7 @@ public class IncreaseAction extends AbstractAction {
 
     }
     private void updatePropertyInstanceValueByFreeValue(PropertyInstance propertyInstance) {
-        Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Object oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = StringToInteger(byExpression);
             newValue += (Integer)oldValue;
@@ -113,7 +132,7 @@ public class IncreaseAction extends AbstractAction {
     }
     private void updatePropertyInstanceValueByRandom(PropertyInstance propertyInstance) {
         Function envFunction = new RandomFunction(byExpression);
-        Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+        Object oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
         if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
             Integer newValue = envFunction.getRandomValue() + (Integer)oldValue;
             if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
@@ -128,20 +147,20 @@ public class IncreaseAction extends AbstractAction {
         }
     }
 
-    private void updatePropertyInstanceValueByEnvironment(Context context, PropertyInstance propertyInstance){
+    private void updatePropertyInstanceValueByEnvironment(Context context, PropertyInstance propertyInstance) {
         Function envFunction = new EnvironmentFunction(byExpression);
-        Object oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
-            Integer newValue = (Integer) oldValue + (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
-            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
-                propertyInstance.updateValue(newValue);
-            }
-        }
-        else {
-            Float newValue = (Float)oldValue + (Float)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
-            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
-                propertyInstance.updateValue(newValue);
-            }
+        Object oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+//        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+//            Integer newValue = (Integer) oldValue + (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+//            if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+//                propertyInstance.updateValue(newValue);
+//            }
+//        }
+//        else
+//        {
+        Float newValue = (Float) oldValue + (Float) PropertyType.FLOAT.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+        if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)) {
+            propertyInstance.updateValue(newValue);
         }
     }
 
