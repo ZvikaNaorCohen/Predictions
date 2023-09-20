@@ -3,6 +3,7 @@ package action.impl;
 import action.api.AbstractConditionAction;
 import action.api.ActionType;
 import definition.entity.EntityDefinition;
+import definition.entity.SecondaryEntityDefinition;
 import definition.property.api.PropertyType;
 import execution.context.Context;
 import execution.instance.entity.EntityInstance;
@@ -81,6 +82,7 @@ public class ConditionAction extends AbstractConditionAction {
             }
         }
     }
+
 //    private boolean generateValueFromCondition(EntityInstance instance, String expression, Context context) {
 //        PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
 //        if (expression.startsWith("environment")) {

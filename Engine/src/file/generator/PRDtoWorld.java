@@ -6,6 +6,7 @@ import action.api.ActionType;
 import action.impl.*;
 import definition.entity.EntityDefinition;
 import definition.entity.EntityDefinitionImpl;
+import definition.entity.SecondaryEntityDefinition;
 import definition.environment.api.EnvVariablesManager;
 import definition.environment.impl.EnvVariableManagerImpl;
 import definition.property.api.PropertyDefinition;
@@ -43,17 +44,49 @@ public class PRDtoWorld {
         return new Termination(ticks, seconds);
     }
 
+    private static AbstractConditionAction getAbstractConditionAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
+        EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
+        PRDCondition condition = action.getPRDCondition();
+        AbstractConditionAction tempAction;
 
+        if(condition.getSingularity().equals("single")){
+            String prop = condition.getProperty();
+            String oper = condition.getOperator();
+            String val = condition.getValue();
+            tempAction = new ConditionAction(ActionType.SINGLECONDITION, entityDef, prop, oper, val);
+        }
+        else {
+            tempAction = getMultipleConditionAction(entityDef, condition);
+        }
+
+        if(action.getPRDThen() != null){
+            for(PRDAction thenAction : action.getPRDThen().getPRDAction()){
+                tempAction.addToListOfThen(getActionFromPRDAction(allEntityDefinitions, thenAction));
+            }
+        }
+        if(action.getPRDElse() != null){
+            for(PRDAction elseAction : action.getPRDElse().getPRDAction()){
+                tempAction.addToListOfElse(getActionFromPRDAction(allEntityDefinitions, elseAction));
+            }
+        }
+
+        return tempAction;
+    }
 
     private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
         EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
+        SecondaryEntityDefinition second = null;
+        if(action.getPRDSecondaryEntity() != null){
+            second = new SecondaryEntityDefinition(action.getPRDSecondaryEntity());
+            second.setActionToPerform(getAbstractConditionAction(allEntityDefinitions, action));
+        }
         switch(action.getType()){
             case "increase":{
-                return new IncreaseAction(entityDef, action.getProperty(), action.getBy());
+                return new IncreaseAction(entityDef, action.getProperty(), action.getBy(), second);
             }
 
             case "decrease":{
-                return new DecreaseAction(entityDef, action.getProperty(), action.getBy());
+                return new DecreaseAction(entityDef, action.getProperty(), action.getBy(), second);
             }
 
             case "calculation":{
@@ -70,30 +103,7 @@ public class PRDtoWorld {
             }
 
             case "condition":{
-                PRDCondition condition = action.getPRDCondition();
-                AbstractConditionAction tempAction;
-                if(condition.getSingularity().equals("single")){
-                    String prop = condition.getProperty();
-                    String oper = condition.getOperator();
-                    String val = condition.getValue();
-                    tempAction = new ConditionAction(ActionType.SINGLECONDITION, entityDef, prop, oper, val);
-                }
-                else {
-                    tempAction = getMultipleConditionAction(entityDef, condition);
-                }
-
-                if(action.getPRDThen() != null){
-                    for(PRDAction thenAction : action.getPRDThen().getPRDAction()){
-                        tempAction.addToListOfThen(getActionFromPRDAction(allEntityDefinitions, thenAction));
-                    }
-                }
-                if(action.getPRDElse() != null){
-                    for(PRDAction elseAction : action.getPRDElse().getPRDAction()){
-                        tempAction.addToListOfElse(getActionFromPRDAction(allEntityDefinitions, elseAction));
-                    }
-                }
-
-                return tempAction;
+                return getAbstractConditionAction(allEntityDefinitions, action);
             }
 
             case "set":{

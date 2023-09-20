@@ -3,6 +3,7 @@ package action.impl;
 import action.api.AbstractAction;
 import action.api.ActionType;
 import definition.entity.EntityDefinition;
+import definition.entity.SecondaryEntityDefinition;
 import definition.property.api.PropertyDefinition;
 import definition.property.api.PropertyType;
 import execution.context.Context;
@@ -10,6 +11,7 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import function.api.Function;
 import function.impl.*;
+import generated.PRDAction;
 
 import static definition.value.generator.transformer.Transformer.StringToFloat;
 import static definition.value.generator.transformer.Transformer.StringToInteger;
@@ -19,8 +21,8 @@ public class IncreaseAction extends AbstractAction {
     private final String property;
     private final String byExpression;
 
-    public IncreaseAction(EntityDefinition entityDefinition, String property, String byExpression) {
-        super(ActionType.INCREASE, entityDefinition);
+    public IncreaseAction(EntityDefinition entityDefinition, String property, String byExpression, SecondaryEntityDefinition secondaryEntity) {
+        super(ActionType.INCREASE, entityDefinition, secondaryEntity);
         this.property = property;
         this.byExpression = byExpression;
     }

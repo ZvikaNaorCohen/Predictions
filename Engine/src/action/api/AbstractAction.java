@@ -1,16 +1,30 @@
 package action.api;
 
 import definition.entity.EntityDefinition;
+import definition.entity.SecondaryEntityDefinition;
 import execution.context.Context;
 
 public abstract class AbstractAction implements Action {
 
     protected final ActionType actionType;
     protected final EntityDefinition entityDefinition;
+    protected final SecondaryEntityDefinition secondaryEntityDefinition;
+
+    protected AbstractAction(ActionType actionType, EntityDefinition entityDefinition, SecondaryEntityDefinition second) {
+        this.actionType = actionType;
+        this.entityDefinition = entityDefinition;
+        this.secondaryEntityDefinition = second;
+    }
+
+    @Override
+    public boolean hasSecondEntity(){
+        return secondaryEntityDefinition != null;
+    }
 
     protected AbstractAction(ActionType actionType, EntityDefinition entityDefinition) {
         this.actionType = actionType;
         this.entityDefinition = entityDefinition;
+        secondaryEntityDefinition = null;
     }
 
     @Override
@@ -42,6 +56,4 @@ public abstract class AbstractAction implements Action {
     public EntityDefinition getContextEntity() {
         return entityDefinition;
     }
-
-
 }

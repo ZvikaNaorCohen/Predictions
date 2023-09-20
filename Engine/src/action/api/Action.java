@@ -8,4 +8,6 @@ public interface Action {
     ActionType getActionType();
     EntityDefinition getContextEntity();
     Object getValueFromEvaluate(Context context, String input);
+
+    boolean hasSecondEntity();
 }

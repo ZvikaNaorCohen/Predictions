@@ -49,27 +49,23 @@ public class SetAction extends AbstractAction {
                     if (className.equals("Integer") && propertyInstance.getPropertyDefinition().newValueInCorrectBounds((Integer) randomFunction.getRandomValue())) {
                         instance.getPropertyByName(property).updateValue(randomFunction.getRandomValue());
                     }
-                }
-                else if (newPropertyValue.startsWith("evaluate")){
+                } else if (newPropertyValue.startsWith("evaluate")) {
                     Function evaluateFunction = new EvaluateFunction(newPropertyValue);
-                    Float value = (Float)evaluateFunction.getValueFromEvaluate(context);
-                    if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value)))
-                    {
+                    Float value = (Float) evaluateFunction.getValueFromEvaluate(context);
+                    if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value))) {
                         instance.getPropertyByName(property).updateValue(value);
                         return;
                     }
-                }
-                else if (newPropertyValue.startsWith("percent")){
+                } else if (newPropertyValue.startsWith("percent")) {
                     return;
-                }
-                else if (newPropertyValue.startsWith("ticks")){
+                } else if (newPropertyValue.startsWith("ticks")) {
                     Function evaluateFunction = new TicksFunction(newPropertyValue);
                     Float value = evaluateFunction.getTicksNotUpdated(context);
                     if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value))) {
                         instance.getPropertyByName(property).updateValue(value);
                     }
                     return;
-                }else if (instance.hasPropertyByName(newPropertyValue)) {
+                } else if (instance.hasPropertyByName(newPropertyValue)) {
                     propertyInstance.updateValue(instance.getPropertyByName(newPropertyValue));
                 } else { // ערך חופשי
                     updatePropertyInstanceValueByFreeValue(propertyInstance);

@@ -1,5 +1,6 @@
 package execution.context;
 
+import action.api.Action;
 import engine.AllData;
 import execution.instance.entity.EntityInstance;
 import execution.instance.entity.EntityInstanceImpl;
@@ -150,8 +151,7 @@ public class ContextImpl implements Runnable, Context {
     @Override
     public int getSecondsPassed(){return secondsPassed;}
 
-    @Override
-    public void run(){
+    private void oldRun(){
         startTime = System.currentTimeMillis();
         Random random = new Random();
         while(!shouldSimulationTerminate(currentTick, secondsPassed) && keepRunning.get()){
@@ -173,6 +173,85 @@ public class ContextImpl implements Runnable, Context {
                     long elapsedTime = currentTime - startTime - totalPauseTime;
                     secondsPassed = (int) (elapsedTime / 1000);
                     currentTick++;
+                }
+            }catch (InterruptedException exception) {
+                keepRunning.set(false);
+                exception.printStackTrace();
+            }
+        }
+
+        keepRunning.set(false);
+    }
+
+    private List<Rule> getAllRulesThatShouldWork(){
+        List<Rule> allRulesToWork = new ArrayList<>();
+        Random random = new Random();
+        for(Rule rule : allRules){
+            double randomValue = random.nextDouble();
+            if (rule.getActivation().isActive(currentTick) || randomValue < rule.getActivation().getProb()) {
+                allRulesToWork.add(rule);
+            }
+        }
+
+        return allRulesToWork;
+    }
+
+    private List<Action> getAllActionsThatShouldWork(List<Rule> allRulesToWork){
+        List<Action> allActionsToWork = new ArrayList<>();
+        for(Rule rule : allRulesToWork){
+            for(Action action : rule.getActionsToPerform()){
+                allActionsToWork.add(action);
+            }
+        }
+
+        return allActionsToWork;
+    }
+
+
+
+
+    @Override
+    public void run(){
+        startTime = System.currentTimeMillis();
+        while(!shouldSimulationTerminate(currentTick, secondsPassed) && keepRunning.get()){
+            try{
+                if(paused.get()){
+                    pauseTime = System.currentTimeMillis();
+                    sleepForAWhile();
+                }
+                else{
+                    sleepForAWhile();
+                    // Move all entities
+
+                    // Check all rules and check which should work
+                    List<Rule> allRulesToWork = getAllRulesThatShouldWork();
+                    // put their actions in a list.
+                    List<Action> allActionsToWork = getAllActionsThatShouldWork(allRulesToWork);
+
+                    for(EntityInstance instance : entityInstanceManager.getInstances()){
+                        for(Action action : allActionsToWork){
+                            if(action.getContextEntity().equals(instance.getEntityDef())){
+                                if(action.hasSecondEntity()){
+
+                                }
+                                else{
+                                    // run on all actions and invoke them.
+                                }
+                            }
+                        }
+                    }
+
+
+                    // Then, when you finished with all the rules, now do the following:
+                        // For every entity instance in the world:
+                            // 1. Go through all actions
+                                // 1.1. If action doesn't work on current entity:
+                                    // 1.1.1. Go to next action.
+                                // 1.2. If action works on current entity:
+                                    // 1.2.1. Check if there is second entity for the action.
+                                        // 1.2.2. If not, do action on current entity and move on.
+                                        // 1.2.3. If yes, go through all the second entities and put them in a list.
+                                        //        Iterate all second entities, and send both of the entities to the action.
                 }
             }catch (InterruptedException exception) {
                 keepRunning.set(false);

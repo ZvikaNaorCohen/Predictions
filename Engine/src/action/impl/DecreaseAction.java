@@ -3,6 +3,7 @@ package action.impl;
 import action.api.AbstractAction;
 import action.api.ActionType;
 import definition.entity.EntityDefinition;
+import definition.entity.SecondaryEntityDefinition;
 import definition.property.api.PropertyType;
 import execution.context.Context;
 import execution.instance.entity.EntityInstance;
@@ -20,8 +21,8 @@ public class DecreaseAction extends AbstractAction {
     private final String property;
     private final String byExpression;
 
-    public DecreaseAction(EntityDefinition entityDefinition, String property, String byExpression) {
-        super(ActionType.DECREASE, entityDefinition);
+    public DecreaseAction(EntityDefinition entityDefinition, String property, String byExpression, SecondaryEntityDefinition secondaryEntity) {
+        super(ActionType.DECREASE, entityDefinition, secondaryEntity);
         this.property = property;
         this.byExpression = byExpression;
     }
