@@ -24,6 +24,7 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
         instances = new ArrayList<>();
         maxRows = rows;
         maxCols = cols;
+        grid = new EntityInstance[maxRows][maxCols];
     }
 
     @Override
@@ -80,12 +81,14 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
     }
 
     @Override
-    public void killEntity(String entityName) {
-        for (EntityInstance instance : instances) {
-            if (instance.getEntityDefinitionName().equals(entityName)) {
-                instances.remove(instance);
-                return;
-            }
-        }
+    public void killEntity(EntityInstance instance) {
+//        for (EntityInstance instance : instances) {
+//            if (instance.getEntityDefinitionName().equals(entityName)) {
+//                instances.remove(instance);
+//                return;
+//            }
+//        }
+
+        instances.remove(instance);
     }
 }

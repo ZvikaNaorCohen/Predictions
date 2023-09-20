@@ -1,6 +1,7 @@
 package action.api;
 
 import definition.entity.EntityDefinition;
+import definition.entity.SecondaryEntityDefinition;
 import execution.context.Context;
 
 public interface Action {
@@ -10,4 +11,6 @@ public interface Action {
     Object getValueFromEvaluate(Context context, String input);
 
     boolean hasSecondEntity();
+
+    SecondaryEntityDefinition getSecondEntityDefinition();
 }

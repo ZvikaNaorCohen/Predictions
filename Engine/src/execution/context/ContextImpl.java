@@ -1,6 +1,8 @@
 package execution.context;
 
 import action.api.Action;
+import action.api.ActionType;
+import definition.entity.SecondaryEntityDefinition;
 import engine.AllData;
 import execution.instance.entity.EntityInstance;
 import execution.instance.entity.EntityInstanceImpl;
@@ -106,7 +108,7 @@ public class ContextImpl implements Runnable, Context {
 
     @Override
     public void removeEntity(EntityInstance entityInstance) {
-        entityInstanceManager.killEntity(entityInstance.getEntityDefinitionName());
+        entityInstanceManager.killEntity(entityInstance);
     }
 
     @Override
@@ -196,17 +198,49 @@ public class ContextImpl implements Runnable, Context {
         return allRulesToWork;
     }
 
-    private List<Action> getAllActionsThatShouldWork(List<Rule> allRulesToWork){
+    private List<Action> getAllActionsThatShouldWorkWithoutKillReplace(List<Rule> allRulesToWork){
         List<Action> allActionsToWork = new ArrayList<>();
         for(Rule rule : allRulesToWork){
             for(Action action : rule.getActionsToPerform()){
-                allActionsToWork.add(action);
+                if(!action.getActionType().equals(ActionType.KILL) && !action.getActionType().equals(ActionType.REPLACE)) {
+                    allActionsToWork.add(action);
+                }
             }
         }
 
         return allActionsToWork;
     }
 
+
+    private List<Action> getReplaceOrKillActionsThatShouldWork(List<Rule> allRulesToWork){
+        List<Action> allActionsToWork = new ArrayList<>();
+        for(Rule rule : allRulesToWork){
+            for(Action action : rule.getActionsToPerform()){
+                if(action.getActionType().equals(ActionType.KILL) || action.getActionType().equals(ActionType.REPLACE)) {
+                    allActionsToWork.add(action);
+                }
+            }
+        }
+
+        return allActionsToWork;
+    }
+
+    private List<EntityInstance> getSecondEntitiesToWorkOn(Action action){
+        List<EntityInstance> listToReturn = new ArrayList<>(action.getSecondEntityDefinition().getCount());
+        SecondaryEntityDefinition secondaryEntityDefinition = action.getSecondEntityDefinition();
+        for(EntityInstance instance : entityInstanceManager.getInstances()){
+            if(instance.getEntityDefinitionName().equals(secondaryEntityDefinition.getEntityName())){
+                if(listToReturn.size() < secondaryEntityDefinition.getCount()){
+                    secondaryEntityDefinition.getActionToPerform().invoke(this);
+                    if(secondaryEntityDefinition.getActionToPerform().getConditionReturnValue()){
+                        listToReturn.add(instance);
+                    }
+                }
+            }
+        }
+
+        return listToReturn;
+    }
 
 
 
@@ -226,17 +260,33 @@ public class ContextImpl implements Runnable, Context {
                     // Check all rules and check which should work
                     List<Rule> allRulesToWork = getAllRulesThatShouldWork();
                     // put their actions in a list.
-                    List<Action> allActionsToWork = getAllActionsThatShouldWork(allRulesToWork);
+                    List<Action> allActionsExceptKillReplace = getAllActionsThatShouldWorkWithoutKillReplace(allRulesToWork);
+                    List<Action> allActionsWithKillReplace = getReplaceOrKillActionsThatShouldWork(allRulesToWork);
 
                     for(EntityInstance instance : entityInstanceManager.getInstances()){
-                        for(Action action : allActionsToWork){
+                        for(Action action : allActionsExceptKillReplace){
                             if(action.getContextEntity().equals(instance.getEntityDef())){
+                                primaryEntityInstance = instance;
                                 if(action.hasSecondEntity()){
-
+                                    List<EntityInstance> secondEntitiesToWorkOn = getSecondEntitiesToWorkOn(action);
+                                    for(EntityInstance secondEntity : secondEntitiesToWorkOn){
+                                        secondaryEntityInstance = secondEntity;
+                                        action.invoke(this);
+                                    }
                                 }
                                 else{
-                                    // run on all actions and invoke them.
+                                    secondaryEntityInstance = null;
+                                    action.invoke(this);
                                 }
+                            }
+                        }
+                    }
+                    List<EntityInstance> copyOfInstances = new ArrayList<>(entityInstanceManager.getInstances());
+                    for(EntityInstance instance : copyOfInstances){
+                        for(Action action : allActionsWithKillReplace){
+                            if(action.getContextEntity().equals(instance.getEntityDef())){
+                                primaryEntityInstance = instance;
+                                action.invoke(this);
                             }
                         }
                     }
@@ -245,13 +295,21 @@ public class ContextImpl implements Runnable, Context {
                     // Then, when you finished with all the rules, now do the following:
                         // For every entity instance in the world:
                             // 1. Go through all actions
-                                // 1.1. If action doesn't work on current entity:
-                                    // 1.1.1. Go to next action.
+                                // 1.1. If action doesn't work on current entity
+                                    //  1.1.1. Go to next action.
                                 // 1.2. If action works on current entity:
                                     // 1.2.1. Check if there is second entity for the action.
-                                        // 1.2.2. If not, do action on current entity and move on.
+                                        // 1.2.2. If not, do action on current entity and move on. V
                                         // 1.2.3. If yes, go through all the second entities and put them in a list.
                                         //        Iterate all second entities, and send both of the entities to the action.
+
+
+
+                    updateAliveEntitiesPerTick(currentTick);
+                    long currentTime = System.currentTimeMillis();
+                    long elapsedTime = currentTime - startTime - totalPauseTime;
+                    secondsPassed = (int) (elapsedTime / 1000);
+                    currentTick++;
                 }
             }catch (InterruptedException exception) {
                 keepRunning.set(false);

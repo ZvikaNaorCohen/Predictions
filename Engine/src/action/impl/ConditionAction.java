@@ -46,9 +46,10 @@ public class ConditionAction extends AbstractConditionAction {
 
     @Override
     public void invoke(Context context) {
-        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
-            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
-                context.setPrimaryEntityInstance(instance);
+//        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
+//            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
+                EntityInstance instance = context.getPrimaryEntityInstance();
+                // context.setPrimaryEntityInstance(instance);
                 String propertyInstanceValue = "";
                 String valueFromValue = "";
                 if(property.startsWith("environment") || property.startsWith("random") || property.startsWith("evaluate")
@@ -80,8 +81,8 @@ public class ConditionAction extends AbstractConditionAction {
                     }
                 }
             }
-        }
-    }
+//        }
+//    }
 
 //    private boolean generateValueFromCondition(EntityInstance instance, String expression, Context context) {
 //        PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE

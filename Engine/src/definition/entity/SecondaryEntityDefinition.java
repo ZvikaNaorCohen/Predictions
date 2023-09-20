@@ -17,4 +17,12 @@ public class SecondaryEntityDefinition{
     public void setActionToPerform(AbstractConditionAction action){
         actionToPerform = action;
     }
+
+    public String getEntityName(){return entityName;}
+
+    public int getCount(){return count;}
+
+    public AbstractConditionAction getActionToPerform(){return actionToPerform;}
+
+
 }

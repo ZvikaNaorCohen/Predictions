@@ -49,18 +49,28 @@ public class ReplaceAction extends AbstractAction {
         context.getEntityInstanceManager().createEntityInstanceByName(entityToCreate);
     }
 
+    private EntityDefinition getEntityDefinitionToCreate(Context context){
+        for(EntityInstance instance : context.getEntityInstanceManager().getInstances()){
+            if(instance.getEntityDefinitionName().equals(entityToCreate)){
+                return instance.getEntityDef();
+            }
+        }
+
+        return null;
+    }
+
     private void handleDerivedMode(Context context) {
         EntityDefinition entityDefinitionToKill = context.getPrimaryEntityInstance().getEntityDef();
-        EntityDefinition entityDefinitionToCreate = context.getSecondaryEntityInstance().getEntityDef();
+        EntityDefinition entityDefinitionToCreate = getEntityDefinitionToCreate(context);
 
         if (!entitiesWithSameProperties(entityDefinitionToKill, entityDefinitionToCreate)) {
             return;
         }
 
-        EntityInstance entityInstanceToLill = context.getPrimaryEntityInstance();
+        EntityInstance entityInstanceToKill = context.getPrimaryEntityInstance();
 
         EntityInstance instanceToCreate = context.getEntityInstanceManager().create(entityDefinitionToCreate, context.getGrid());
-        for (Map.Entry<String, PropertyInstance> entry : entityInstanceToLill.getAllPropertyInstances().entrySet()) {
+        for (Map.Entry<String, PropertyInstance> entry : entityInstanceToKill.getAllPropertyInstances().entrySet()) {
             Object newValue = entry.getValue().getValue();
             instanceToCreate.getPropertyByName(entry.getKey()).updateValue(newValue);
         }

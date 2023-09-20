@@ -17,6 +17,11 @@ public abstract class AbstractAction implements Action {
     }
 
     @Override
+    public SecondaryEntityDefinition getSecondEntityDefinition() {
+        return secondaryEntityDefinition;
+    }
+
+    @Override
     public boolean hasSecondEntity(){
         return secondaryEntityDefinition != null;
     }
