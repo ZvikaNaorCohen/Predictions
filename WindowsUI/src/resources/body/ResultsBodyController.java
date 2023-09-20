@@ -245,6 +245,57 @@ public class ResultsBodyController {
     }
 
     @FXML
+    private void consistencyButtonOnPressed(){
+        if(!checkEntityAndPropertySelected()){
+            return;
+        }
+
+        Map<String, Integer> propertyNameToTimesChanged = new HashMap<>();
+        Context context = findContextById(selectedContextID);
+        String entityName = entityComboBox.getSelectionModel().getSelectedItem();
+        String propInstanceName = propertyComboBox.getSelectionModel().getSelectedItem();
+        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
+            if (instance.getEntityDefinitionName().equals(entityName)) {
+                PropertyInstance propInstance = instance.getPropertyByName(propInstanceName);
+                if(propertyNameToTimesChanged.get(propInstanceName) == null){
+                    propertyNameToTimesChanged.put(propInstanceName, propInstance.getTimesValueChanged());
+                }
+                else{
+                    int oldValue = propertyNameToTimesChanged.get(propInstanceName);
+                    int newValue = oldValue + propInstance.getTimesValueChanged();
+                    propertyNameToTimesChanged.put(propInstanceName, newValue);
+                }
+            }
+        }
+
+        Alert alertForConsistency = new Alert(Alert.AlertType.INFORMATION);
+        alertForConsistency.setTitle("Data Display");
+        alertForConsistency.setHeaderText("Most updated information:");
+
+        TextArea textArea = new TextArea();
+        textArea.setEditable(false);
+
+        int totalContextTicks = context.getCurrentTick();
+        for (Map.Entry<String, Integer> entry : propertyNameToTimesChanged.entrySet()) {
+            String propName = entry.getKey();
+            Integer value = entry.getValue();
+            textArea.appendText("Property name: " + propName + ", Average ticks not changed: " + value/totalContextTicks + ".\n");
+        }
+
+        ScrollPane scrollPane = new ScrollPane(textArea);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setMaxWidth(Double.MAX_VALUE);
+        gridPane.add(scrollPane, 0, 0);
+
+        alertForConsistency.getDialogPane().setContent(gridPane);
+        alertForConsistency.showAndWait();
+
+    }
+
+    @FXML
     private void histogramButtonOnPressed(){
         if(!checkEntityAndPropertySelected()){
             return;

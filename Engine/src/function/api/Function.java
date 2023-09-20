@@ -11,6 +11,6 @@ public interface Function {
 
     Double getPercentFromFunction(Context context);
 
-    Float getTicksNotUpdated(Context context);
+    Integer getTicksNotUpdated(Context context);
 
 }

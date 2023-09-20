@@ -60,7 +60,7 @@ public class SetAction extends AbstractAction {
                     return;
                 } else if (newPropertyValue.startsWith("ticks")) {
                     Function evaluateFunction = new TicksFunction(newPropertyValue);
-                    Float value = evaluateFunction.getTicksNotUpdated(context);
+                    Integer value = evaluateFunction.getTicksNotUpdated(context);
                     if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value))) {
                         instance.getPropertyByName(property).updateValue(value);
                     }

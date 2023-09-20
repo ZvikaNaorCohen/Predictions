@@ -29,7 +29,7 @@ public class TicksFunction extends AbstractFunction {
     }
 
     @Override
-    public Float getTicksNotUpdated(Context context) {
+    public Integer getTicksNotUpdated(Context context) {
         int openParenIndex = expression.indexOf("(");
         int dotIndex = expression.indexOf(".");
 
@@ -45,6 +45,6 @@ public class TicksFunction extends AbstractFunction {
             }
         }
 
-        return 0f;
+        return 0;
     }
 }

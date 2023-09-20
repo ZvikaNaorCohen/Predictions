@@ -142,7 +142,7 @@
                               </Button>
                               <ComboBox fx:id="entityComboBox" disable="true" onAction="#onSelectedEntity" prefHeight="63.0" prefWidth="281.0" promptText="Choose entity..." GridPane.rowIndex="1" />
                               <ComboBox fx:id="propertyComboBox" disable="true" prefHeight="63.0" prefWidth="280.0" promptText="Choose property..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="consistencyButton" disable="true" mnemonicParsing="false" prefHeight="94.0" prefWidth="98.0" text="Consistency" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <Button fx:id="consistencyButton" disable="true" mnemonicParsing="false" onAction="#consistencyButtonOnPressed" prefHeight="94.0" prefWidth="98.0" text="Consistency" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
