@@ -32,7 +32,8 @@ public class PRDtoWorld {
         if(inputTermination.getPRDBySecondOrPRDByTicks().size() != 0) {
             if(inputTermination.getPRDBySecondOrPRDByTicks().get(0) != null) {
                 ticks = ((PRDByTicks) inputTermination.getPRDBySecondOrPRDByTicks().get(0)).getCount();
-            }else{
+            }
+            if(inputTermination.getPRDBySecondOrPRDByTicks().get(1) != null){
                 seconds = ((PRDBySecond)inputTermination.getPRDBySecondOrPRDByTicks().get(1)).getCount();
             }
         }else{
@@ -111,8 +112,7 @@ public class PRDtoWorld {
             }
 
             case "proximity":{
-                // return new ProximityAction(ActionType.PROXIMITY, entityDef);
-                return null;
+                return new ProximityAction(ActionType.PROXIMITY, entityDef, action);
             }
         }
         return null;

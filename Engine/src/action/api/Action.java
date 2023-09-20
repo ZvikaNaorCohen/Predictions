@@ -7,4 +7,5 @@ public interface Action {
     void invoke(Context context);
     ActionType getActionType();
     EntityDefinition getContextEntity();
+    Object getValueFromEvaluate(Context context, String input);
 }

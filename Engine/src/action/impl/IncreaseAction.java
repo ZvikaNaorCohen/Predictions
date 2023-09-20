@@ -9,10 +9,7 @@ import execution.context.Context;
 import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import function.api.Function;
-import function.impl.EnvironmentFunction;
-import function.impl.EvaluateFunction;
-import function.impl.RandomFunction;
-import function.impl.TicksFunction;
+import function.impl.*;
 
 import static definition.value.generator.transformer.Transformer.StringToFloat;
 import static definition.value.generator.transformer.Transformer.StringToInteger;
@@ -47,7 +44,7 @@ public class IncreaseAction extends AbstractAction {
                     updatePropertyInstanceValueByEvaluate(context, propertyInstance);
                 }
                 else if (byExpression.startsWith("percent")){
-                    // updatePropertyInstanceValueByPercent(context);
+                    updatePropertyInstanceValueByPercent(context, propertyInstance);
                 }
                 else if (byExpression.startsWith("ticks")){
                     updatePropertyInstanceValueByTicks(context, propertyInstance);
@@ -61,6 +58,15 @@ public class IncreaseAction extends AbstractAction {
         }
     }
 
+    private void updatePropertyInstanceValueByPercent(Context context, PropertyInstance propertyInstance){
+        Function func = new PercentFunction(byExpression);
+        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+        Float newValue = (float) (oldValue + func.getPercentFromFunction(context));
+        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+            propertyInstance.updateValue(newValue);
+        }
+    }
+
     private void updatePropertyInstanceValueByTicks(Context context, PropertyInstance propertyInstance){
         Function func = new TicksFunction(byExpression);
         Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
@@ -70,28 +76,9 @@ public class IncreaseAction extends AbstractAction {
         }
     }
 
-    private Object getValueFromEvaluate(Context context) {
-        int openParenIndex = byExpression.indexOf("(");
-        int dotIndex = byExpression.indexOf(".");
-
-        if (openParenIndex != -1 && dotIndex != -1) {
-            String entityName = byExpression.substring(openParenIndex + 1, dotIndex);
-            String propertyName = byExpression.substring(dotIndex + 1, byExpression.length() - 1);
-
-            if(context.getPrimaryEntityInstance().getEntityDefinitionName().equals(entityName)){
-                return context.getPrimaryEntityInstance().getPropertyByName(propertyName).getValue();
-            }
-            else {
-                return context.getSecondaryEntityInstance().getPropertyByName(propertyName).getValue();
-            }
-        }
-
-        return 0;
-    }
     private void updatePropertyInstanceValueByEvaluate(Context context, PropertyInstance propertyInstance){
-        Function func = new EvaluateFunction(byExpression);
         Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
-        Float newValue = oldValue + (Float)getValueFromEvaluate(context);
+        Float newValue = oldValue + (Float)getValueFromEvaluate(context, byExpression);
         if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
             propertyInstance.updateValue(newValue);
         }

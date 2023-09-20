@@ -56,7 +56,7 @@ public class DetailsBodyController {
         String answer = "";
         answer += "Action type: " + action.getType() + ". Main entity: " + action.getEntity() + ". \n";
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No second entity in this action. \n";
@@ -73,7 +73,7 @@ public class DetailsBodyController {
 
 
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No more entities in this action. \n";
@@ -97,7 +97,7 @@ public class DetailsBodyController {
         answer += "In 'Then' there are: " + action.getPRDThen().getPRDAction().size() + " actions. \n";
         answer += "In 'Else' there are: " + action.getPRDElse().getPRDAction().size() + " actions. \n";
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No second entity in this action. \n";
@@ -117,7 +117,7 @@ public class DetailsBodyController {
         answer += "Action type: " + action.getType() + ". Entity: " + action.getEntity() + ". Property: " + action.getProperty() + ". \n";
         answer += "New value: " + action.getValue() + ". \n";
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No second entity in this action. \n";
@@ -129,7 +129,7 @@ public class DetailsBodyController {
         String answer = "";
         answer += "Action type: " + action.getType() + ". Entity to kill: " + action.getEntity() + ". \n";
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No second entity in this action. \n";
@@ -142,7 +142,7 @@ public class DetailsBodyController {
         answer += "Action type: " + action.getType() + ". Entity to kill: " + action.getKill() + ". Entity to create: " + action.getCreate() + ". \n";
         answer += "Mode: " + action.getMode() + ". \n";
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No more entities in this action. \n";
@@ -156,7 +156,7 @@ public class DetailsBodyController {
                 ". Target entity: " + action.getPRDBetween().getTargetEntity() +". \n ";
         answer += "Depth: " + action.getPRDEnvDepth().getOf() + ". Number of actions: " + action.getPRDActions().getPRDAction().size() + ". \n";
         if(action.getPRDSecondaryEntity() != null){
-            answer += "Second entity: " + action.getPRDSecondaryEntity() + ". \n";
+            answer += "Second entity: " + action.getPRDSecondaryEntity().getEntity() + ". \n";
         }
         else{
             answer += "No more entities in this action. \n";

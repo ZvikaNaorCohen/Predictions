@@ -92,7 +92,7 @@ public class PRDActionValidator {
                 // else, if singularity == multiple:
                 // check logical
                 if (action.getPRDCondition().getSingularity().equals("single")) {
-                    if (!checkSingleConditionAction(action, oldWorld, action.getPRDCondition())) {
+                    if (!checkSingleConditionAction(action, oldWorld, action.getPRDCondition()) ) {
                         return false;
                     }
                 } else if (action.getPRDCondition().getSingularity().equals("multiple")) {
@@ -190,11 +190,13 @@ public class PRDActionValidator {
             return isEvaluationValid(oldWorld, arg);
         } else if (arg.startsWith("percent")) {
             return isPercentValid(action, oldWorld, arg);
-        } else if (allCharactersAreDigits(arg)) {
+        } else if(expressionSecondCheck(action, oldWorld, arg)){
+            return true;
+        }else if (allCharactersAreDigits(arg)) {
             return true;
         } else if (stringPotentiallyFloat(arg)) {
             return true;
-        } else {
+        }else {
             errorMessage = "In multiply/divide function there is an unknown argument: " + arg + ". \n";
             return false;
         }
@@ -228,7 +230,8 @@ public class PRDActionValidator {
                 !condition.getOperator().equals("bt") && !condition.getOperator().equals("lt")) {
             errorMessage = "Unknown operator in single condition. Received operator: " + condition.getOperator() + "\n";
             return false;
-        } else if (!singleConditionValidExpression(action, oldWorld, condition.getValue(), entityName, condition.getProperty())) {
+        } else if (!singleConditionValidExpression(action, oldWorld, condition.getValue(), entityName, condition.getProperty())
+        || !singleConditionValidExpression(action, oldWorld, condition.getProperty(), entityName, condition.getProperty())) {
             errorMessage = "Invalid expression in single condition. Received: " + condition.getValue() + "\n";
             return false;
         }
@@ -248,6 +251,9 @@ public class PRDActionValidator {
             if (!stringPotentiallyFloat(valueInsideRandom)) {
                 errorMessage = "Value inside random in single condition function is not a number. \n";
                 return false;
+            }
+            else if(arg.startsWith("evaluate")){
+                return isEvaluationValid(oldWorld, arg);
             }
         } else if (arg.startsWith("percent")) {
             return isPercentValid(action, oldWorld, arg);
@@ -425,7 +431,7 @@ public class PRDActionValidator {
             String actionPropertyName = action.getProperty();
             String actionEntityName = action.getEntity();
             PRDProperty propFromAction = getPropertyByEntityNameAndPropName(actionPropertyName, actionEntityName, oldWorld);
-            if (!propFromAction.getType().equals("decimal") || !propFromAction.getType().equals("float")) {
+            if (!propFromAction.getType().equals("decimal") && !propFromAction.getType().equals("float")) {
                 errorMessage = "Can't set random(value) to property: " + propFromAction.getPRDName() +
                         "because the property type is not a number. \n";
                 return false;
@@ -586,9 +592,15 @@ public class PRDActionValidator {
         if (percent.startsWith("evaluate")) {
             return isEvaluationValid(oldWorld, percent) && valueInEvaluationIsNumeric(oldWorld, percent);
         }
+        else if(percent.startsWith("ticks")){
+            return true;
+        }
         else if (expressionSecondCheck(action, oldWorld, percent)) {
             return true;
         } else {
+            if(stringPotentiallyFloat(percent) || allCharactersAreDigits(percent)){
+                return true;
+            }
             if (action.getProperty() != null) {
                 PRDProperty prop = getPropertyByEntityNameAndPropName(action.getProperty(), getEntityNameFromAction(action), oldWorld);
                 if (prop != null) {
@@ -610,14 +622,14 @@ public class PRDActionValidator {
     }
 
     private boolean isPercentValid(PRDAction action, PRDWorld oldWorld, String wholeString) {
-        int percentStartIndex = wholeString.indexOf("percent(");
+        int firstOpeningParenthesisIndex = wholeString.indexOf("(");
+        int commaIndex = wholeString.indexOf(",");
+        int lastClosingParenthesisIndex = wholeString.lastIndexOf(")");
 
-        if (percentStartIndex != -1) {
-            String percentPart = wholeString.substring(percentStartIndex + "percent(".length());
-            int commaIndex = percentPart.indexOf(",");
+        if (firstOpeningParenthesisIndex != -1 && commaIndex != -1 && lastClosingParenthesisIndex != -1) {
             if (commaIndex != -1) {
-                String part1 = percentPart.substring(0, commaIndex);
-                String part2 = percentPart.substring(commaIndex + 1);
+                String part1 = wholeString.substring(firstOpeningParenthesisIndex + 1, commaIndex).trim();
+                String part2 = wholeString.substring(commaIndex + 1, lastClosingParenthesisIndex).trim();
 
                 if (validInsidePercentExpression(action, oldWorld, part1) && validInsidePercentExpression(action, oldWorld, part2)) {
                     return true;

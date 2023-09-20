@@ -9,7 +9,9 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import function.api.Function;
 import function.impl.EnvironmentFunction;
+import function.impl.PercentFunction;
 import function.impl.RandomFunction;
+import function.impl.TicksFunction;
 
 
 public class ConditionAction extends AbstractConditionAction {
@@ -24,77 +26,134 @@ public class ConditionAction extends AbstractConditionAction {
         value = v;
     }
 
+    private String handleExpressionInString(Context context, String input){
+        if(input.startsWith("environment")){
+            return new EnvironmentFunction(input).getPropertyInstanceValueFromEnvironment(context).toString();
+        } else if(input.startsWith("random")){
+            return new RandomFunction(input).getRandomValue().toString();
+        } else if(input.startsWith("evaluate")){
+            return getValueFromEvaluate(context, input).toString();
+        } else if(input.startsWith("percent")){
+            return new PercentFunction(input).getPercentFromFunction(context).toString();
+        } else if (input.startsWith("ticks")) {
+            return new TicksFunction(input).getTicksNotUpdated(context).toString();
+        }
+        else{
+            return input;
+        }
+    }
+
     @Override
     public void invoke(Context context) {
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
                 context.setPrimaryEntityInstance(instance);
-                PropertyInstance propertyInstance = instance.getPropertyByName(property);
+                String propertyInstanceValue = "";
+                String valueFromValue = "";
+                if(property.startsWith("environment") || property.startsWith("random") || property.startsWith("evaluate")
+                || property.startsWith("percent") || property.startsWith("ticks")){
+                    propertyInstanceValue = handleExpressionInString(context, property);
+                }
+                else{
+                    propertyInstanceValue = instance.getPropertyByName(property).getValue().toString();
+                }
+
+                valueFromValue = handleExpressionInString(context, value);
+
                 switch (operator) {
                     case "=": {
-                        String propertyInstanceValue = propertyInstance.getValue().toString();
                         conditionReturnValue = propertyInstanceValue.equals(value);
                         break;
                     }
                     case "!=": {
-                        String propertyInstanceValue = propertyInstance.getValue().toString();
                         conditionReturnValue = !propertyInstanceValue.equals(value);
                         break;
                     }
                     case "bt": {
-                        conditionReturnValue = generateValueFromCondition(instance, value, context);
+                        conditionReturnValue = Float.parseFloat(propertyInstanceValue) > Float.parseFloat(valueFromValue);
                         break;
                     }
                     case "lt": {
-                        conditionReturnValue = !generateValueFromCondition(instance, value, context);
+                        conditionReturnValue = Float.parseFloat(propertyInstanceValue) < Float.parseFloat(valueFromValue);
                         break;
                     }
                 }
             }
         }
     }
-    private boolean generateValueFromCondition(EntityInstance instance, String expression, Context context) {
-        PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
-        if (expression.startsWith("environment")) {
-            return propertyInstanceBiggerThanEnvironment(context, expression, propertyInstance);
-        } else if (expression.startsWith("random")) {
-            return propertyInstanceBiggerThanRandom(propertyInstance, expression);
-        } else if (instance.hasPropertyByName(expression)) {
-            if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
-                return (Integer)propertyInstance.getValue() > (Integer)instance.getPropertyByName(expression).getValue();
-            }
-            else {
-                return (Float)propertyInstance.getValue() > (Float)instance.getPropertyByName(expression).getValue();
-            }
-        } else { // ערך חופשי
-            if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
-                return (Integer)propertyInstance.getValue() >Integer.parseInt(expression);
-            }
-            else if(propertyInstance.getValue().getClass().getSimpleName().equals("Float")){
-                return (Float)propertyInstance.getValue() > Float.parseFloat(expression);
-            }
-            else return false;
-        }
-    }
-
-    private boolean propertyInstanceBiggerThanRandom(PropertyInstance propertyInstance, String expression){
-        Function envFunction = new RandomFunction(expression);
-        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
-            return (Integer)propertyInstance.getValue() > envFunction.getRandomValue();
-        }
-        else {
-            return (Float)propertyInstance.getValue() > envFunction.getRandomValue();
-        }
-
-    }
-
-    private boolean propertyInstanceBiggerThanEnvironment(Context context, String expression, PropertyInstance propertyInstance){
-        Function envFunction = new EnvironmentFunction(expression);
-        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
-            return (Integer)propertyInstance.getValue() > (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
-        }
-        else {
-            return (Float)propertyInstance.getValue() > (Float)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
-        }
-    }
+//    private boolean generateValueFromCondition(EntityInstance instance, String expression, Context context) {
+//        PropertyInstance propertyInstance = instance.getPropertyByName(property); // Property AGE
+//        if (expression.startsWith("environment")) {
+//            return propertyInstanceBiggerThanEnvironment(context, expression, propertyInstance);
+//        } else if (expression.startsWith("random")) {
+//            return propertyInstanceBiggerThanRandom(propertyInstance, expression);
+//        } else if (expression.startsWith("evaluate")){
+//            return propertyInstanceBiggerThanEvaluate(context, propertyInstance, expression);
+//        }
+//        else if (expression.startsWith("percent")){
+//            return propertyInstanceBiggerThanPercent(context, propertyInstance, expression);
+//        }
+//        else if (expression.startsWith("ticks")){
+//            return propertyInstanceBiggerThanTicks(context, propertyInstance, expression);
+//        }
+//        else if (instance.hasPropertyByName(expression)) {
+//            if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+//                return (Integer)propertyInstance.getValue() > (Integer)instance.getPropertyByName(expression).getValue();
+//            }
+//            else {
+//                return (Float)propertyInstance.getValue() > (Float)instance.getPropertyByName(expression).getValue();
+//            }
+//        } else { // ערך חופשי
+//            if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+//                return (Integer)propertyInstance.getValue() >Integer.parseInt(expression);
+//            }
+//            else if(propertyInstance.getValue().getClass().getSimpleName().equals("Float")){
+//                return (Float)propertyInstance.getValue() > Float.parseFloat(expression);
+//            }
+//            else return false;
+//        }
+//    }
+//
+//    private boolean propertyInstanceBiggerThanRandom(PropertyInstance propertyInstance, String expression){
+//        Function envFunction = new RandomFunction(expression);
+//        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+//            return (Integer)propertyInstance.getValue() > envFunction.getRandomValue();
+//        }
+//        else {
+//            return (Float)propertyInstance.getValue() > envFunction.getRandomValue();
+//        }
+//
+//    }
+//
+//    private boolean propertyInstanceBiggerThanTicks(Context context, PropertyInstance propertyInstance, String expression){
+//        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+//        Float valueFromTicks = new TicksFunction(expression).getTicksNotUpdated(context);
+//
+//        return oldValue > valueFromTicks;
+//    }
+//
+//    private boolean propertyInstanceBiggerThanPercent(Context context, PropertyInstance propertyInstance, String expression){
+//        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+//        Double valueFromTicks = new PercentFunction(expression).getPercentFromFunction(context);
+//
+//        return oldValue > valueFromTicks;
+//    }
+//
+//
+//    private boolean propertyInstanceBiggerThanEvaluate(Context context, PropertyInstance propertyInstance, String expression){
+//        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+//        Float valueFromEvaluate = (Float)getValueFromEvaluate(context, expression);
+//
+//        return oldValue > valueFromEvaluate;
+//    }
+//
+//    private boolean propertyInstanceBiggerThanEnvironment(Context context, String expression, PropertyInstance propertyInstance){
+//        Function envFunction = new EnvironmentFunction(expression);
+//        if(propertyInstance.getValue().getClass().getSimpleName().equals("Integer")){
+//            return (Integer)propertyInstance.getValue() > (Integer)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+//        }
+//        else {
+//            return (Float)propertyInstance.getValue() > (Float)PropertyType.DECIMAL.convert(envFunction.getPropertyInstanceValueFromEnvironment(context));
+//        }
+//    }
 }

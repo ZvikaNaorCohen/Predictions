@@ -81,7 +81,12 @@ public class ContextImpl implements Runnable, Context {
 
     public boolean shouldSimulationTerminate(int ticks, int seconds){
         updateProgressPercent(ticks, seconds);
-        return ticks >= terminationRules.getEndByTicks() || seconds >= terminationRules.getEndBySeconds();
+        if(terminationRules.getEndBySeconds() != -1 || terminationRules.getEndByTicks() != -1){
+            return ticks >= terminationRules.getEndByTicks() || seconds >= terminationRules.getEndBySeconds();
+        }
+        else{
+            return false;
+        }
     }
     @Override
     public Termination getTerminationRules() {
@@ -109,7 +114,7 @@ public class ContextImpl implements Runnable, Context {
     }
 
     private void sleepForAWhile() throws InterruptedException {
-        Thread.sleep(200);
+        Thread.sleep(100);
     }
 
     @Override

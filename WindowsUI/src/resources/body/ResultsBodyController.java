@@ -1,6 +1,7 @@
 package resources.body;
 
 import DTO.ContextDTO;
+import definition.property.api.PropertyType;
 import execution.context.Context;
 import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
@@ -253,11 +254,10 @@ public class ResultsBodyController {
         String entityName = entityComboBox.getSelectionModel().getSelectedItem();
         String propInstanceName = propertyComboBox.getSelectionModel().getSelectedItem();
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
-            PropertyInstance propInstance = instance.getPropertyByName(propInstanceName);
-
             if (instance.getEntityDefinitionName().equals(entityName)) {
-                Object propValue = propInstance.getValue();
-                propertyHistogram.put(propValue, propertyHistogram.getOrDefault(propValue, 0) + 1);
+                PropertyInstance propInstance = instance.getPropertyByName(propInstanceName);
+                    Object propValue = propInstance.getValue();
+                    propertyHistogram.put(propValue, propertyHistogram.getOrDefault(propValue, 0) + 1);
             }
         }
 
