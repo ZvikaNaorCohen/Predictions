@@ -63,6 +63,7 @@ public class HeaderController {
                 showFileLoaded();
                 mainController.updateScreenOne();
                 mainController.updateScreenTwo();
+                mainController.updateScreenThree();
 
             } else {
                 showInvalidFileAlert("File is not an XML file! Please try again.");

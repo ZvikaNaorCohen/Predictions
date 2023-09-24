@@ -23,6 +23,8 @@ public class AppController {
     private ExecutionManager executionManager = new ExecutionManager();
 
     private Map<Integer, Context> idToContext = new HashMap<>();
+    private Map<Integer, AllData> copiedIdToAllData = new HashMap<>();
+    private Map<Integer, Context> copiedIdToContext = new HashMap<>();
     private PRDWorld oldWorld;
     private Map<String, Context> pastRuns;
 
@@ -84,18 +86,28 @@ public class AppController {
         allTabs.getSelectionModel().select(resultsTab);
     }
 
+    public void switchToExecutionTab(){
+        allTabs.getSelectionModel().select(newExecutionTab);
+    }
+
     public ExecutionManager getExecutionManager() {
         return executionManager;
     }
 
-    public void runExecution(Context context){
-        executionManager.addNewContext(context);
+    public void runExecution(Context context, Context copied){
+        executionManager.addNewContext(context, copied);
         executionManager.runSpecificContext(context.getID());
     }
 
-    public void addNewExecution(Context context){
+    public void addNewExecution(Context context, AllData copiedAllData, Context copiedContext){
         idToContext.put(context.getID(), context);
+        copiedIdToContext.put(context.getID(), copiedContext);
+        copiedIdToAllData.put(context.getID(), copiedAllData);
         resultsBodyComponentController.addNewExecution(context);
+    }
+
+    public void rerunButtonClicked(int contextID){
+        newExecutionBodyController.rerunButtonClicked(oldWorld, copiedIdToAllData.get(contextID), copiedIdToContext.get(contextID));
     }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {
@@ -116,8 +128,13 @@ public class AppController {
         newExecutionBodyController.displayAllData(oldWorld, allData);
     }
 
+    public void updateScreenThree(){
+        resultsBodyComponentController.clearData();
+    }
+
     public void setDataFromFile(PRDWorld world){
-        pastRuns = new HashMap<>();
+        executionManager = new ExecutionManager();
+        idToContext = new HashMap<>();
         oldWorld = world;
         allData = new AllData(world);
         myRunningWorld = new ContextImpl(allData);

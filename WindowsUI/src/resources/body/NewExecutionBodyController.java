@@ -13,6 +13,7 @@ import execution.instance.property.PropertyInstanceImpl;
 import generated.PRDEntity;
 import generated.PRDEnvProperty;
 import generated.PRDWorld;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -126,9 +127,12 @@ public class NewExecutionBodyController {
                             if (newFloatValue < envProperty.getPRDRange().getFrom() || newFloatValue > envProperty.getPRDRange().getTo()) {
                                 throw new Exception("New float value: " + newFloatValue + " is bigger or smaller than range. \n");
                             }
+                            else{
+                                userPRDEnvPropsInputs.put(envProperty, newFloatValue);
+                            }
 
                         } else {
-                            throw new Exception("New float value: " + newFloatValue + " is bigger or smaller than range. \n");
+                            userPRDEnvPropsInputs.put(envProperty, newFloatValue);
                         }
                     }
                     alert.showAndWait();
@@ -176,10 +180,11 @@ public class NewExecutionBodyController {
     private void setEnvPropertiesList(PRDWorld oldWorld, ObservableList<PRDEnvProperty> envProperties, AllData allData){
         envPropertiesTable.setItems(envProperties);
         envPropNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        envPropDesiredValueCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        envPropDesiredValueCol.setEditable(true);
         envPropDesiredValueCol.setCellValueFactory(cellData -> {
-            PRDEnvProperty prop = cellData.getValue();
-            PropertyDefinition propDef = allData.getEnvVariablesManager().getPropertyDefinitionByName(prop.getPRDName());
-            return new SimpleStringProperty(propDef.generateValue().toString());
+            return new SimpleStringProperty("");
         });
 
         envPropNameCol.setCellValueFactory(cellData -> {
@@ -201,13 +206,16 @@ public class NewExecutionBodyController {
             return new SimpleStringProperty(newValue);
         });
     }
-
     private void handleStartButtonClick(AllData allData){
         Context context = new ContextImpl(allData);
+        Context copied = new ContextImpl(allData);
         context.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
+        copied.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
         context.setContextID(mainController.getIDForContext());
-        mainController.addNewExecution(context);
-        mainController.runExecution(context);
+        copied.setContextID(mainController.getIDForContext());
+
+        mainController.addNewExecution(context, allData, copied);
+        mainController.runExecution(context, copied);
         mainController.switchToResultsTab();
     }
 
@@ -245,7 +253,17 @@ public class NewExecutionBodyController {
 
         setOnEditCommitForEntityDefStringTableCol();
         setOnEditCommitForEnvPropertyCol();
+    }
 
+    public void rerunButtonClicked(PRDWorld oldWorld, AllData allData, Context context){
+        startButton.setOnMouseClicked(event -> handleStartButtonClick(allData));
+        clearButton.setOnMouseClicked(event -> handleClearButtonClick(oldWorld, allData));
+        envPropDesiredValueCol.setCellValueFactory(cellData -> {
+            PRDEnvProperty prop = cellData.getValue();
+            return new SimpleStringProperty(context.getActiveEnvironment().getProperty(prop.getPRDName()).getValue().toString());
+        });
+
+        envPropertiesTable.refresh();
     }
 
     private PropertyInstance propertyInstanceFixedValue(String oldValue, PropertyDefinition definition){
@@ -275,11 +293,14 @@ public class NewExecutionBodyController {
     private ActiveEnvironment createActiveEnvironment(AllData allData, Map<PRDEnvProperty, Object> userInputsForEnvProps) {
         ActiveEnvironment newActiveEnv = new ActiveEnvironmentImpl();
         for (PRDEnvProperty envProperty : envPropertiesTable.getItems()) {
-            String desiredValue = (String)userInputsForEnvProps.get(envProperty);
+            String desiredValue = "";
+            if(userInputsForEnvProps.get(envProperty) != null){
+                desiredValue = userInputsForEnvProps.get(envProperty).toString();
+            }
             String propertyName = envProperty.getPRDName();
             PropertyDefinition newDefinition = allData.getEnvVariablesManager().getPropertyDefinitionByName(propertyName);
             PropertyInstance prop;
-            if (desiredValue == null) {
+            if (desiredValue == "") {
                 prop = new PropertyInstanceImpl(newDefinition, newDefinition.generateValue());
             } else {
                 prop = propertyInstanceFixedValue(desiredValue, newDefinition);

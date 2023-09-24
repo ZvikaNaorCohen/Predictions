@@ -50,6 +50,7 @@ public class ResultsBodyController {
     @FXML private Button pauseButton;
     @FXML private Button resumeButton;
     @FXML private Button stopButton;
+    @FXML private Button reRunButton;
 
     @FXML private Button consistencyButton;
     @FXML private Button averageButton;
@@ -72,6 +73,11 @@ public class ResultsBodyController {
     public ResultsBodyController() {
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(this::updateTexts, 0, 200, TimeUnit.MILLISECONDS);
+    }
+
+    @FXML private void reRunButtonOnClick(){
+        mainController.rerunButtonClicked(selectedContextID);
+        mainController.switchToExecutionTab();
     }
 
     private void updateTexts() {
@@ -186,6 +192,7 @@ public class ResultsBodyController {
         pauseButton.disableProperty().bind(selectedContext.isPaused());
         resumeButton.disableProperty().bind(selectedContext.isPaused().not());
         stopButton.disableProperty().bind(selectedContext.isRunning().not());
+        reRunButton.disableProperty().bind(selectedContext.isRunning());
         entityComboBox.disableProperty().bind(selectedContext.isRunning());
         propertyComboBox.disableProperty().bind(selectedContext.isRunning());
         histogramButton.disableProperty().bind(selectedContext.isRunning());
@@ -242,6 +249,19 @@ public class ResultsBodyController {
         Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
         newAlert.setContentText("Average for property: " + propertyName + " is: " + average/counter + ". \n");
         newAlert.showAndWait();
+    }
+
+    public void clearData(){
+        progressText.setText("");
+        secondsText.setText("");
+        ticksText.setText("");
+
+        entityComboBox.getItems().clear();
+
+        executionListView.getItems().clear();
+        progressBar.setProgress(0);
+
+        refreshTables();
     }
 
     @FXML

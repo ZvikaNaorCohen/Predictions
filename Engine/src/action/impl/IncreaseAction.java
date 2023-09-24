@@ -36,7 +36,7 @@ public class IncreaseAction extends AbstractAction {
 
         for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
             if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
-                context.setPrimaryEntityInstance(instance);
+                // context.setPrimaryEntityInstance(instance);
                 PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property); // Property AGE
                 if (byExpression.startsWith("environment")) {
                     updatePropertyInstanceValueByEnvironment(context, propertyInstance);

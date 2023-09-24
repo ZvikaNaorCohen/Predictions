@@ -94,6 +94,7 @@
                         <Font size="26.0" />
                      </font>
                   </Text>
+                  <Button fx:id="reRunButton" disable="true" mnemonicParsing="false" onAction="#reRunButtonOnClick" prefHeight="65.0" prefWidth="110.0" text="RE-RUN" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </content>

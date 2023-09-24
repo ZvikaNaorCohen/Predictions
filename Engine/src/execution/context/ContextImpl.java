@@ -242,7 +242,64 @@ public class ContextImpl implements Runnable, Context {
         return listToReturn;
     }
 
+    private boolean newPositionEmpty(int row, int col){
+        if (row >= 0 && row < maxRows && col >= 0 && col < maxCols && grid[row][col] == null) {
+            return true;
+        }
+        return false;
+    }
 
+    private List<EntityPosition> fillValidPositions(EntityInstance instance){
+        List<EntityPosition> validPositions = new ArrayList<>();
+        String[] directions = {"up", "down", "left", "right"};
+        int row = instance.getRow();
+        int col = instance.getCol();
+        for (String direction : directions) {
+            if (direction.equals("up")) {
+                row = (row - 1 + maxRows) % maxRows;
+                if (newPositionEmpty(row, col)) {
+                    validPositions.add(new EntityPosition(row, col));
+                }
+            } else if (direction.equals("down")) {
+                row = (row + 1) % maxRows;
+                if (newPositionEmpty(row, col)) {
+                    validPositions.add(new EntityPosition(row, col));
+                }
+            } else if (direction.equals("left")) {
+                col = (col - 1 + maxCols) % maxCols;
+                if (newPositionEmpty(row, col)) {
+                    validPositions.add(new EntityPosition(row, col));
+                }
+            } else if (direction.equals("right")) {
+                col = (col + 1) % maxCols;
+                if (newPositionEmpty(row, col)) {
+                    validPositions.add(new EntityPosition(row, col));
+                }
+            }
+        }
+
+        return validPositions;
+    }
+
+    private void moveAllEntities() {
+        for (EntityInstance instance : entityInstanceManager.getInstances()) {
+            List<EntityPosition> validPositions = fillValidPositions(instance);
+            if(!validPositions.isEmpty()){
+                int oldRow = instance.getRow();
+                int oldCol = instance.getCol();
+
+                grid[oldRow][oldCol] = null;
+                Random random = new Random();
+                int index = random.nextInt(validPositions.size());
+
+                int newRow = validPositions.get(index).getRow();
+                int newCol = validPositions.get(index).getCol();
+                instance.setRow(newRow);
+                instance.setCol(newCol);
+                grid[newRow][newCol] = instance;
+            }
+        }
+    }
 
     @Override
     public void run(){
@@ -256,6 +313,7 @@ public class ContextImpl implements Runnable, Context {
                 else{
                     sleepForAWhile();
                     // Move all entities
+                    moveAllEntities();
 
                     // Check all rules and check which should work
                     List<Rule> allRulesToWork = getAllRulesThatShouldWork();
@@ -387,4 +445,21 @@ public class ContextImpl implements Runnable, Context {
 
     public Set<Rule> getALlRules(){return allRules;}
 
+    class EntityPosition {
+        private int row;
+        private int col;
+
+        public EntityPosition(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+    }
 }

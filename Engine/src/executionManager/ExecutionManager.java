@@ -9,7 +9,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ExecutionManager {
-    private Map<Integer, Context> allRunningContexts = new HashMap<>();
+    private final Map<Integer, Context> allRunningContexts = new HashMap<>();
+    private Map<Integer, Context> contextsBeforeRunning = new HashMap<>();
 
     private ExecutorService threadExecutor = Executors.newCachedThreadPool();
 
@@ -36,7 +37,9 @@ public class ExecutionManager {
         return allRunningContexts.get(contextID).isRunning().get();
     }
 
-    public void addNewContext(Context context){
+    public void addNewContext(Context context, Context copied){
+        int newID = allRunningContexts.size()+1;
+        contextsBeforeRunning.put(newID, copied);
         allRunningContexts.put(allRunningContexts.size()+1, context);
     }
 

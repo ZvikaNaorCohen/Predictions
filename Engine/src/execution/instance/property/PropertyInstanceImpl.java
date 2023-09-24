@@ -9,6 +9,8 @@ public class PropertyInstanceImpl implements PropertyInstance {
     private PropertyDefinition propertyDefinition;
     private Object value;
 
+    private int lastTickChanged = 0;
+
     private int ticksNotChanged = 0;
     private int timesValueChanged = 0;
 
@@ -29,8 +31,10 @@ public class PropertyInstanceImpl implements PropertyInstance {
 
     @Override
     public void updateValue(Object val) {
+        if(this.value != val){
+            timesValueChanged++;
+        }
         this.value = val;
-        timesValueChanged++;
         ticksNotChanged = 0;
     }
 
