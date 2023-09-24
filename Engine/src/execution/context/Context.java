@@ -28,6 +28,7 @@ public interface Context {
     int getSecondsPassed();
     SimpleBooleanProperty isRunning();
     SimpleBooleanProperty isPaused();
+    int getThreadsCount();
     Set<String> getAliveEntityNames();
     Set<String> getSpecificEntityProperties(String entityName);
     void stopRun();

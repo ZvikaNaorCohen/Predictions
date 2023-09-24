@@ -73,10 +73,21 @@ public class DecreaseAction extends AbstractAction {
             propertyInstance.updateValue(newValue);
         }
     }
+
+    // old, not good
+//    private void updatePropertyInstanceValueByEvaluate(Context context, PropertyInstance propertyInstance){
+//        Function func = new EvaluateFunction(byExpression);
+//        Float oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
+//        Float newValue = oldValue - (Float)func.getValueFromEvaluate(context);
+//        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+//            propertyInstance.updateValue(newValue);
+//        }
+//    }
+
+    // new, good.
     private void updatePropertyInstanceValueByEvaluate(Context context, PropertyInstance propertyInstance){
-        Function func = new EvaluateFunction(byExpression);
-        Float oldValue = PropertyType.DECIMAL.convert(propertyInstance.getValue());
-        Float newValue = oldValue - (Float)func.getValueFromEvaluate(context);
+        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+        Float newValue = oldValue - (Float)getValueFromEvaluate(context, byExpression);
         if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
             propertyInstance.updateValue(newValue);
         }

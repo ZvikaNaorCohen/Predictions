@@ -20,6 +20,7 @@ import java.util.*;
 public class ContextImpl implements Runnable, Context {
 
     int contextID;
+    int threadsCount = 0;
     private EntityInstance primaryEntityInstance;
     private EntityInstance secondaryEntityInstance;
     private EntityInstanceManager entityInstanceManager;
@@ -45,6 +46,10 @@ public class ContextImpl implements Runnable, Context {
 
     private EntityInstance[][] grid;
 
+    public int getThreadsCount(){
+        return threadsCount;
+    }
+
     public ContextImpl(AllData definitions) {
         maxRows = definitions.getMaxRows();
         maxCols = definitions.getMaxCols();
@@ -53,6 +58,7 @@ public class ContextImpl implements Runnable, Context {
         entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
         allRules = definitions.fromAllDataToAllInstances().getAllRules();
         grid = definitions.getGrid();
+        threadsCount = definitions.getThreadPoolSize();
     }
 
     public Set<Rule> getAllRules(){

@@ -28,6 +28,7 @@ import java.util.*;
 import static file.generator.PRDtoWorld.*;
 
 public class AllData {
+    private int threadPoolSize;
     private Termination terminationRules;
     private Map<String, EntityDefinition> allEntityDefinitions;
     private Map<String, String> envPropertyNameAndType;
@@ -37,10 +38,15 @@ public class AllData {
     private int maxRows, maxCols;
     private EntityInstance[][] grid;
 
+    public int getThreadPoolSize(){
+        return threadPoolSize;
+    }
+
     public AllData(PRDWorld oldWorld){
         terminationRules = getTerminationRules(oldWorld.getPRDTermination());
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
+        threadPoolSize = oldWorld.getPRDThreadCount();
         envVariablesManager = PRDtoWorld.getEnvVariablesManager(oldWorld);
         envPropertyNameAndType = getEnvPropertyNameAndDef(oldWorld.getPRDEnvironment());
         envPropNameAndPRDEnvProp = getEnvProperties(oldWorld.getPRDEnvironment());

@@ -207,16 +207,24 @@ public class NewExecutionBodyController {
         });
     }
     private void handleStartButtonClick(AllData allData){
-        Context context = new ContextImpl(allData);
-        Context copied = new ContextImpl(allData);
-        context.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
-        copied.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
-        context.setContextID(mainController.getIDForContext());
-        copied.setContextID(mainController.getIDForContext());
+        if(mainController.getExecutionManager().getQueueSize() < mainController.getExecutionManager().getMaxThreads()){
+            Context context = new ContextImpl(allData);
+            Context copied = new ContextImpl(allData);
+            context.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
+            copied.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
+            context.setContextID(mainController.getIDForContext());
+            copied.setContextID(mainController.getIDForContext());
 
-        mainController.addNewExecution(context, allData, copied);
-        mainController.runExecution(context, copied);
-        mainController.switchToResultsTab();
+            mainController.addNewExecution(context, allData, copied);
+            mainController.runExecution(context, copied);
+            mainController.switchToResultsTab();
+        }
+        else{
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setHeaderText("ERROR");
+            error.setContentText("Maximum amount of threads in thread pool. ");
+            error.showAndWait();
+        }
     }
 
     private void handleClearButtonClick(PRDWorld oldWorld, AllData allData){

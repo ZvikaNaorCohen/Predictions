@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class AppController {
     private Context myRunningWorld;
-    private ExecutionManager executionManager = new ExecutionManager();
+    private ExecutionManager executionManager;
 
     private Map<Integer, Context> idToContext = new HashMap<>();
     private Map<Integer, AllData> copiedIdToAllData = new HashMap<>();
@@ -94,9 +94,10 @@ public class AppController {
         return executionManager;
     }
 
-    public void runExecution(Context context, Context copied){
-        executionManager.addNewContext(context, copied);
-        executionManager.runSpecificContext(context.getID());
+    public void runExecution(Context context, Context copied) {
+        if (executionManager.addNewContext(context, copied)) {
+            executionManager.runSpecificContext(context.getID());
+        }
     }
 
     public void addNewExecution(Context context, AllData copiedAllData, Context copiedContext){
@@ -133,10 +134,10 @@ public class AppController {
     }
 
     public void setDataFromFile(PRDWorld world){
-        executionManager = new ExecutionManager();
         idToContext = new HashMap<>();
         oldWorld = world;
         allData = new AllData(world);
         myRunningWorld = new ContextImpl(allData);
+        executionManager = new ExecutionManager(myRunningWorld.getThreadsCount());
     }
 }

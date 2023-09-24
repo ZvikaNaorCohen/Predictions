@@ -57,8 +57,8 @@ public class SetAction extends AbstractAction {
         } else if (newPropertyValue.startsWith("percent")) {
             updatePropertyInstanceValueByPercent(context, propertyInstance);
         } else if (newPropertyValue.startsWith("ticks")) {
-            Function evaluateFunction = new TicksFunction(newPropertyValue);
-            Integer value = evaluateFunction.getTicksNotUpdated(context);
+            Function ticksFunction = new TicksFunction(newPropertyValue);
+            Integer value = ticksFunction.getTicksNotUpdated(context);
             if (propertyInstance.getPropertyDefinition().newValueInCorrectBounds((value))) {
                 propertyInstance.updateValue(value);
             }
