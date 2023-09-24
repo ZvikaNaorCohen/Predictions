@@ -73,59 +73,94 @@ public class PRDtoWorld {
         return tempAction;
     }
 
-    private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
+    private static AbstractConditionAction conditionActionForSecondEntity(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
         EntityDefinition entityDef = allEntityDefinitions.get(action.getEntity());
+        PRDCondition condition = action.getPRDSecondaryEntity().getPRDSelection().getPRDCondition();
+
+        if(condition.getSingularity().equals("single")){
+            String prop = condition.getProperty();
+            String oper = condition.getOperator();
+            String val = condition.getValue();
+            return new ConditionAction(ActionType.SINGLECONDITION, entityDef, prop, oper, val);
+        }
+
+        return null;
+    }
+
+    private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
+        EntityDefinition entityDef = null;
         SecondaryEntityDefinition second = null;
+        Action actionToReturn = null;
         if(action.getPRDSecondaryEntity() != null){
             second = new SecondaryEntityDefinition(action.getPRDSecondaryEntity());
-            second.setActionToPerform(getAbstractConditionAction(allEntityDefinitions, action));
+            // second.setActionToPerform(getAbstractConditionAction(allEntityDefinitions, action, action.getPRDSecondaryEntity().getPRDSelection().getPRDCondition()));
+            second.setActionToPerform(conditionActionForSecondEntity(allEntityDefinitions, action));
         }
         switch(action.getType()){
             case "increase":{
-                return new IncreaseAction(entityDef, action.getProperty(), action.getBy(), second);
+                entityDef = allEntityDefinitions.get(action.getEntity());
+                actionToReturn = new IncreaseAction(entityDef, action.getProperty(), action.getBy(), second);
+                break;
             }
 
             case "decrease":{
-                return new DecreaseAction(entityDef, action.getProperty(), action.getBy(), second);
+                entityDef = allEntityDefinitions.get(action.getEntity());
+                actionToReturn = new DecreaseAction(entityDef, action.getProperty(), action.getBy(), second);
+                break;
             }
 
             case "calculation":{
+                entityDef = allEntityDefinitions.get(action.getEntity());
                 if(action.getPRDMultiply() != null){
                     String arg1 = action.getPRDMultiply().getArg1();
                     String arg2 = action.getPRDMultiply().getArg2();
-                    return new MultiplyAction(entityDef, arg1, arg2, action.getResultProp());
+                    actionToReturn = new MultiplyAction(entityDef, arg1, arg2, action.getResultProp());
                 }
                 else {
                     String arg1 = action.getPRDDivide().getArg1();
                     String arg2 = action.getPRDDivide().getArg2();
-                    return new DivideAction(entityDef, arg1, arg2, action.getResultProp());
+                    actionToReturn = new DivideAction(entityDef, arg1, arg2, action.getResultProp());
                 }
+                break;
             }
 
             case "condition":{
-                return getAbstractConditionAction(allEntityDefinitions, action);
+                actionToReturn = getAbstractConditionAction(allEntityDefinitions, action);
+                break;
             }
 
             case "set":{
-                return new SetAction(entityDef, action.getProperty(), action.getValue());
+                entityDef = allEntityDefinitions.get(action.getEntity());
+                actionToReturn = new SetAction(entityDef, action.getProperty(), action.getValue());
+                break;
             }
 
             case "kill":{
-                return new KillAction(entityDef);
+                entityDef = allEntityDefinitions.get(action.getEntity());
+                actionToReturn = new KillAction(entityDef);
+                break;
             }
 
             case "replace": {
                 EntityDefinition entityToKill = allEntityDefinitions.get(action.getKill());
                 String entityToCreate = action.getCreate();
                 String mode = action.getMode();
-                return new ReplaceAction(ActionType.REPLACE, entityToKill, entityToCreate, mode);
+                actionToReturn = new ReplaceAction(ActionType.REPLACE, entityToKill, entityToCreate, mode);
+                break;
             }
 
             case "proximity":{
-                return new ProximityAction(ActionType.PROXIMITY, entityDef, action);
+                entityDef = allEntityDefinitions.get(action.getPRDBetween().getSourceEntity());
+                actionToReturn = new ProximityAction(ActionType.PROXIMITY, entityDef, action);
+                break;
             }
         }
-        return null;
+
+        if(actionToReturn != null){
+            actionToReturn.setSecondaryEntityDefinition(second);
+        }
+
+        return actionToReturn;
     }
 
     private static AbstractConditionAction getMultipleConditionAction(EntityDefinition entityDef, PRDCondition condition){

@@ -46,10 +46,8 @@ public class ConditionAction extends AbstractConditionAction {
 
     @Override
     public void invoke(Context context) {
-//        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
-//            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
-                EntityInstance instance = context.getPrimaryEntityInstance();
-                // context.setPrimaryEntityInstance(instance);
+                EntityInstance primary = context.getPrimaryEntityInstance();
+                EntityInstance secondary = context.getSecondaryEntityInstance();
                 String propertyInstanceValue = "";
                 String valueFromValue = "";
                 if(property.startsWith("environment") || property.startsWith("random") || property.startsWith("evaluate")
@@ -57,7 +55,13 @@ public class ConditionAction extends AbstractConditionAction {
                     propertyInstanceValue = handleExpressionInString(context, property);
                 }
                 else{
-                    propertyInstanceValue = instance.getPropertyByName(property).getValue().toString();
+                    if(primary.getEntityDefinitionName().equals(entityDefinition.getName())){
+                        propertyInstanceValue = primary.getPropertyByName(property).getValue().toString();
+                    }
+                    else{
+                        propertyInstanceValue = secondary.getPropertyByName(property).getValue().toString();
+                    }
+
                 }
 
                 valueFromValue = handleExpressionInString(context, value);

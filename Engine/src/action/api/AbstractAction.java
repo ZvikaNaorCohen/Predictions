@@ -8,12 +8,16 @@ public abstract class AbstractAction implements Action {
 
     protected final ActionType actionType;
     protected final EntityDefinition entityDefinition;
-    protected final SecondaryEntityDefinition secondaryEntityDefinition;
+    protected SecondaryEntityDefinition secondaryEntityDefinition;
 
     protected AbstractAction(ActionType actionType, EntityDefinition entityDefinition, SecondaryEntityDefinition second) {
         this.actionType = actionType;
         this.entityDefinition = entityDefinition;
         this.secondaryEntityDefinition = second;
+    }
+    @Override
+    public void setSecondaryEntityDefinition(SecondaryEntityDefinition entityDefinition){
+        secondaryEntityDefinition = entityDefinition;
     }
 
     @Override

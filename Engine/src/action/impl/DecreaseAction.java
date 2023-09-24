@@ -9,10 +9,7 @@ import execution.context.Context;
 import execution.instance.entity.EntityInstance;
 import execution.instance.property.PropertyInstance;
 import function.api.Function;
-import function.impl.EnvironmentFunction;
-import function.impl.EvaluateFunction;
-import function.impl.RandomFunction;
-import function.impl.TicksFunction;
+import function.impl.*;
 
 import static definition.value.generator.transformer.Transformer.StringToFloat;
 import static definition.value.generator.transformer.Transformer.StringToInteger;
@@ -28,38 +25,43 @@ public class DecreaseAction extends AbstractAction {
     }
 
     public void invoke(Context context) {
-        // <PRD-action entity="Smoker" type="increase" property="age" by="1"/>
-        // <PRD-action type="decrease" entity="ent-1" property="p2" by="environment(e3)"/>
+        EntityInstance primaryInstance = context.getPrimaryEntityInstance();
+        EntityInstance secondaryInstance = context.getSecondaryEntityInstance();
 
-        // Handle expression:
-        for(EntityInstance instance : context.getEntityInstanceManager().getInstances()){
-            if(instance.getEntityDefinitionName().equals(entityDefinition.getName()))
-            {
-                context.setPrimaryEntityInstance(instance);
-                PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property); // Property AGE
-                if(byExpression.startsWith("environment"))
-                {
-                    updatePropertyInstanceValueByEnvironment(context, propertyInstance);
-                }
-                else if(byExpression.startsWith("random")){
-                    updatePropertyInstanceValueByRandom(propertyInstance);
-                }
-                else if(byExpression.startsWith("evaluate")){
-                    updatePropertyInstanceValueByEvaluate(context, propertyInstance);
-                }
-                else if(byExpression.startsWith("percent")){
-                    return;
-                }
-                else if(byExpression.startsWith("ticks")){
-                    updatePropertyInstanceValueByTicks(context, propertyInstance);
-                }
-                else if(instance.hasPropertyByName(byExpression)){
-                    updatePropertyInstanceValueByProperty(context, propertyInstance);
-                }
-                else { // ערך חופשי
-                    updatePropertyInstanceValueByFreeValue(propertyInstance);
-                }
-            }
+        PropertyInstance propertyInstance = null;
+        if (entityDefinition.getName().equals(primaryInstance.getEntityDefinitionName())) {
+            propertyInstance = primaryInstance.getPropertyByName(property);
+        } else {
+            propertyInstance = secondaryInstance.getPropertyByName(property);
+        }
+
+        if (byExpression.startsWith("environment")) {
+            updatePropertyInstanceValueByEnvironment(context, propertyInstance);
+        } else if (byExpression.startsWith("random")) {
+            updatePropertyInstanceValueByRandom(propertyInstance);
+        } else if (byExpression.startsWith("evaluate")) {
+            updatePropertyInstanceValueByEvaluate(context, propertyInstance);
+        } else if (byExpression.startsWith("percent")) {
+            updatePropertyInstanceValueByPercent(context, propertyInstance);
+        } else if (byExpression.startsWith("ticks")) {
+            updatePropertyInstanceValueByTicks(context, propertyInstance);
+        } else if (primaryInstance.hasPropertyByName(byExpression)) {
+            updatePropertyInstanceValueByProperty(context, propertyInstance);
+        } else if (secondaryInstance != null && secondaryInstance.hasPropertyByName(byExpression)){
+            propertyInstance = secondaryInstance.getPropertyByName(property);
+            updatePropertyInstanceValueByProperty(context, propertyInstance);
+        }
+        else { // ערך חופשי
+            updatePropertyInstanceValueByFreeValue(propertyInstance);
+        }
+    }
+
+    private void updatePropertyInstanceValueByPercent(Context context, PropertyInstance propertyInstance){
+        Function func = new PercentFunction(byExpression);
+        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+        Float newValue = (float) (oldValue - func.getPercentFromFunction(context));
+        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+            propertyInstance.updateValue(newValue);
         }
     }
 

@@ -31,17 +31,12 @@ public class ReplaceAction extends AbstractAction {
 
     @Override
     public void invoke(Context context) {
-//        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
-//            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
-//                context.setPrimaryEntityInstance(instance);
-                if (mode.equals("scratch")) {
-                    handleScratchMode(context);
-                } else {
-                    handleDerivedMode(context);
-                }
-            }
-//        }
-//    }
+        if (mode.equals("scratch")) {
+            handleScratchMode(context);
+        } else {
+            handleDerivedMode(context);
+        }
+    }
 
     private void handleScratchMode(Context context){
         Action kill = new KillAction(context.getPrimaryEntityInstance().getEntityDef());

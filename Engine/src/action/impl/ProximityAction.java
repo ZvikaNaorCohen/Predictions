@@ -4,6 +4,7 @@ import action.api.AbstractAction;
 import action.api.Action;
 import action.api.ActionType;
 import definition.entity.EntityDefinition;
+import definition.entity.SecondaryEntityDefinition;
 import execution.context.Context;
 import execution.instance.entity.EntityInstance;
 import function.impl.EnvironmentFunction;
@@ -21,6 +22,19 @@ public class ProximityAction extends AbstractAction {
     String targetEntity = "";
     double depth = 0;
     List<Action> actionsForProximity = new ArrayList<>();
+
+    public String getSourceName(){
+        return sourceEntity;
+    }
+
+    public String getTargetName(){
+        return targetEntity;
+    }
+
+    @Override
+    public EntityDefinition getContextEntity() {
+        return entityDefinition;
+    }
 
     public ProximityAction(ActionType actionType, EntityDefinition entityDefinition, PRDAction action) {
         super(actionType, entityDefinition);

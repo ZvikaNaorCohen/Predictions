@@ -12,6 +12,7 @@ public class MultipleConditions extends AbstractConditionAction {
     List<AbstractConditionAction> innerConditionActions;
     String logical;
     Boolean runThen = false;
+    Boolean runningOnSecondEntity = false;
 
     public MultipleConditions(ActionType actionType, EntityDefinition entityDefinition, String l, List<AbstractConditionAction> innerActions) {
         super(actionType, entityDefinition);
@@ -27,14 +28,16 @@ public class MultipleConditions extends AbstractConditionAction {
         }
 
         updateRunThenOrNot(context);
-        if(runThen){
-            for(Action action : listOfThenActions){
-                action.invoke(context);
+        if(!runningOnSecondEntity){
+            if(runThen){
+                for(Action action : listOfThenActions){
+                    action.invoke(context);
+                }
             }
-        }
-        else {
-            for(Action action : listOfElseActions){
-                action.invoke(context);
+            else {
+                for(Action action : listOfElseActions){
+                    action.invoke(context);
+                }
             }
         }
 

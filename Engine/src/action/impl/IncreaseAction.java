@@ -28,44 +28,35 @@ public class IncreaseAction extends AbstractAction {
     }
     @Override
     public void invoke(Context context) {
-        // <PRD-action entity="Smoker" type="increase" property="age" by="1"/>
-        // <PRD-action type="decrease" entity="ent-1" property="p2" by="environment(e3)"/>
+        EntityInstance primaryInstance = context.getPrimaryEntityInstance();
+        EntityInstance secondaryInstance = context.getSecondaryEntityInstance();
 
-        // Handle expression:
-
-
-        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
-            if (instance.getEntityDefinitionName().equals(entityDefinition.getName())) {
-                // context.setPrimaryEntityInstance(instance);
-                PropertyInstance propertyInstance = context.getPrimaryEntityInstance().getPropertyByName(property); // Property AGE
-                if (byExpression.startsWith("environment")) {
-                    updatePropertyInstanceValueByEnvironment(context, propertyInstance);
-                } else if (byExpression.startsWith("random")) {
-                    updatePropertyInstanceValueByRandom(propertyInstance);
-                } else if (byExpression.startsWith("evaluate")){
-                    updatePropertyInstanceValueByEvaluate(context, propertyInstance);
-                }
-                else if (byExpression.startsWith("percent")){
-                    updatePropertyInstanceValueByPercent(context, propertyInstance);
-                }
-                else if (byExpression.startsWith("ticks")){
-                    updatePropertyInstanceValueByTicks(context, propertyInstance);
-                }
-                else if(instance.hasPropertyByName(byExpression)) {
-                    updatePropertyInstanceValueByProperty(context, propertyInstance);
-                } else { // ערך חופשי
-                    updatePropertyInstanceValueByFreeValue(propertyInstance);
-                }
-            }
+        PropertyInstance propertyInstance = null;
+        if(entityDefinition.getName().equals(primaryInstance.getEntityDefinitionName())){
+            propertyInstance = primaryInstance.getPropertyByName(property);
         }
-    }
+        else{
+            propertyInstance = secondaryInstance.getPropertyByName(property);
+        }
 
-    private void updatePropertyInstanceValueByPercent(Context context, PropertyInstance propertyInstance){
-        Function func = new PercentFunction(byExpression);
-        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
-        Float newValue = (float) (oldValue + func.getPercentFromFunction(context));
-        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
-            propertyInstance.updateValue(newValue);
+        if (byExpression.startsWith("environment")) {
+            updatePropertyInstanceValueByEnvironment(context, propertyInstance);
+        } else if (byExpression.startsWith("random")) {
+            updatePropertyInstanceValueByRandom(propertyInstance);
+        } else if (byExpression.startsWith("evaluate")) {
+            updatePropertyInstanceValueByEvaluate(context, propertyInstance);
+        } else if (byExpression.startsWith("percent")) {
+            updatePropertyInstanceValueByPercent(context, propertyInstance);
+        } else if (byExpression.startsWith("ticks")) {
+            updatePropertyInstanceValueByTicks(context, propertyInstance);
+        } else if (primaryInstance.hasPropertyByName(byExpression)) {
+            updatePropertyInstanceValueByProperty(context, propertyInstance);
+        } else if (secondaryInstance != null && secondaryInstance.hasPropertyByName(byExpression)){
+            propertyInstance = secondaryInstance.getPropertyByName(property);
+            updatePropertyInstanceValueByProperty(context, propertyInstance);
+        }
+        else { // ערך חופשי
+            updatePropertyInstanceValueByFreeValue(propertyInstance);
         }
     }
 
@@ -73,6 +64,15 @@ public class IncreaseAction extends AbstractAction {
         Function func = new TicksFunction(byExpression);
         Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
         Float newValue = oldValue + func.getTicksNotUpdated(context);
+        if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
+            propertyInstance.updateValue(newValue);
+        }
+    }
+
+    private void updatePropertyInstanceValueByPercent(Context context, PropertyInstance propertyInstance){
+        Function func = new PercentFunction(byExpression);
+        Float oldValue = PropertyType.FLOAT.convert(propertyInstance.getValue());
+        Float newValue = (float) (oldValue + func.getPercentFromFunction(context));
         if(propertyInstance.getPropertyDefinition().newValueInCorrectBounds(newValue)){
             propertyInstance.updateValue(newValue);
         }

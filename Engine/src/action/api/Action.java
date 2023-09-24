@@ -12,5 +12,7 @@ public interface Action {
 
     boolean hasSecondEntity();
 
+    void setSecondaryEntityDefinition(SecondaryEntityDefinition secondEntity);
+
     SecondaryEntityDefinition getSecondEntityDefinition();
 }

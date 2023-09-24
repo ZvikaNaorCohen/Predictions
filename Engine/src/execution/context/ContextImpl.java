@@ -2,6 +2,7 @@ package execution.context;
 
 import action.api.Action;
 import action.api.ActionType;
+import action.impl.ProximityAction;
 import definition.entity.SecondaryEntityDefinition;
 import engine.AllData;
 import execution.instance.entity.EntityInstance;
@@ -225,7 +226,24 @@ public class ContextImpl implements Runnable, Context {
         return allActionsToWork;
     }
 
+    private List<EntityInstance> getSecondEntitiesToWorkOnForProximity(Action action){
+        List<EntityInstance> listToReturn = new ArrayList<>();
+        ProximityAction myAction = (ProximityAction) action;
+        String targetName = myAction.getTargetName();
+
+        for(EntityInstance instance : entityInstanceManager.getInstances()) {
+            if (instance.getEntityDefinitionName().equals(targetName)) {
+                listToReturn.add(instance);
+            }
+        }
+
+        return listToReturn;
+    }
+
     private List<EntityInstance> getSecondEntitiesToWorkOn(Action action){
+        if(action.getActionType().equals(ActionType.PROXIMITY)){
+            return getSecondEntitiesToWorkOnForProximity(action);
+        }
         List<EntityInstance> listToReturn = new ArrayList<>(action.getSecondEntityDefinition().getCount());
         SecondaryEntityDefinition secondaryEntityDefinition = action.getSecondEntityDefinition();
         for(EntityInstance instance : entityInstanceManager.getInstances()){
@@ -235,6 +253,9 @@ public class ContextImpl implements Runnable, Context {
                     if(secondaryEntityDefinition.getActionToPerform().getConditionReturnValue()){
                         listToReturn.add(instance);
                     }
+                }
+                else{
+                    break;
                 }
             }
         }
@@ -321,11 +342,12 @@ public class ContextImpl implements Runnable, Context {
                     List<Action> allActionsExceptKillReplace = getAllActionsThatShouldWorkWithoutKillReplace(allRulesToWork);
                     List<Action> allActionsWithKillReplace = getReplaceOrKillActionsThatShouldWork(allRulesToWork);
 
-                    for(EntityInstance instance : entityInstanceManager.getInstances()){
+                    List<EntityInstance> copyOfInstancesFirst = new ArrayList<>(entityInstanceManager.getInstances());
+                    for(EntityInstance instance : copyOfInstancesFirst){
                         for(Action action : allActionsExceptKillReplace){
                             if(action.getContextEntity().equals(instance.getEntityDef())){
                                 primaryEntityInstance = instance;
-                                if(action.hasSecondEntity()){
+                                if(action.hasSecondEntity() || action.getActionType().equals(ActionType.PROXIMITY)){
                                     List<EntityInstance> secondEntitiesToWorkOn = getSecondEntitiesToWorkOn(action);
                                     for(EntityInstance secondEntity : secondEntitiesToWorkOn){
                                         secondaryEntityInstance = secondEntity;
@@ -339,8 +361,9 @@ public class ContextImpl implements Runnable, Context {
                             }
                         }
                     }
-                    List<EntityInstance> copyOfInstances = new ArrayList<>(entityInstanceManager.getInstances());
-                    for(EntityInstance instance : copyOfInstances){
+
+                    List<EntityInstance> copyOfInstancesSecond = new ArrayList<>(copyOfInstancesFirst);
+                    for(EntityInstance instance : copyOfInstancesSecond){
                         for(Action action : allActionsWithKillReplace){
                             if(action.getContextEntity().equals(instance.getEntityDef())){
                                 primaryEntityInstance = instance;
