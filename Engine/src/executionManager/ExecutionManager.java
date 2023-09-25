@@ -49,7 +49,7 @@ public class ExecutionManager {
         if(allRunningContexts.size() < maximumThreads){
             int newID = allRunningContexts.size()+1;
             contextsBeforeRunning.put(newID, copied);
-            allRunningContexts.put(allRunningContexts.size()+1, context);
+            allRunningContexts.put(newID, context);
             return true;
         }
         else{

@@ -67,12 +67,14 @@ public class ReplaceAction extends AbstractAction {
         EntityInstance instanceToCreate = context.getEntityInstanceManager().create(entityDefinitionToCreate, context.getGrid());
         for (Map.Entry<String, PropertyInstance> entry : entityInstanceToKill.getAllPropertyInstances().entrySet()) {
             Object newValue = entry.getValue().getValue();
-            instanceToCreate.getPropertyByName(entry.getKey()).updateValue(newValue);
+            if(instanceToCreate.hasPropertyByName(entry.getKey())){
+                instanceToCreate.getPropertyByName(entry.getKey()).updateValue(newValue);
+            }
         }
 
         Action kill = new KillAction(context.getPrimaryEntityInstance().getEntityDef());
         kill.invoke(context);
-        context.getEntityInstanceManager().createEntityInstanceByName(entityToCreate);
+        // context.getEntityInstanceManager().createEntityInstanceByName(entityToCreate);
     }
 
     private boolean entitiesWithSameProperties(EntityDefinition toKill, EntityDefinition toCreate){

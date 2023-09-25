@@ -23,12 +23,14 @@ public class AppController {
     private ExecutionManager executionManager;
 
     private Map<Integer, Context> idToContext = new HashMap<>();
+    private Map<Integer, AllData> idToAllData = new HashMap<>();
     private Map<Integer, AllData> copiedIdToAllData = new HashMap<>();
     private Map<Integer, Context> copiedIdToContext = new HashMap<>();
     private PRDWorld oldWorld;
     private Map<String, Context> pastRuns;
 
     private AllData allData;
+    private AllData copiedAllData;
     @FXML
     private ScrollPane headerComponent;
 
@@ -100,15 +102,17 @@ public class AppController {
         }
     }
 
-    public void addNewExecution(Context context, AllData copiedAllData, Context copiedContext){
+    public void addNewExecution(Context context, AllData allData, AllData copiedAllData, Context copiedContext){
         idToContext.put(context.getID(), context);
-        copiedIdToContext.put(context.getID(), copiedContext);
-        copiedIdToAllData.put(context.getID(), copiedAllData);
+        idToAllData.put(context.getID(), allData);
+        copiedIdToContext.put(copiedContext.getID(), copiedContext);
+        copiedIdToAllData.put(copiedContext.getID(), copiedAllData);
         resultsBodyComponentController.addNewExecution(context);
     }
 
     public void rerunButtonClicked(int contextID){
-        newExecutionBodyController.rerunButtonClicked(oldWorld, copiedIdToAllData.get(contextID), copiedIdToContext.get(contextID));
+        // public void rerunButtonClicked(PRDWorld oldWorld, AllData allData, AllData copiedAllData, Context context)
+        newExecutionBodyController.rerunButtonClicked(oldWorld, idToAllData.get(contextID), copiedIdToAllData.get(contextID), copiedIdToContext.get(contextID));
     }
 
     public void setHeaderComponentController(HeaderController headerComponentController) {
@@ -126,7 +130,7 @@ public class AppController {
     }
 
     public void updateScreenTwo(){
-        newExecutionBodyController.displayAllData(oldWorld, allData);
+        newExecutionBodyController.displayAllData(oldWorld, allData, copiedAllData);
     }
 
     public void updateScreenThree(){
@@ -137,6 +141,7 @@ public class AppController {
         idToContext = new HashMap<>();
         oldWorld = world;
         allData = new AllData(world);
+        copiedAllData = new AllData(world);
         myRunningWorld = new ContextImpl(allData);
         executionManager = new ExecutionManager(myRunningWorld.getThreadsCount());
     }

@@ -6,6 +6,7 @@ import definition.property.api.PropertyType;
 import engine.AllData;
 import execution.context.Context;
 import execution.context.ContextImpl;
+import execution.instance.entity.EntityInstance;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.environment.impl.ActiveEnvironmentImpl;
 import execution.instance.property.PropertyInstance;
@@ -43,7 +44,7 @@ public class NewExecutionBodyController {
     // @FXML
     // private ScrollPane simEntitiesPopulationSP;
 
-    private Map<PRDEnvProperty, Object> userPRDEnvPropsInputs = new HashMap<>();
+    private final Map<PRDEnvProperty, Object> userPRDEnvPropsInputs = new HashMap<>();
 
     @FXML
     private AnchorPane subAnchorPane;
@@ -82,18 +83,21 @@ public class NewExecutionBodyController {
     private void setOnEditCommitForEntityDefStringTableCol() {
         desiredPopulationCol.setOnEditCommit(event -> {
             String newValueInString = event.getNewValue();
+            String oldValue = event.getOldValue();
             EntityDefinition entity = event.getRowValue();
 
             try {
                 int newIntValue = Integer.parseInt(newValueInString);
+                int oldIntValue = Integer.parseInt(oldValue);
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
-                if (newIntValue + currentTotalEntities <= totalEntitiesAllowed) {
+                if (currentTotalEntities + newIntValue - oldIntValue <= totalEntitiesAllowed) {
                     alert.setContentText("Entity: " + entity.getName() + " received population: " + newIntValue + ". ");
                     entity.setDesiredPopulation(newIntValue);
                     currentTotalEntities += newIntValue;
+                    currentTotalEntities -= oldIntValue;
                 } else {
-                    throw new Exception("Can only have: " + totalEntitiesAllowed + " entities on screen. You tried to put: " + newIntValue + " + " + currentTotalEntities + " entities. ");
+                    throw new Exception("Can only have: " + totalEntitiesAllowed + " entities on screen. You tried to put: " + newIntValue + " + " + (currentTotalEntities-oldIntValue) + " entities. ");
                 }
 
                 alert.showAndWait();
@@ -103,12 +107,17 @@ public class NewExecutionBodyController {
                 alert.setContentText("Invalid input. Reason: " + e);
                 alert.showAndWait();
 
-                currentTotalEntities -= entity.getPopulation();
+                currentTotalEntities = 0;
+                for(EntityDefinition definition : event.getTableView().getItems()){
+                    currentTotalEntities += definition.getPopulation();
+                }
                 entity.setDesiredPopulation(0);
-                simEntitiesTable.refresh(); // Refresh the table to reflect the change
+                simEntitiesTable.refresh();
             }
         });
     }
+
+
 
     private void setOnEditCommitForEnvPropertyCol(){
         envPropDesiredValueCol.setOnEditCommit(event -> {
@@ -154,7 +163,7 @@ public class NewExecutionBodyController {
             }
             catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Invalid Population Input");
+                alert.setTitle("Invalid Desired Value Input");
                 alert.setContentText("Invalid input. Reason: " + e);
                 alert.showAndWait();
 
@@ -206,16 +215,16 @@ public class NewExecutionBodyController {
             return new SimpleStringProperty(newValue);
         });
     }
-    private void handleStartButtonClick(AllData allData){
+    private void handleStartButtonClick(AllData allData, AllData copiedAllData){
         if(mainController.getExecutionManager().getQueueSize() < mainController.getExecutionManager().getMaxThreads()){
             Context context = new ContextImpl(allData);
-            Context copied = new ContextImpl(allData);
+            Context copied = new ContextImpl(copiedAllData);
             context.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
-            copied.setActiveEnvironment(createActiveEnvironment(allData, userPRDEnvPropsInputs));
+            copied.setActiveEnvironment(createActiveEnvironment(copiedAllData, userPRDEnvPropsInputs));
             context.setContextID(mainController.getIDForContext());
             copied.setContextID(mainController.getIDForContext());
 
-            mainController.addNewExecution(context, allData, copied);
+            mainController.addNewExecution(context, allData, copiedAllData, copied);
             mainController.runExecution(context, copied);
             mainController.switchToResultsTab();
         }
@@ -245,8 +254,8 @@ public class NewExecutionBodyController {
         simEntitiesTable.refresh();
     }
 
-    public void displayAllData(PRDWorld oldWorld, AllData allData) {
-        startButton.setOnMouseClicked(event -> handleStartButtonClick(allData));
+    public void displayAllData(PRDWorld oldWorld, AllData allData, AllData copiedAllData) {
+        startButton.setOnMouseClicked(event -> handleStartButtonClick(allData, copiedAllData));
         clearButton.setOnMouseClicked(event -> handleClearButtonClick(oldWorld, allData));
         ObservableList<EntityDefinition> entities = FXCollections.observableArrayList(allData.getMapAllEntities().values());
         ObservableList<PRDEnvProperty> envProperties = FXCollections.observableArrayList(allData.getMapOfPropEnvNameAndDef().values());
@@ -263,15 +272,23 @@ public class NewExecutionBodyController {
         setOnEditCommitForEnvPropertyCol();
     }
 
-    public void rerunButtonClicked(PRDWorld oldWorld, AllData allData, Context context){
-        startButton.setOnMouseClicked(event -> handleStartButtonClick(allData));
+    public void rerunButtonClicked(PRDWorld oldWorld, AllData allData, AllData copiedAllData, Context context){
+        startButton.setOnMouseClicked(event -> handleStartButtonClick(allData, copiedAllData));
         clearButton.setOnMouseClicked(event -> handleClearButtonClick(oldWorld, allData));
+        envPropDesiredValueCol.getColumns().clear();
+        desiredPopulationCol.getColumns().clear();
         envPropDesiredValueCol.setCellValueFactory(cellData -> {
             PRDEnvProperty prop = cellData.getValue();
             return new SimpleStringProperty(context.getActiveEnvironment().getProperty(prop.getPRDName()).getValue().toString());
         });
 
+        desiredPopulationCol.setCellValueFactory(cellData -> {
+            EntityDefinition def = cellData.getValue();
+            return new SimpleStringProperty(String.valueOf(def.getPopulation()));
+        });
+
         envPropertiesTable.refresh();
+        simEntitiesTable.refresh();
     }
 
     private PropertyInstance propertyInstanceFixedValue(String oldValue, PropertyDefinition definition){

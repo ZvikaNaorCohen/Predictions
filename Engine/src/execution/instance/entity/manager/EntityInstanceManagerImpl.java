@@ -6,6 +6,7 @@ import execution.instance.entity.EntityInstance;
 import execution.instance.entity.EntityInstanceImpl;
 import execution.instance.property.PropertyInstance;
 import execution.instance.property.PropertyInstanceImpl;
+import javafx.util.Pair;
 
 import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
@@ -27,20 +28,45 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
         grid = new EntityInstance[maxRows][maxCols];
     }
 
+    Pair<Integer, Integer> findEmptySpot(EntityInstance[][] grid){
+        List<Pair<Integer, Integer>> myList = new ArrayList<>();
+        for(int row=0; row<maxRows;row++){
+            for(int col = 0; col < maxCols; col++){
+                if(grid[row][col] == null){
+                    myList.add(new Pair<>(row, col));
+                }
+            }
+        }
+
+        Random random = new Random();
+        if(myList.size() == 0){
+            // BUGGGGGGGG
+            return null;
+        }
+        else{
+            int index = random.nextInt(myList.size());
+            return myList.get(index);
+        }
+    }
+
     @Override
     public EntityInstance create(EntityDefinition entityDefinition, EntityInstance[][] grid) {
-        Random random = new Random();
+//        Random random = new Random();
         int newRow = 1;
         int newCol = 1;
         count++;
 
-        do{
-            newRow = random.nextInt(maxRows);
-            newCol = random.nextInt(maxCols);
-            if(grid[newRow][newCol] == null){
-                break;
-            }
-        }while(true);
+        Pair<Integer, Integer> newPosition = findEmptySpot(grid);
+        newRow = newPosition.getKey();
+        newCol = newPosition.getValue();
+//
+//        do{
+//            newRow = random.nextInt(maxRows);
+//            newCol = random.nextInt(maxCols);
+//            if(grid[newRow][newCol] == null){
+//                break;
+//            }
+//        }while(true);
 
         EntityInstance newEntityInstance = new EntityInstanceImpl(entityDefinition, count, newRow, newCol);
         instances.add(newEntityInstance);
@@ -81,14 +107,14 @@ public class EntityInstanceManagerImpl implements EntityInstanceManager {
     }
 
     @Override
-    public void killEntity(EntityInstance instance) {
+    public void killEntity(EntityInstance instance, EntityInstance[][] grid) {
 //        for (EntityInstance instance : instances) {
 //            if (instance.getEntityDefinitionName().equals(entityName)) {
 //                instances.remove(instance);
 //                return;
 //            }
 //        }
-
+        grid[instance.getRow()][instance.getCol()] = null;
         instances.remove(instance);
     }
 }

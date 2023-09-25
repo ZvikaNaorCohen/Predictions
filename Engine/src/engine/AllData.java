@@ -180,9 +180,10 @@ public class AllData {
         EntityInstanceManager allEntities = new EntityInstanceManagerImpl(maxRows, maxCols);
 
         for (Map.Entry<String, EntityDefinition> entry : allEntityDefinitions.entrySet()) {
-            for(int i=0; i<entry.getValue().getPopulation();i++)
+            EntityDefinition value = entry.getValue();
+            for(int i=0; i<value.getPopulation();i++)
             {
-                allEntities.create(entry.getValue(), grid);
+                allEntities.create(value, grid);
             }
         }
         return new AllInstances(terminationRules, allEntities, allRules);

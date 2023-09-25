@@ -5,6 +5,7 @@ import action.api.ActionType;
 import action.impl.ProximityAction;
 import definition.entity.SecondaryEntityDefinition;
 import engine.AllData;
+import engine.AllInstances;
 import execution.instance.entity.EntityInstance;
 import execution.instance.entity.EntityInstanceImpl;
 import execution.instance.entity.manager.EntityInstanceManager;
@@ -54,10 +55,11 @@ public class ContextImpl implements Runnable, Context {
     public ContextImpl(AllData definitions) {
         maxRows = definitions.getMaxRows();
         maxCols = definitions.getMaxCols();
-        terminationRules = definitions.fromAllDataToAllInstances().getEngineTermination();
-        primaryEntityInstance = definitions.fromAllDataToAllInstances().getAllEntities().getInstances().get(0);
-        entityInstanceManager = definitions.fromAllDataToAllInstances().getAllEntities();
-        allRules = definitions.fromAllDataToAllInstances().getAllRules();
+        AllInstances allInstances = definitions.fromAllDataToAllInstances();
+        terminationRules = allInstances.getEngineTermination();
+        primaryEntityInstance = allInstances.getAllEntities().getInstances().get(0);
+        entityInstanceManager = allInstances.getAllEntities();
+        allRules = allInstances.getAllRules();
         grid = definitions.getGrid();
         threadsCount = definitions.getThreadPoolSize();
     }
@@ -116,7 +118,7 @@ public class ContextImpl implements Runnable, Context {
 
     @Override
     public void removeEntity(EntityInstance entityInstance) {
-        entityInstanceManager.killEntity(entityInstance);
+        entityInstanceManager.killEntity(entityInstance, grid);
     }
 
     @Override
@@ -124,9 +126,9 @@ public class ContextImpl implements Runnable, Context {
         return activeEnvironment.getProperty(name);
     }
 
-    private void sleepForAWhile() throws InterruptedException {
-        Thread.sleep(100);
-    }
+//    private void sleepForAWhile() throws InterruptedException {
+//        Thread.sleep(100);
+//    }
 
     @Override
     public SimpleBooleanProperty isRunning(){
@@ -161,37 +163,37 @@ public class ContextImpl implements Runnable, Context {
     @Override
     public int getSecondsPassed(){return secondsPassed;}
 
-    private void oldRun(){
-        startTime = System.currentTimeMillis();
-        Random random = new Random();
-        while(!shouldSimulationTerminate(currentTick, secondsPassed) && keepRunning.get()){
-            try{
-                if(paused.get()){
-                    pauseTime = System.currentTimeMillis();
-                    sleepForAWhile();
-                }
-                else{
-                    sleepForAWhile();
-                    for(Rule rule : allRules){
-                        double randomValue = random.nextDouble();
-                        if (rule.getActivation().isActive(currentTick) || randomValue < rule.getActivation().getProb()) {
-                            rule.getActionsToPerform().forEach(action -> action.invoke(this));
-                        }
-                    }
-                    updateAliveEntitiesPerTick(currentTick);
-                    long currentTime = System.currentTimeMillis();
-                    long elapsedTime = currentTime - startTime - totalPauseTime;
-                    secondsPassed = (int) (elapsedTime / 1000);
-                    currentTick++;
-                }
-            }catch (InterruptedException exception) {
-                keepRunning.set(false);
-                exception.printStackTrace();
-            }
-        }
-
-        keepRunning.set(false);
-    }
+//    private void oldRun(){
+//        startTime = System.currentTimeMillis();
+//        Random random = new Random();
+//        while(!shouldSimulationTerminate(currentTick, secondsPassed) && keepRunning.get()){
+//            try{
+//                if(paused.get()){
+//                    pauseTime = System.currentTimeMillis();
+//                    // sleepForAWhile();
+//                }
+//                else{
+//                    // sleepForAWhile();
+//                    for(Rule rule : allRules){
+//                        double randomValue = random.nextDouble();
+//                        if (rule.getActivation().isActive(currentTick) || randomValue < rule.getActivation().getProb()) {
+//                            rule.getActionsToPerform().forEach(action -> action.invoke(this));
+//                        }
+//                    }
+//                    updateAliveEntitiesPerTick(currentTick);
+//                    long currentTime = System.currentTimeMillis();
+//                    long elapsedTime = currentTime - startTime - totalPauseTime;
+//                    secondsPassed = (int) (elapsedTime / 1000);
+//                    currentTick++;
+//                }
+//            }catch (InterruptedException exception) {
+//                keepRunning.set(false);
+//                exception.printStackTrace();
+//            }
+//        }
+//
+//        keepRunning.set(false);
+//    }
 
     private List<Rule> getAllRulesThatShouldWork(){
         List<Rule> allRulesToWork = new ArrayList<>();
@@ -284,25 +286,25 @@ public class ContextImpl implements Runnable, Context {
         int col = instance.getCol();
         for (String direction : directions) {
             if (direction.equals("up")) {
-                row = (row - 1 + maxRows) % maxRows;
-                if (newPositionEmpty(row, col)) {
-                    validPositions.add(new EntityPosition(row, col));
+                if(row == 0){
+                    row = maxRows-1;
                 }
             } else if (direction.equals("down")) {
-                row = (row + 1) % maxRows;
-                if (newPositionEmpty(row, col)) {
-                    validPositions.add(new EntityPosition(row, col));
+                if(row == maxRows - 1){
+                    row = 0;
                 }
             } else if (direction.equals("left")) {
-                col = (col - 1 + maxCols) % maxCols;
-                if (newPositionEmpty(row, col)) {
-                    validPositions.add(new EntityPosition(row, col));
+                if(col == 0){
+                    col = maxCols-1;
                 }
             } else if (direction.equals("right")) {
-                col = (col + 1) % maxCols;
-                if (newPositionEmpty(row, col)) {
-                    validPositions.add(new EntityPosition(row, col));
+                if(col == maxCols-1){
+                    col = 0;
                 }
+            }
+
+            if (!newPositionEmpty(row, col)) {
+                validPositions.add(new EntityPosition(row, col));
             }
         }
 
@@ -349,15 +351,12 @@ public class ContextImpl implements Runnable, Context {
     public void run(){
         startTime = System.currentTimeMillis();
         while(!shouldSimulationTerminate(currentTick, secondsPassed) && keepRunning.get()){
-            try{
+//            try{
                 if(paused.get()){
                     pauseTime = System.currentTimeMillis();
-                    sleepForAWhile();
                 }
                 else{
                     checkAllPropertiesBeforeTick();
-
-                    sleepForAWhile();
                     // Move all entities
                     moveAllEntities();
 
@@ -418,10 +417,11 @@ public class ContextImpl implements Runnable, Context {
                     secondsPassed = (int) (elapsedTime / 1000);
                     currentTick++;
                 }
-            }catch (InterruptedException exception) {
-                keepRunning.set(false);
-                exception.printStackTrace();
-            }
+//            }
+//            catch (InterruptedException exception) {
+//                keepRunning.set(false);
+//                exception.printStackTrace();
+//            }
         }
 
         keepRunning.set(false);
