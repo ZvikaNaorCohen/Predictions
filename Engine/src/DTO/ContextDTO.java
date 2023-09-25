@@ -41,7 +41,8 @@ public class ContextDTO {
     public ContextDTO(Context context){
         aliveEntityInstances = new HashMap<>();
         entityNameToAliveCount = new HashMap<>();
-        for(EntityInstance instance : context.getEntityInstanceManager().getInstances()){
+        List<EntityInstance> copyOfInstances = new ArrayList<>(context.getEntityInstanceManager().getInstances());
+        for(EntityInstance instance : copyOfInstances){
             aliveEntityInstances.put(instance.getId(), instance);
             if(entityNameToAliveCount.get(instance.getEntityDefinitionName()) != null){
                 int aliveInstances = entityNameToAliveCount.get(instance.getEntityDefinitionName())+1;

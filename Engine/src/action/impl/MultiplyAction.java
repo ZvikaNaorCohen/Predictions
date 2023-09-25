@@ -48,7 +48,7 @@ public class MultiplyAction extends AbstractCalculationAction {
             }
         }
         else{
-            if (secondaryInstance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
+            if (secondaryInstance != null && secondaryInstance.getPropertyByName(resultProp).getPropertyDefinition().getType() == PropertyType.FLOAT) {
                 float val1 = getFloatFromObject(argument1Value);
                 float val2 = getFloatFromObject(argument2Value);
                 if (secondaryInstance.getPropertyByName(resultProp).getPropertyDefinition().newValueInCorrectBounds(val1 * val2)) {

@@ -10,6 +10,7 @@ import execution.instance.entity.EntityInstanceImpl;
 import execution.instance.entity.manager.EntityInstanceManager;
 import execution.instance.environment.api.ActiveEnvironment;
 import execution.instance.property.PropertyInstance;
+import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import rule.Rule;
 import rule.Termination;
@@ -328,6 +329,22 @@ public class ContextImpl implements Runnable, Context {
         }
     }
 
+    private void checkAllPropertiesBeforeTick(){
+        for(EntityInstance entityInstance : entityInstanceManager.getInstances()){
+            for(PropertyInstance propertyInstance : entityInstance.getAllPropertyInstances().values()){
+                propertyInstance.checkPropertyInstanceValueBeforeTick();
+            }
+        }
+    }
+
+    private void checkAllPropertiesAfterTick(int tick){
+        for(EntityInstance entityInstance : entityInstanceManager.getInstances()){
+            for(PropertyInstance propertyInstance : entityInstance.getAllPropertyInstances().values()){
+                propertyInstance.checkPropertyInstanceValueAfterTick(tick);
+            }
+        }
+    }
+
     @Override
     public void run(){
         startTime = System.currentTimeMillis();
@@ -338,6 +355,8 @@ public class ContextImpl implements Runnable, Context {
                     sleepForAWhile();
                 }
                 else{
+                    checkAllPropertiesBeforeTick();
+
                     sleepForAWhile();
                     // Move all entities
                     moveAllEntities();
@@ -393,6 +412,7 @@ public class ContextImpl implements Runnable, Context {
 
 
                     updateAliveEntitiesPerTick(currentTick);
+                    checkAllPropertiesAfterTick(currentTick);
                     long currentTime = System.currentTimeMillis();
                     long elapsedTime = currentTime - startTime - totalPauseTime;
                     secondsPassed = (int) (elapsedTime / 1000);

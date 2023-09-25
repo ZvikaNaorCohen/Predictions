@@ -89,15 +89,16 @@ public class ResultsBodyController {
                 String ticksPassed = String.valueOf(contextDTO.getCurrentTicks());
                 String secondsPassed = String.valueOf(contextDTO.getSecondsPassed());
                 String progress = String.valueOf(contextDTO.getProgressPercent());
+
                 Platform.runLater(() -> {
                     ticksText.setText(ticksPassed);
                     secondsText.setText(secondsPassed);
                     progressText.setText(progress + "%");
                     progressBar.setProgress(progressPercent/100);
-
                     addExecutionEntities(selectedContext);
                     handleEndOfSimulation(selectedContext);
                 });
+
             }
         }
     }
@@ -230,7 +231,8 @@ public class ResultsBodyController {
         String propertyName = propertyComboBox.getSelectionModel().getSelectedItem();
         float average = 0;
         int counter = 0;
-        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
+        List<EntityInstance> copiedList = new ArrayList<>(context.getEntityInstanceManager().getInstances());
+        for (EntityInstance instance : copiedList) {
             PropertyInstance propInstance = instance.getPropertyByName(propertyName);
             if(entityName.equals(instance.getEntityDefinitionName())){
                 if(propInstance.getPropertyDefinition().getType().name().equalsIgnoreCase("float")){
@@ -274,7 +276,8 @@ public class ResultsBodyController {
         Context context = findContextById(selectedContextID);
         String entityName = entityComboBox.getSelectionModel().getSelectedItem();
         String propInstanceName = propertyComboBox.getSelectionModel().getSelectedItem();
-        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
+        List<EntityInstance> copiedList = new ArrayList<>(context.getEntityInstanceManager().getInstances());
+        for (EntityInstance instance : copiedList) {
             if (instance.getEntityDefinitionName().equals(entityName)) {
                 PropertyInstance propInstance = instance.getPropertyByName(propInstanceName);
                 if(propertyNameToTimesChanged.get(propInstanceName) == null){
@@ -299,7 +302,10 @@ public class ResultsBodyController {
         for (Map.Entry<String, Integer> entry : propertyNameToTimesChanged.entrySet()) {
             String propName = entry.getKey();
             Integer value = entry.getValue();
-            textArea.appendText("Property name: " + propName + ", Average ticks not changed: " + value/totalContextTicks + ".\n");
+            if(value == 0){
+                value++;
+            }
+            textArea.appendText("Property name: " + propName + ", Average ticks not changed: " + totalContextTicks/value + ".\n");
         }
 
         ScrollPane scrollPane = new ScrollPane(textArea);
@@ -324,7 +330,8 @@ public class ResultsBodyController {
         Context context = findContextById(selectedContextID);
         String entityName = entityComboBox.getSelectionModel().getSelectedItem();
         String propInstanceName = propertyComboBox.getSelectionModel().getSelectedItem();
-        for (EntityInstance instance : context.getEntityInstanceManager().getInstances()) {
+        List<EntityInstance> copiedList = new ArrayList<>(context.getEntityInstanceManager().getInstances());
+        for (EntityInstance instance : copiedList) {
             if (instance.getEntityDefinitionName().equals(entityName)) {
                 PropertyInstance propInstance = instance.getPropertyByName(propInstanceName);
                     Object propValue = propInstance.getValue();

@@ -8,11 +8,27 @@ public class PropertyInstanceImpl implements PropertyInstance {
 
     private PropertyDefinition propertyDefinition;
     private Object value;
+    private Object oldValue;
 
     private int lastTickChanged = 0;
 
     private int ticksNotChanged = 0;
     private int timesValueChanged = 0;
+
+    public void checkPropertyInstanceValueBeforeTick(){
+        oldValue = value;
+    }
+
+    public void checkPropertyInstanceValueAfterTick(int tick){
+        if(oldValue != value){
+            ticksNotChanged = 0;
+            lastTickChanged = tick;
+            timesValueChanged++;
+        }
+        else{
+            ticksNotChanged++;
+        }
+    }
 
     public PropertyInstanceImpl(PropertyDefinition propertyDefinition, Object value) {
         this.propertyDefinition = propertyDefinition;
@@ -31,11 +47,7 @@ public class PropertyInstanceImpl implements PropertyInstance {
 
     @Override
     public void updateValue(Object val) {
-        if(this.value != val){
-            timesValueChanged++;
-        }
         this.value = val;
-        ticksNotChanged = 0;
     }
 
     @Override

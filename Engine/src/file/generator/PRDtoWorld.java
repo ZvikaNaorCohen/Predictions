@@ -87,13 +87,12 @@ public class PRDtoWorld {
         return null;
     }
 
-    private static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
+    public static Action getActionFromPRDAction(Map<String, EntityDefinition> allEntityDefinitions, PRDAction action){
         EntityDefinition entityDef = null;
         SecondaryEntityDefinition second = null;
         Action actionToReturn = null;
         if(action.getPRDSecondaryEntity() != null){
             second = new SecondaryEntityDefinition(action.getPRDSecondaryEntity());
-            // second.setActionToPerform(getAbstractConditionAction(allEntityDefinitions, action, action.getPRDSecondaryEntity().getPRDSelection().getPRDCondition()));
             second.setActionToPerform(conditionActionForSecondEntity(allEntityDefinitions, action));
         }
         switch(action.getType()){
@@ -151,7 +150,7 @@ public class PRDtoWorld {
 
             case "proximity":{
                 entityDef = allEntityDefinitions.get(action.getPRDBetween().getSourceEntity());
-                actionToReturn = new ProximityAction(ActionType.PROXIMITY, entityDef, action);
+                actionToReturn = new ProximityAction(allEntityDefinitions, ActionType.PROXIMITY, entityDef, action);
                 break;
             }
         }

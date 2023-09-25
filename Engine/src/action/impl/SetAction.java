@@ -64,7 +64,7 @@ public class SetAction extends AbstractAction {
             }
         } else if (primaryInstance.hasPropertyByName(newPropertyValue)) {
             propertyInstance.updateValue(primaryInstance.getPropertyByName(newPropertyValue));
-        } else if (secondaryInstance.hasPropertyByName(newPropertyValue)) {
+        } else if (secondaryInstance != null && secondaryInstance.hasPropertyByName(newPropertyValue)) {
             propertyInstance.updateValue(secondaryInstance.getPropertyByName(newPropertyValue));
         } else { // ערך חופשי
             updatePropertyInstanceValueByFreeValue(propertyInstance);

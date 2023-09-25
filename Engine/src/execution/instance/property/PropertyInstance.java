@@ -8,4 +8,6 @@ public interface PropertyInstance {
     void updateValue(Object val);
     int getTicksNotChanged();
     int getTimesValueChanged();
+    void checkPropertyInstanceValueBeforeTick();
+    void checkPropertyInstanceValueAfterTick(int tick);
 }
