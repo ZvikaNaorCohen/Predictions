@@ -133,23 +133,38 @@ public class ResultsBodyController {
 
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
-        final BarChart<String,Number> bc =
-                new BarChart<String,Number>(xAxis,yAxis);
+        final BarChart<String, Number> bc =
+                new BarChart<>(xAxis, yAxis);
         xAxis.setLabel("Tick");
         yAxis.setLabel("Alive Entities");
         XYChart.Series series = new XYChart.Series();
         bc.setPrefWidth(800); // Set an appropriate width
         bc.setPrefHeight(270); // Set an appropriate height
 
+        int totalTicks = aliveEntitiesMap.size();
+        int ticksPerPart = totalTicks / 12; // Calculate the number of ticks per part
+
+        int partNumber = 0;
         for (Map.Entry<Integer, Integer> entry : aliveEntitiesMap.entrySet()) {
-            XYChart.Data<String, Number> data = new XYChart.Data<>(entry.getKey().toString(), entry.getValue());
-            series.getData().add(data);
+            if (entry.getKey() % ticksPerPart == 0 || entry.getKey() == totalTicks) {
+                // Use this tick as a label on the x-axis
+                String tickLabel = String.valueOf(entry.getKey());
+                if (partNumber < 11) {
+                    tickLabel = (partNumber + 1) + "*" + (totalTicks / 12);
+                } else {
+                    tickLabel = totalTicks + ""; // Ensure the last tick label is the totalTicks
+                }
+                partNumber++;
+                XYChart.Data<String, Number> data = new XYChart.Data<>(tickLabel, entry.getValue());
+                series.getData().add(data);
+            }
         }
 
         bc.getData().addAll(series);
         graphAnchorPane.getChildren().add(bc);
         graphScrollPane.setContent(graphAnchorPane);
     }
+
 
     private void handleEndOfSimulation(Context context){
         if(!context.isRunning().get()){

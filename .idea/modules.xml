@@ -3,9 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Engine/Engine.iml" filepath="$PROJECT_DIR$/Engine/Engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LogicEngine/LogicEngine.iml" filepath="$PROJECT_DIR$/LogicEngine/LogicEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/Predictions.iml" filepath="$PROJECT_DIR$/Predictions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PredictionsAdminClient/PredictionsAdminClient.iml" filepath="$PROJECT_DIR$/PredictionsAdminClient/PredictionsAdminClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PredictionsClient/PredictionsClient.iml" filepath="$PROJECT_DIR$/PredictionsClient/PredictionsClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/UI/UI.iml" filepath="$PROJECT_DIR$/UI/UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebApp/WebApp.iml" filepath="$PROJECT_DIR$/WebApp/WebApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/WindowsUI/WindowsUI.iml" filepath="$PROJECT_DIR$/WindowsUI/WindowsUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebApp/web/web.iml" filepath="$PROJECT_DIR$/WebApp/web/web.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,28 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="WebApp:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebApp_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="WebApp/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="WebApp" />
+          <element id="module-output" name="web" />
+          <element id="module-output" name="PredictionsClient" />
+          <element id="module-output" name="PredictionsAdminClient" />
+          <element id="module-output" name="WindowsUI" />
+          <element id="module-output" name="LogicEngine" />
+          <element id="module-output" name="Engine" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/WebApp/web/WEB-INF/lib/gson-2.8.8.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebApp/web/WEB-INF/lib/okhttp-4.9.1.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebApp/web/WEB-INF/lib/okio-2.8.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebApp/web/WEB-INF/lib/annotations-13.0.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebApp/web/WEB-INF/lib/kotlin-stdlib-1.4.10.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebApp/web/WEB-INF/lib/kotlin-stdlib-common-1.4.10.jar" />
+          <element id="file-copy" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/24.0.0/annotations-24.0.0.jar" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
