@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="79.0" prefWidth="1266.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.management.ManagementHeaderController">
+   <content>
+      <VBox alignment="CENTER_LEFT" prefHeight="74.0" prefWidth="1178.0">
+         <children>
+            <GridPane prefHeight="95.0" prefWidth="1179.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="492.0" minWidth="10.0" prefWidth="187.1999755859375" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="831.7999633789062" minWidth="10.0" prefWidth="612.3999999999999" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="831.7999633789062" minWidth="10.0" prefWidth="174.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="57.000006103515624" minHeight="10.0" prefHeight="57.000006103515624" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button id="loadFileButton" fx:id="loadFileButton" alignment="BASELINE_LEFT" contentDisplay="CENTER" graphicTextGap="0.0" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#loadFileButtonClicked" prefHeight="38.0" prefWidth="154.0" text="Load New XML">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Button>
+                  <Text id="filePathLabel" fx:id="filePathText" disable="true" nodeOrientation="LEFT_TO_RIGHT" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" text="Currently Loaded File Path" wrappingWidth="718.9367241859436" GridPane.columnIndex="1">
+                     <font>
+                        <Font size="27.0" />
+                     </font>
+                  </Text>
+                  <Button fx:id="threadCountButton" mnemonicParsing="false" onAction="#threadsCountButtonClicked" prefHeight="42.0" prefWidth="169.0" text="Set Threads Count" GridPane.columnIndex="2">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

@@ -66,7 +66,6 @@ public class LoginPageController {
             // Rest of your code
         } catch (Exception e) {
             e.printStackTrace();
-            // Handle the exception or log the error message
         }
 
 

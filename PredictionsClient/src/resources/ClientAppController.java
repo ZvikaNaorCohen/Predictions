@@ -23,11 +23,7 @@ public class ClientAppController implements Initializable {
     @FXML private ScrollPane appScrollPane;
     @FXML private Text welcomeText;
 
-    private static boolean adminConnected = false;
 
-    public static void adminNowConnected(){
-        adminConnected = true;
-    }
 
     private String loggedInUser = "";
     public void setLoginPageController(LoginPageController loginPageController){

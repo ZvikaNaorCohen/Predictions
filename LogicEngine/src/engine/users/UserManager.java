@@ -12,6 +12,12 @@ of the user of this class to handle the synchronization of isUserExists with oth
 public class UserManager {
 
     private final Set<String> usersSet;
+    private static boolean adminConnected = false;
+
+    public void adminNowConnected(){
+        adminConnected = true;
+    }
+    public boolean isAdminConnected(){ return adminConnected;}
 
     public UserManager() {
         usersSet = new HashSet<>();

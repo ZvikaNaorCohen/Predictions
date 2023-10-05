@@ -5,6 +5,10 @@
         <servlet-class>predictions.servlets.LoginServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AdminLoginServlet</servlet-name>
+        <servlet-class>predictions.servlets.AdminLoginServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>LoginShortResponseServlet</servlet-name>
         <servlet-class>predictions.servlets.LightweightLoginServlet</servlet-class>
     </servlet>
@@ -19,6 +23,10 @@
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminLoginServlet</servlet-name>
+        <url-pattern>/adminLogin</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoginShortResponseServlet</servlet-name>
