@@ -56,7 +56,6 @@ public class LoginServlet extends HttpServlet {
                  */
             synchronized (this) {
                  if (userManager.isUserExists(usernameFromParameter)) {
-//                if(false){
                     String errorMessage = "Username " + usernameFromParameter + " already exists. Please enter a different username.";
                     // username already exists, forward the request back to index.jsp
                     // with a parameter that indicates that an error should be displayed

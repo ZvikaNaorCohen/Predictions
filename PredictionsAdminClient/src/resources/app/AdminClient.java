@@ -46,13 +46,6 @@ public class AdminClient extends Application {
         launch(args);
     }
 
-    private void showAdminConnectedAlert(){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("Admin already connected");
-        alert.setContentText("Admin is already connected. Can not run admin twice. ");
-        alert.showAndWait();
-    }
-
     private void printError(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText(message);
@@ -82,16 +75,16 @@ public class AdminClient extends Application {
 
                 @Override
                 public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if (response.code() != 200) {
-                        String responseBody = response.body().string();
-                        Platform.runLater(() ->
-                                printError(responseBody)
-                        );
-                    } else {
+//                    if (response.code() != 200) {
+//                        String responseBody = response.body().string();
+//                        Platform.runLater(() ->
+//                                printError(responseBody)
+//                        );
+//                    } else {
                         Platform.runLater(() -> {
                             freshStart(primaryStage);
                         });
-                    }
+//                    }
                 }
             });
         }

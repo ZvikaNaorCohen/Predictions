@@ -13,7 +13,6 @@ import java.io.IOException;
 @WebServlet(name = "AdminLoginServlet", urlPatterns = "/adminLogin")
 public class AdminLoginServlet extends HttpServlet {
 
-
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserManager userManager = ServletUtils.getUserManager(getServletContext());
         synchronized (this){
@@ -25,7 +24,6 @@ public class AdminLoginServlet extends HttpServlet {
                 userManager.adminNowConnected();
             }
         }
-
     }
 
     @Override

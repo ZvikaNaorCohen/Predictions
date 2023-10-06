@@ -29,6 +29,7 @@ public class ManagementSimulationBreakdownController {
     @FXML private Text finishedThreadsCount;
     @FXML private TreeView<String> masterTreeView;
     @FXML private TextArea detailsTextArea;
+    private final TreeItem<String> root = new TreeItem<>("All Worlds");
     @FXML private ManagementPageController managementPageController;
 
     private String WORLD_NAME_PLACEHOLDER = "WORLD-NAME-PLACEHOLDER";
@@ -46,18 +47,19 @@ public class ManagementSimulationBreakdownController {
     }
 
     public void displayAllData(PRDWorld oldWorld, AllData allData){
-        TreeItem<String> root = new TreeItem<>(WORLD_NAME_PLACEHOLDER);
+        TreeItem<String> worldName = new TreeItem<>(WORLD_NAME_PLACEHOLDER);
         TreeItem<String> rulesSub = new TreeItem<>("Rules");
         TreeItem<String> envSub = new TreeItem<>("EnvVariables");
         TreeItem<String> entitiesSub = new TreeItem<>("Entities");
         TreeItem<String> gridSub = new TreeItem<>("Grid");
         TreeItem<String> terminationSub = new TreeItem<>("Termination");
 
-        root.getChildren().add(rulesSub);
-        root.getChildren().add(envSub);
-        root.getChildren().add(entitiesSub);
-        root.getChildren().add(gridSub);
-        root.getChildren().add(terminationSub);
+        worldName.getChildren().add(rulesSub);
+        worldName.getChildren().add(envSub);
+        worldName.getChildren().add(entitiesSub);
+        worldName.getChildren().add(gridSub);
+        worldName.getChildren().add(terminationSub);
+
 
         root.setExpanded(true);
 
@@ -65,8 +67,7 @@ public class ManagementSimulationBreakdownController {
         updateEnvSub(envSub, allData.getEnvPropertyNamesAndTypes());
         updateEntitiesSub(entitiesSub, allData.getMapAllEntities());
 
-
-
+        root.getChildren().add(worldName);
         masterTreeView.setRoot(root);
 
         masterTreeView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -164,7 +165,7 @@ public class ManagementSimulationBreakdownController {
     private void handleClick(TreeItem<String> selectedItem, AllData allData, PRDWorld world) {
         if (selectedItem != null) {
             String itemValue = selectedItem.getValue();
-            if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals(WORLD_NAME_PLACEHOLDER)) {
+            if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Worlds") || selectedItem.getParent().getValue().equals(WORLD_NAME_PLACEHOLDER)) {
                 if(selectedItem.getValue().equals("Grid")){
                     detailsTextArea.setText("Grid max rows: " + allData.getMaxRows() + ". \nGrid max cols: " + allData.getMaxCols() + ". ");
                 }
