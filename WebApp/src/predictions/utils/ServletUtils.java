@@ -1,9 +1,10 @@
 package predictions.utils;
 
-import engine.users.UserManager;
+
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
+import users.UserManager;
 
 import static predictions.constants.Constants.INT_PARAMETER_ERROR;
 

@@ -2,16 +2,14 @@ package predictions.servlets;
 
 import java.io.IOException;
 
-import engine.users.UserManager;
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import predictions.constants.Constants;
 import predictions.utils.ServletUtils;
 import predictions.utils.SessionUtils;
+import users.UserManager;
 
 import static predictions.constants.Constants.USERNAME;
 

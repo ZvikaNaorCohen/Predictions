@@ -18,6 +18,8 @@ import javafx.scene.text.Text;
 import resources.app.AdminClient;
 import rule.Rule;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +33,7 @@ public class ManagementSimulationBreakdownController {
     @FXML private TextArea detailsTextArea;
     private final TreeItem<String> root = new TreeItem<>("All Worlds");
     @FXML private ManagementPageController managementPageController;
+    private List<String> allWorldsNames;
 
     private String WORLD_NAME_PLACEHOLDER = "WORLD-NAME-PLACEHOLDER";
 
@@ -47,18 +50,24 @@ public class ManagementSimulationBreakdownController {
     }
 
     public void displayAllData(PRDWorld oldWorld, AllData allData){
-        TreeItem<String> worldName = new TreeItem<>(WORLD_NAME_PLACEHOLDER);
+        if(allWorldsNames == null){
+            allWorldsNames = new ArrayList<>();
+        }
+        if(!allWorldsNames.contains(oldWorld.getName())){
+            allWorldsNames.add(oldWorld.getName());
+        }
+        TreeItem<String> worldName = new TreeItem<>(oldWorld.getName());
         TreeItem<String> rulesSub = new TreeItem<>("Rules");
         TreeItem<String> envSub = new TreeItem<>("EnvVariables");
         TreeItem<String> entitiesSub = new TreeItem<>("Entities");
         TreeItem<String> gridSub = new TreeItem<>("Grid");
-        TreeItem<String> terminationSub = new TreeItem<>("Termination");
+//        TreeItem<String> terminationSub = new TreeItem<>("Termination");
 
         worldName.getChildren().add(rulesSub);
         worldName.getChildren().add(envSub);
         worldName.getChildren().add(entitiesSub);
         worldName.getChildren().add(gridSub);
-        worldName.getChildren().add(terminationSub);
+//        worldName.getChildren().add(terminationSub);
 
 
         root.setExpanded(true);
@@ -165,13 +174,13 @@ public class ManagementSimulationBreakdownController {
     private void handleClick(TreeItem<String> selectedItem, AllData allData, PRDWorld world) {
         if (selectedItem != null) {
             String itemValue = selectedItem.getValue();
-            if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Worlds") || selectedItem.getParent().getValue().equals(WORLD_NAME_PLACEHOLDER)) {
+            if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Worlds") || allWorldsNames.contains(selectedItem.getParent().getValue())) {
                 if(selectedItem.getValue().equals("Grid")){
                     detailsTextArea.setText("Grid max rows: " + allData.getMaxRows() + ". \nGrid max cols: " + allData.getMaxCols() + ". ");
                 }
-                else if (selectedItem.getValue().equals("Termination")){
-                    handleTerminationClick(allData);
-                }
+//                else if (selectedItem.getValue().equals("Termination")){
+//                    handleTerminationClick(allData);
+//                }
                 else{
                     detailsTextArea.setText("Selected:" + itemValue);
                 }

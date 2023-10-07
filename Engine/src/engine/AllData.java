@@ -43,10 +43,10 @@ public class AllData {
     }
 
     public AllData(PRDWorld oldWorld){
-        terminationRules = getTerminationRules(oldWorld.getPRDTermination());
+//        terminationRules = getTerminationRules(oldWorld.getPRDTermination());
         allEntityDefinitions = getAllEntityDefinitions(oldWorld.getPRDEntities());
         allRules = getAllRules(allEntityDefinitions, oldWorld.getPRDRules());
-        threadPoolSize = oldWorld.getPRDThreadCount();
+//        threadPoolSize = oldWorld.getPRDThreadCount();
         envVariablesManager = PRDtoWorld.getEnvVariablesManager(oldWorld);
         envPropertyNameAndType = getEnvPropertyNameAndDef(oldWorld.getPRDEnvironment());
         envPropNameAndPRDEnvProp = getEnvProperties(oldWorld.getPRDEnvironment());

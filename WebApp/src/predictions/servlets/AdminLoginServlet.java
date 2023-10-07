@@ -1,12 +1,12 @@
 package predictions.servlets;
 
-import engine.users.UserManager;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import predictions.utils.ServletUtils;
+import users.UserManager;
 
 import java.io.IOException;
 
