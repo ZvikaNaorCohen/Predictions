@@ -32,8 +32,6 @@ public class ClientAppController implements Initializable {
     @FXML private ScrollPane appScrollPaneComponent;
     @FXML private Text welcomeText;
 
-
-
     private String loggedInUser = "";
     public void setLoginPageController(LoginPageController loginPageController){
         this.loginPageController = loginPageController;

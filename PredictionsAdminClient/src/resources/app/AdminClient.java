@@ -1,26 +1,22 @@
 package resources.app;
 
 import com.sun.istack.internal.NotNull;
-import engine.generated.PRDWorld;
+import engine.AllData;
+import generated.PRDWorld;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
-import resources.ClientAppController;
 import resources.app.allocations.AllocationsController;
-import resources.app.management.ManagementHeaderController;
 import resources.app.management.ManagementPageController;
-import resources.app.management.ManagementSimulationBreakdownController;
 import resources.utils.Constants;
 import resources.utils.HttpClientUtil;
 
