@@ -1,11 +1,7 @@
 package resources.app;
 
 import com.sun.istack.internal.NotNull;
-import engine.AllData;
-import execution.context.Context;
-import execution.context.ContextImpl;
-import executionManager.ExecutionManager;
-import generated.PRDWorld;
+import engine.generated.PRDWorld;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +17,7 @@ import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 import resources.ClientAppController;
+import resources.app.allocations.AllocationsController;
 import resources.app.management.ManagementHeaderController;
 import resources.app.management.ManagementPageController;
 import resources.app.management.ManagementSimulationBreakdownController;
@@ -34,7 +31,9 @@ import java.util.HashMap;
 public class AdminClient extends Application {
 
     @FXML private AnchorPane managementPageComponent;
+    @FXML private AnchorPane allocationsComponent;
     @FXML private ManagementPageController managementPageComponentController;
+    @FXML private AllocationsController allocationsComponentController;
 
     @FXML
     public void initialize() {

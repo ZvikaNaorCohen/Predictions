@@ -9,7 +9,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import resources.app.LoginPageController;
+import resources.app.login.LoginPageController;
+import resources.app.requests.RequestsController;
+import resources.app.simulation.SimulationController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,9 +20,16 @@ import java.util.ResourceBundle;
 public class ClientAppController implements Initializable {
 
     private LoginPageController loginPageController;
+    private SimulationController simulationController;
+    private RequestsController requestsController;
 
     @FXML private AnchorPane mainApp;
-    @FXML private ScrollPane appScrollPane;
+    @FXML private AnchorPane requestsComponent;
+    @FXML private AnchorPane executionComponent;
+    @FXML private AnchorPane simulationComponent;
+    @FXML private AnchorPane resultsComponent;
+
+    @FXML private ScrollPane appScrollPaneComponent;
     @FXML private Text welcomeText;
 
 

@@ -1,0 +1,9 @@
+.text{
+    -fx-background-color: black; /* Set your desired background color here */
+}
+
+.text#filePathText{
+    -fx-background-color: black;
+    -fx-highlight-text-fill: black;
+    -fx-border-color: black;
+}

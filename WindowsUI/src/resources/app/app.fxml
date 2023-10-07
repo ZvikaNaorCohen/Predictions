@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="655.0" minWidth="1260.0" prefHeight="655.0" prefWidth="1260.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.AppController">
+   <content>
+      <GridPane prefHeight="701.0" prefWidth="1258.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="190.00000610351563" minHeight="10.0" prefHeight="92.20002441406251" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="608.7999755859375" minHeight="10.0" prefHeight="608.7999755859375" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <fx:include fx:id="headerComponent" source="../header/header.fxml" />
+            <TabPane fx:id="allTabs" prefHeight="200.0" prefWidth="1258.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+              <tabs>
+                <Tab fx:id="detailsTab" text="Details">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="937.0">
+                           <children>
+                              <fx:include fx:id="detailsBodyComponent" source="../body/detailsBody.fxml" />
+                           </children></AnchorPane>
+                     </content>
+                </Tab>
+                <Tab fx:id="newExecutionTab" text="New Execution">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <fx:include fx:id="newExecutionBody" source="../body/newExecutionBody.fxml" />
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+                  <Tab fx:id="resultsTab" text="Results">
+                     <content>
+                        <AnchorPane prefHeight="591.0" prefWidth="1258.0">
+                           <children>
+                              <fx:include fx:id="resultsBodyComponent" source="../body/resultsBody.fxml" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+            <GridPane fx:id="secondGridPane" prefHeight="100.0" prefWidth="1002.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1011.99990234375" minWidth="10.0" prefWidth="979.99990234375" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="622.5999145507812" minWidth="10.0" prefWidth="278.40009765625007" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="queueManagementButton" mnemonicParsing="false" onMouseClicked="#queueManagementButtonOnClick" prefHeight="84.0" prefWidth="260.0" text="Queue Managment" GridPane.columnIndex="1">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Button>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+   </content>
+</ScrollPane>

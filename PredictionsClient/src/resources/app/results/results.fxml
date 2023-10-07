@@ -17,11 +17,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="subAnchorPane" prefHeight="537.0" prefWidth="1223.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.executionHistory.ExecutionHistoryController">
+<AnchorPane fx:id="subAnchorPane" prefHeight="547.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.body.ResultsBodyController">
    <children>
-      <ScrollPane layoutX="251.0" layoutY="139.0" prefHeight="123.0" prefWidth="971.0">
+      <ScrollPane layoutX="214.0" layoutY="140.0" prefHeight="140.0" prefWidth="991.0">
          <content>
-            <TableView fx:id="entitiesTable" prefHeight="120.0" prefWidth="966.0">
+            <TableView fx:id="entitiesTable" prefHeight="136.0" prefWidth="986.0">
               <columns>
                 <TableColumn fx:id="nameCol" prefWidth="449.06670838594437" text="Entity Name" />
                 <TableColumn fx:id="countCol" prefWidth="444.00006103515625" text="Entity Count" />
@@ -29,14 +29,14 @@
             </TableView>
          </content>
       </ScrollPane>
-      <ScrollPane prefHeight="534.0" prefWidth="249.0">
+      <ScrollPane prefHeight="545.0" prefWidth="207.0">
          <content>
-            <ListView fx:id="executionListView" onMouseClicked="#onExecutionItemSelected" prefHeight="531.0" prefWidth="246.0" />
+            <ListView fx:id="executionListView" onMouseClicked="#onExecutionItemSelected" prefHeight="542.0" prefWidth="204.0" />
          </content>
       </ScrollPane>
-      <ScrollPane layoutX="251.0" layoutY="1.0" prefHeight="138.0" prefWidth="971.0">
+      <ScrollPane layoutX="214.0" layoutY="1.0" prefHeight="140.0" prefWidth="991.0">
          <content>
-            <GridPane prefHeight="135.0" prefWidth="968.0">
+            <GridPane prefHeight="132.0" prefWidth="971.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="483.2000732421875" minWidth="10.0" prefWidth="267.4" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="483.2000732421875" minWidth="10.0" prefWidth="110.99998779296874" />
@@ -73,6 +73,11 @@
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
+                     <children>
+                        <Button fx:id="pauseButton" disable="true" mnemonicParsing="false" prefHeight="59.0" prefWidth="226.0" text="PAUSE" />
+                        <Button fx:id="resumeButton" disable="true" mnemonicParsing="false" prefHeight="59.0" prefWidth="226.0" text="RESUME" GridPane.columnIndex="1" />
+                        <Button fx:id="stopButton" disable="true" mnemonicParsing="false" prefHeight="59.0" prefWidth="236.0" text="STOP" GridPane.columnIndex="2" />
+                     </children>
                   </GridPane>
                   <Text fx:id="progressText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="85.33673477172852" GridPane.columnIndex="1">
                      <font>
@@ -89,25 +94,26 @@
                         <Font size="26.0" />
                      </font>
                   </Text>
+                  <Button fx:id="reRunButton" disable="true" mnemonicParsing="false" onAction="#reRunButtonOnClick" prefHeight="65.0" prefWidth="110.0" text="RE-RUN" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </content>
       </ScrollPane>
-      <ScrollPane layoutX="251.0" layoutY="263.0" prefHeight="267.0" prefWidth="971.0">
+      <ScrollPane layoutX="214.0" layoutY="280.0" prefHeight="266.0" prefWidth="991.0">
          <content>
-            <TabPane prefHeight="258.0" prefWidth="969.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane prefHeight="263.0" prefWidth="979.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Graph">
                      <content>
-                        <ScrollPane fx:id="graphScrollPane" hbarPolicy="ALWAYS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="219.0" prefWidth="908.0" vbarPolicy="ALWAYS">
+                        <ScrollPane fx:id="graphScrollPane" hbarPolicy="ALWAYS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="942.0" vbarPolicy="ALWAYS">
                           <content>
-                            <AnchorPane fx:id="graphAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="900.0" />
+                            <AnchorPane fx:id="graphAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="965.0" />
                           </content>
                         </ScrollPane>
                      </content></Tab>
                 <Tab text="Histogram">
                      <content>
-                        <GridPane prefHeight="234.0" prefWidth="918.0">
+                        <GridPane>
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="482.5333251953125" minWidth="10.0" prefWidth="325.93337020874026" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="710.7999877929688" minWidth="10.0" prefWidth="310.0000366210937" />

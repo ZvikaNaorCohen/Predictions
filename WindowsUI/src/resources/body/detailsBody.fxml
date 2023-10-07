@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPaneDetails" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="1238.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.body.DetailsBodyController">
+   <children>
+      <ScrollPane fx:id="masterScrollPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="404.0">
+      <content>
+            <HBox fx:id="masterHBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="515.0" prefWidth="402.0">
+               <children>
+                  <TreeView fx:id="masterTreeView" prefHeight="520.0" prefWidth="402.0" />
+               </children>
+            </HBox>
+         </content>
+      </ScrollPane>
+      <ScrollPane fx:id="detailsScrollPane" layoutX="404.0" prefHeight="518.0" prefWidth="833.0">
+         <content>
+            <TextArea fx:id="detailsTextArea" editable="false" prefHeight="516.0" prefWidth="832.0" promptText="this will hold data of the current selected listviewitem" style="-fx-text-fill: black;">
+               <font>
+                  <Font size="21.0" />
+               </font></TextArea>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

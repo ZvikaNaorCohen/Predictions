@@ -1,11 +1,7 @@
 package resources.app.management;
 
-import com.google.gson.JsonObject;
-import com.sun.istack.internal.NotNull;
 import engine.AllData;
-import file.validate.impl.PRDWorldValid;
 import generated.PRDWorld;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -16,7 +12,6 @@ import javafx.stage.FileChooser;
 import okhttp3.*;
 import resources.app.AdminClient;
 import resources.utils.Constants;
-import resources.utils.HttpClientUtil;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -88,7 +83,8 @@ public class ManagementHeaderController {
                     throw new RuntimeException(e);
                 }
             } else {
-                printError(response.message());
+                assert response.body() != null;
+                printError(response.body().string());
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -28,7 +28,7 @@
                         <Font size="33.0" />
                      </font>
                   </Text>
-                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+                  <TabPane prefHeight="200.0" prefWidth="1226.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
                     <tabs>
                       <Tab text="Management">
                         <content>
@@ -40,12 +40,23 @@
                       </Tab>
                       <Tab text="Allocations">
                         <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <fx:include fx:id="allocationsComponent" source="allocations/allocations.fxml" />
+                                 </children></AnchorPane>
                         </content>
                       </Tab>
                         <Tab text="Executions History">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <ScrollPane layoutY="-1.0" prefHeight="566.0" prefWidth="1259.0">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                      </content>
+                                    </ScrollPane>
+                                    <fx:include source="executionHistory/executionHistory.fxml" />
+                                 </children></AnchorPane>
                            </content>
                         </Tab>
                     </tabs>
