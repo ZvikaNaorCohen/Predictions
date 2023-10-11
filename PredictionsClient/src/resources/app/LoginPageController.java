@@ -88,6 +88,7 @@ public class LoginPageController {
                 } else {
                     Platform.runLater(() -> {
                         mainController.freshLogin(input);
+                        mainController.setMainControllers();
                     });
                 }
             }

@@ -9,8 +9,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import resources.app.execution.ExecutionController;
 import resources.app.login.LoginPageController;
 import resources.app.requests.RequestsController;
+import resources.app.results.ResultsController;
 import resources.app.simulation.SimulationController;
 
 import java.io.IOException;
@@ -20,8 +22,10 @@ import java.util.ResourceBundle;
 public class ClientAppController implements Initializable {
 
     private LoginPageController loginPageController;
-    private SimulationController simulationController;
-    private RequestsController requestsController;
+    private SimulationController simulationComponentController;
+    private ResultsController resultsComponentController;
+    private ExecutionController executionComponentController;
+    private RequestsController requestsComponentController;
 
     @FXML private AnchorPane mainApp;
     @FXML private AnchorPane requestsComponent;
@@ -55,10 +59,20 @@ public class ClientAppController implements Initializable {
             // Call initialize manually (since FXMLLoader won't call it again)
             clientAppController.initialize(null, null);
 
+            // setMainControllers();
+
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception according to your needs
         }
+    }
+
+    public void setMainControllers(){
+        loginPageController.setClientAppController(this);
+        simulationComponentController.setClientAppController(this);
+        resultsComponentController.setClientAppController(this);
+        executionComponentController.setClientAppController(this);
+        requestsComponentController.setClientAppController(this);
     }
 
     public void setLoggedInUser(String userName) {
