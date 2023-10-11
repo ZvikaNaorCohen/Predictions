@@ -1,4 +1,4 @@
-package resources.app;
+package resources.app.login;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -88,8 +88,6 @@ public class LoginPageController {
                 } else {
                     Platform.runLater(() -> {
                         mainController.freshLogin(input);
-                        mainController.setMainControllers();
-                        mainController.updateAllScreens();
                     });
                 }
             }

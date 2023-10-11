@@ -67,6 +67,13 @@ public class ClientAppController implements Initializable {
         }
     }
 
+    public void updateAllScreens(){
+        simulationComponentController.updateScreens();
+        resultsComponentController.updateScreens();
+        executionComponentController.updateScreens();
+        requestsComponentController.updateScreens();
+    }
+
     public void setMainControllers(){
         loginPageController.setClientAppController(this);
         simulationComponentController.setClientAppController(this);

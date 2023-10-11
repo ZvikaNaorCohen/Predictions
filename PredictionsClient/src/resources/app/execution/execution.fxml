@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="subAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="1220.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.execution.ExecutionController">
+   <children>
+      <GridPane layoutY="-1.0" prefHeight="510.0" prefWidth="1220.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="684.7999328613281" minWidth="10.0" prefWidth="463.4000549316406" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="795.9999450683595" minWidth="10.0" prefWidth="795.9999450683595" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="385.1999877929687" minHeight="10.0" prefHeight="371.6000122070312" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="235.60001220703126" minHeight="10.0" prefHeight="109.19998779296878" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonOnClick" prefHeight="40.0" prefWidth="98.0" text="CLEAR" GridPane.rowIndex="1" />
+            <Button fx:id="startButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="89.0" text="START" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+            <ScrollPane fx:id="simEntitiesPopulation" prefHeight="600.0" prefWidth="324.0">
+               <content>
+                  <SplitPane prefHeight="383.0" prefWidth="432.0">
+                     <items>
+                        <SplitPane prefHeight="160.0" prefWidth="391.0">
+                           <items>
+                              <TableView fx:id="simEntitiesTable" editable="true" prefHeight="382.0" prefWidth="386.0">
+                                <columns>
+                                  <TableColumn fx:id="entityCol" prefWidth="179.99999080896396" text="Entity" />
+                                  <TableColumn fx:id="desiredPopulationCol" minWidth="0.0" prefWidth="250.40001525878904" text="DesiredPopulation" />
+                                </columns>
+                              </TableView>
+                           </items>
+                        </SplitPane>
+                     </items>
+                  </SplitPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fx:id="simEnvironmentInputsSP" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <content>
+                  <TableView fx:id="envPropertiesTable" editable="true" prefHeight="382.0" prefWidth="764.0">
+                    <columns>
+                      <TableColumn fx:id="envPropNameCol" prefWidth="171.19991761446" text="EnvPropName" />
+                      <TableColumn fx:id="envPropTypeCol" minWidth="0.0" prefWidth="144.80006408691406" text="Type" />
+                        <TableColumn fx:id="envPropRangeCol" minWidth="0.0" prefWidth="199.199951171875" text="Range" />
+                        <TableColumn fx:id="envPropDesiredValueCol" minWidth="0.0" prefWidth="243.9998779296875" text="Desired Value" />
+                    </columns>
+                  </TableView>
+               </content></ScrollPane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
