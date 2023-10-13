@@ -31,6 +31,7 @@ public class FileUploadServlet extends HttpServlet {
         }
         if(PRDWorldsList == null){
             PRDWorldsList = new ArrayList<>();
+            getServletContext().setAttribute(PRDWORLDS_LIST, PRDWorldsList);
         }
         try {
             PRDWorld world = XMLRead.getWorldFromScheme(xmlPath);
@@ -52,6 +53,7 @@ public class FileUploadServlet extends HttpServlet {
             else {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().println("World is valid");
+                PRDWorldsList.add(world);
                 getServletContext().setAttribute(PRDWORLDS_LIST, PRDWorldsList);
                 worldsNames.add(world.getName());
             }

@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="mainApp" prefHeight="701.0" prefWidth="1223.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.ClientAppController">
+<AnchorPane fx:id="mainApp" prefHeight="701.0" prefWidth="1223.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.ClientAppController">
    <children>
       <ScrollPane fx:id="appScrollPaneComponent" prefHeight="701.0" prefWidth="1223.0">
          <content>
@@ -30,35 +30,35 @@
                   </Text>
                   <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
                     <tabs>
-                      <Tab text="Simulation Details">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <fx:include fx:id="simulationComponent" source="app/simulation/simulation.fxml"/>
-                                 </children></AnchorPane>
-                        </content>
-                      </Tab>
-                      <Tab text="Requests">
-                        <content>
-                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <fx:include fx:id="requestsComponent" source="app/requests/requests.fxml" />
-                                 </children></AnchorPane>
-                        </content>
-                      </Tab>
-                        <Tab text="Execution">
+                      <Tab fx:id="executionTab" text="Details">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                  <children>
-                                    <fx:include fx:id="executionComponent" source="app/execution/execution.fxml" />
+                                    <fx:include fx:id="simulationComponent" source="../simulation/simulation.fxml" />
                                  </children></AnchorPane>
                            </content>
                         </Tab>
-                        <Tab text="Results">
+                      <Tab fx:id="requestsTab" text="Requests">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                  <children>
-                                    <fx:include fx:id="resultsComponent" source="app/results/results.fxml" />
+                                    <fx:include fx:id="requestsComponent" source="../requests/requests.fxml" />
+                                 </children></AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="simulationTab" text="Simulation">
+                           <content>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <fx:include fx:id="executionComponent" source="../execution/execution.fxml" />
+                                 </children></AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="resultsTab" text="Results">
+                           <content>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <fx:include fx:id="resultsComponent" source="../results/results.fxml" />
                                  </children></AnchorPane>
                            </content>
                         </Tab>

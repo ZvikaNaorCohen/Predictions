@@ -1,11 +1,9 @@
-package resources.app.management;
+package resources.simulation;
 
 import com.google.gson.Gson;
-import com.sun.istack.internal.NotNull;
 import definition.entity.EntityDefinition;
 import definition.property.api.PropertyDefinition;
 import engine.AllData;
-import execution.context.Context;
 import generated.PRDAction;
 import generated.PRDRule;
 import generated.PRDRules;
@@ -13,16 +11,18 @@ import generated.PRDWorld;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
+import javafx.scene.layout.AnchorPane;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
-import resources.app.AdminClient;
+import org.jetbrains.annotations.NotNull;
+import resources.app.ClientAppController;
 import resources.utils.Constants;
 import resources.utils.HttpClientUtil;
 import rule.Rule;
@@ -33,47 +33,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ManagementSimulationBreakdownController {
-
+public class SimulationController implements Runnable{
+    private ClientAppController mainController;
     private List<PRDWorld> allPRDWorlds;
-    @FXML private AdminClient mainController;
-    @FXML private Text totalThreadsCount;
-    @FXML private Text runningThreadsCount;
-    @FXML private Text finishedThreadsCount;
-    @FXML private TreeView<String> masterTreeView;
-    @FXML private TextArea detailsTextArea;
-    private ScheduledExecutorService scheduler;
-    private final TreeItem<String> root = new TreeItem<>("All Worlds");
-    @FXML private ManagementPageController managementPageController;
     private List<String> allWorldsNames;
+    private ScheduledExecutorService scheduler;
 
-    public ManagementSimulationBreakdownController(){
-        scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::updateScreens, 0, 1000, TimeUnit.MILLISECONDS);
-    }
+    @FXML private TextArea detailsTextArea;
+    @FXML private AnchorPane simulationAnchorPane;
+    @FXML private TreeView<String> masterTreeView;
+    private final TreeItem<String> root = new TreeItem<>("All Worlds");
 
-    public void setMainController(AdminClient controller){
-        mainController = controller;
-    }
 
-    public void setManagementPageController(ManagementPageController controller){
-        managementPageController = controller;
-    }
-
-    public void updateThreadsCount(int newCount){
-        totalThreadsCount.setText(String.valueOf(newCount));
-    }
-
-    private boolean worldAlreadyExistInTreeView(String worldName){
-        boolean worldNameExists = false;
-        for (TreeItem<String> child : root.getChildren()) {
-            if (child.getValue().equals(worldName)) {
-                worldNameExists = true;
-                break;
-            }
-        }
-
-        return worldNameExists;
+    public void setClientAppController(ClientAppController mainController){
+        this.mainController = mainController;
     }
 
     public void updateScreens(){
@@ -109,6 +82,18 @@ public class ManagementSimulationBreakdownController {
                 }
             }
         });
+    }
+
+    private boolean worldAlreadyExistInTreeView(String worldName){
+        boolean worldNameExists = false;
+        for (TreeItem<String> child : root.getChildren()) {
+            if (child.getValue().equals(worldName)) {
+                worldNameExists = true;
+                break;
+            }
+        }
+
+        return worldNameExists;
     }
 
     public void displayAllData(PRDWorld oldWorld, AllData allData){
@@ -156,6 +141,32 @@ public class ManagementSimulationBreakdownController {
         });
     }
 
+    private void handleClick(TreeItem<String> selectedItem, AllData allData, PRDWorld world) {
+        if (selectedItem != null) {
+            Platform.runLater(() -> {
+                String itemValue = selectedItem.getValue();
+                if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Worlds") || allWorldsNames.contains(selectedItem.getParent().getValue())) {
+                    if(selectedItem.getValue().equals("Grid")){
+                        detailsTextArea.setText("Grid max rows: " + allData.getMaxRows() + ". \nGrid max cols: " + allData.getMaxCols() + ". ");
+                    }
+                    else{
+                        detailsTextArea.setText("Selected:" + itemValue);
+                    }
+                } else {
+                    if (selectedItem.getParent().getValue().equals("Rules")) {
+                        handleRuleClicked(itemValue, allData.getAllRulesFromAllData());
+                    } else if (selectedItem.getParent().getValue().equals("EnvVariables")) {
+                        handleEnvClicked(itemValue, allData.getEnvPropertyNamesAndTypes());
+                    } else if (selectedItem.getParent().getValue().equals("Entities")) {
+                        handleEntityClicked(itemValue, allData.getMapAllEntities());
+                    }
+                    else if (selectedItem.getParent().getParent().getValue().equals("Rules")){
+                        handleActionClicked(itemValue, selectedItem.getParent().getValue(), world.getPRDRules());
+                    }
+                }
+            });
+        }
+    }
 
 
 
@@ -219,48 +230,6 @@ public class ManagementSimulationBreakdownController {
                 counter++;
             }
             detailsTextArea.setText(text);
-        }
-    }
-
-    private void handleTerminationClick(AllData allData){
-        String textToSet = "";
-        if(allData.getTerminationFromAllData().endByUser()){
-            textToSet = "Termination is ending by user input (should click pause/stop buttons). \n";
-        }
-        else {
-            if(allData.getTerminationFromAllData().getEndBySeconds() != -1){
-                textToSet = "End by seconds: " + allData.getTerminationFromAllData().getEndBySeconds() + ". \n";
-            }
-            if(allData.getTerminationFromAllData().getEndByTicks() != -1){
-                textToSet += "End by ticks: " + allData.getTerminationFromAllData().getEndByTicks() + ". \n";
-            }
-        }
-
-        detailsTextArea.setText(textToSet);
-    }
-
-    private void handleClick(TreeItem<String> selectedItem, AllData allData, PRDWorld world) {
-        if (selectedItem != null) {
-            String itemValue = selectedItem.getValue();
-            if (selectedItem.getParent() == null || selectedItem.getParent().getValue().equals("All Worlds") || allWorldsNames.contains(selectedItem.getParent().getValue())) {
-                if(selectedItem.getValue().equals("Grid")){
-                    detailsTextArea.setText("Grid max rows: " + allData.getMaxRows() + ". \nGrid max cols: " + allData.getMaxCols() + ". ");
-                }
-                else{
-                    detailsTextArea.setText("Selected:" + itemValue);
-                }
-            } else {
-                if (selectedItem.getParent().getValue().equals("Rules")) {
-                    handleRuleClicked(itemValue, allData.getAllRulesFromAllData());
-                } else if (selectedItem.getParent().getValue().equals("EnvVariables")) {
-                    handleEnvClicked(itemValue, allData.getEnvPropertyNamesAndTypes());
-                } else if (selectedItem.getParent().getValue().equals("Entities")) {
-                    handleEntityClicked(itemValue, allData.getMapAllEntities());
-                }
-                else if (selectedItem.getParent().getParent().getValue().equals("Rules")){
-                    handleActionClicked(itemValue, selectedItem.getParent().getValue(), world.getPRDRules());
-                }
-            }
         }
     }
 
@@ -446,4 +415,27 @@ public class ManagementSimulationBreakdownController {
         }
         return answer;
     }
+
+    @Override
+    public void run() {
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        alert.setContentText("I'm in run");
+//        alert.showAndWait();
+//        try {
+//            sleepForAWhile();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::updateScreens, 0, 1000, TimeUnit.MILLISECONDS);
+        // updateScreens();
+    }
+
+    private void sleepForAWhile() throws InterruptedException {
+        Thread.sleep(200);
+    }
+
+//    public void simulationTabOnClick(){
+//        updateScreens();
+//    }
 }

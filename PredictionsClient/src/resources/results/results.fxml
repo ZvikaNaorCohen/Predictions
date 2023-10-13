@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="subAnchorPane" prefHeight="547.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.results.ResultsController">
+<AnchorPane fx:id="resultsAnchorPane" prefHeight="547.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.results.ResultsController">
    <children>
       <ScrollPane layoutX="214.0" layoutY="140.0" prefHeight="140.0" prefWidth="991.0">
          <content>

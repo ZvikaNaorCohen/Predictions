@@ -115,10 +115,10 @@ public class AppController {
         newExecutionBodyController.rerunButtonClicked(oldWorld, idToAllData.get(contextID), copiedIdToAllData.get(contextID), copiedIdToContext.get(contextID));
     }
 
-    public void setHeaderComponentController(HeaderController headerComponentController) {
-        this.headerComponentController = headerComponentController;
-        headerComponentController.setMainController(this);
-    }
+//    public void setHeaderComponentController(HeaderController headerComponentController) {
+//        this.headerComponentController = headerComponentController;
+//        headerComponentController.setMainController(this);
+//    }
 
     public void setBodyComponentController(DetailsBodyController bodyComponentController) {
         this.detailsBodyComponentController = bodyComponentController;

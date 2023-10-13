@@ -1,4 +1,4 @@
-package resources.app.results;
+package resources.results;
 
 import executionManager.EntityData;
 import javafx.event.ActionEvent;
@@ -7,13 +7,15 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import resources.ClientAppController;
+import resources.app.ClientAppController;
 
 import java.util.concurrent.ScheduledExecutorService;
 
 public class ResultsController {
 
     ClientAppController mainController;
+
+    @FXML private AnchorPane resultsAnchorPane;
     private final String runningLabel = " - RUNNING";
     private final String finishedLabel = " - FINISHED";
 

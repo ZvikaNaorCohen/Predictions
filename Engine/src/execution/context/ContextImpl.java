@@ -126,9 +126,6 @@ public class ContextImpl implements Runnable, Context {
         return activeEnvironment.getProperty(name);
     }
 
-//    private void sleepForAWhile() throws InterruptedException {
-//        Thread.sleep(100);
-//    }
 
     @Override
     public SimpleBooleanProperty isRunning(){

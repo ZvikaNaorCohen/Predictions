@@ -1,15 +1,17 @@
+package resources.login;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import resources.ClientAppController;
-import resources.app.login.LoginPageController;
+import resources.app.ClientAppController;
 
 import java.net.URL;
 
-public class ClientLoginPage extends Application {
-    ClientAppController mainAppController = new ClientAppController();
+public class ClientLoginPageMain extends Application {
+    ClientAppController mainAppController;
     public static void main(String[] args) {
         Thread.currentThread().setName("main");
         launch(args);
@@ -20,11 +22,11 @@ public class ClientLoginPage extends Application {
         // FXMLLoader
         FXMLLoader fxmlLoader = new FXMLLoader();
         // URL
-        URL url = getClass().getResource("/resources/app/login/clientLoginPage.fxml");
+        URL url = getClass().getResource("/resources/login/clientLoginPage.fxml");
         fxmlLoader.setLocation(url);
-        AnchorPane root = fxmlLoader.load(url.openStream());
+        Parent root = fxmlLoader.load(url.openStream());
         LoginPageController loginPageController = fxmlLoader.getController();
-        mainAppController.setLoginPageController(loginPageController);
+        // mainAppController.setLoginPageController(loginPageController);
 
 
         Scene scene = new Scene(root, 1260, 720);

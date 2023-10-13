@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="563.0" prefWidth="1200" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.app.requests.RequestsController">
+<AnchorPane fx:id="requestsAnchorPane" prefHeight="563.0" prefWidth="1200" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="resources.requests.RequestsController">
    <children>
       <ScrollPane prefHeight="303.0" prefWidth="1042.0">
          <content>
