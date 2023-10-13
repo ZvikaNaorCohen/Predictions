@@ -418,24 +418,8 @@ public class SimulationController implements Runnable{
 
     @Override
     public void run() {
-//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setContentText("I'm in run");
-//        alert.showAndWait();
-//        try {
-//            sleepForAWhile();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
+        updateScreens();
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(this::updateScreens, 0, 1000, TimeUnit.MILLISECONDS);
-        // updateScreens();
     }
-
-    private void sleepForAWhile() throws InterruptedException {
-        Thread.sleep(200);
-    }
-
-//    public void simulationTabOnClick(){
-//        updateScreens();
-//    }
 }

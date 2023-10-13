@@ -11,35 +11,35 @@
    <children>
       <ScrollPane prefHeight="303.0" prefWidth="1042.0">
          <content>
-            <TableView prefHeight="279.0" prefWidth="1039.0">
+            <TableView fx:id="requestsTableView" prefHeight="279.0" prefWidth="1039.0">
               <columns>
-                <TableColumn prefWidth="171.99999696016312" text="Simulation Name" />
-                <TableColumn prefWidth="157.6000213623047" text="Number of Runs" />
-                  <TableColumn prefWidth="253.60003662109375" text="End Settings" />
+                <TableColumn fx:id="simulationNameCol" prefWidth="171.99999696016312" text="Simulation Name" />
+                <TableColumn fx:id="numberOfRunsCol" prefWidth="157.6000213623047" text="Number of Runs" />
+                  <TableColumn fx:id="endSettingsCol" prefWidth="253.60003662109375" text="End Settings" />
               </columns>
             </TableView>
          </content>
       </ScrollPane>
       <ScrollPane layoutY="281.0" prefHeight="278.0" prefWidth="1042.0">
          <content>
-            <TableView prefHeight="275.0" prefWidth="1040.0">
+            <TableView fx:id="allowedTableView" prefHeight="275.0" prefWidth="1040.0">
               <columns>
-                <TableColumn prefWidth="140.00002747774124" text="ID" />
-                <TableColumn prefWidth="328.79994201660156" text="Name" />
-                  <TableColumn prefWidth="149.60009765625" text="Simulations Allowed" />
-                  <TableColumn prefWidth="156.0" text="Status" />
-                  <TableColumn prefWidth="144.0001220703125" text="Running" />
-                  <TableColumn prefWidth="117.59991455078125" text="Finished" />
+                <TableColumn fx:id="IDCol" prefWidth="140.00002747774124" text="ID" />
+                <TableColumn fx:id="nameCol" prefWidth="328.79994201660156" text="Name" />
+                  <TableColumn fx:id="simulationsAllowedCol" prefWidth="149.60009765625" text="Simulations Allowed" />
+                  <TableColumn fx:id="statusCol" prefWidth="156.0" text="Status" />
+                  <TableColumn fx:id="runningCol" prefWidth="144.0001220703125" text="Running" />
+                  <TableColumn fx:id="finishedCol" prefWidth="117.59991455078125" text="Finished" />
               </columns>
             </TableView>
          </content>
       </ScrollPane>
-      <Button layoutX="1042.0" layoutY="484.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="157.0" text="EXECUTE!">
+      <Button fx:id="executeButton" layoutX="1042.0" layoutY="484.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="157.0" text="EXECUTE!">
          <font>
             <Font size="23.0" />
          </font>
       </Button>
-      <Button layoutX="1042.0" layoutY="205.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="157.0" text="SUBMIT!">
+      <Button fx:id="submitButton" layoutX="1042.0" layoutY="205.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="157.0" text="SUBMIT!">
          <font>
             <Font size="23.0" />
          </font>
