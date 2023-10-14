@@ -47,7 +47,8 @@ public class ClientAppController {
         simulationComponentController.run();
         resultsComponentController.updateScreens();
         executionComponentController.updateScreens();
-        requestsComponentController.updateScreens();
+        requestsComponentController.updateScreensEverySecond();
+        requestsComponentController.updateScreensOneTime();
     }
 
     public void initializeController() {

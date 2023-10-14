@@ -418,7 +418,7 @@ public class SimulationController implements Runnable{
 
     @Override
     public void run() {
-        updateScreens();
+//        updateScreens();
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(this::updateScreens, 0, 1000, TimeUnit.MILLISECONDS);
     }
